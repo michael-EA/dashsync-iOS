@@ -25,6 +25,7 @@
 		2A3B3EBC20F893F4002962FB /* TextFieldFormCellModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3B3EA620F893F4002962FB /* TextFieldFormCellModel.m */; };
 		2A3B3EBD20F893F4002962FB /* TextFieldFormTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3B3EA720F893F4002962FB /* TextFieldFormTableViewCell.m */; };
 		2A3B3EC220F893F4002962FB /* BaseFormCellModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A3B3EB220F893F4002962FB /* BaseFormCellModel.m */; };
+		2A7CEF5A2296C6040084DD2F /* DSDashPayTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A7CEF592296C6040084DD2F /* DSDashPayTests.m */; };
 		2A7DCCAC20D9474F0097049F /* DSBIP39Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A7DCCAB20D9474F0097049F /* DSBIP39Tests.m */; };
 		2A7DCCAE20D9485A0097049F /* DSBIP32Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A7DCCAD20D9485A0097049F /* DSBIP32Tests.m */; };
 		2A7DCCB020DA080F0097049F /* DSWalletTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A7DCCAF20DA080F0097049F /* DSWalletTests.m */; };
@@ -202,6 +203,7 @@
 		2A3B3EAA20F893F4002962FB /* BaseFormCellModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseFormCellModel.h; sourceTree = "<group>"; };
 		2A3B3EAB20F893F4002962FB /* FormTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FormTableViewController.h; sourceTree = "<group>"; };
 		2A3B3EB220F893F4002962FB /* BaseFormCellModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseFormCellModel.m; sourceTree = "<group>"; };
+		2A7CEF592296C6040084DD2F /* DSDashPayTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSDashPayTests.m; sourceTree = "<group>"; };
 		2A7DCCAB20D9474F0097049F /* DSBIP39Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSBIP39Tests.m; sourceTree = "<group>"; };
 		2A7DCCAD20D9485A0097049F /* DSBIP32Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSBIP32Tests.m; sourceTree = "<group>"; };
 		2A7DCCAF20DA080F0097049F /* DSWalletTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSWalletTests.m; sourceTree = "<group>"; };
@@ -680,6 +682,7 @@
 				6003F5B6195388D20070C39A /* Supporting Files */,
 				6003F5BB195388D20070C39A /* Tests.m */,
 				FBBDF422226B6E770081D673 /* DSBigNumberTests.m */,
+				2A7CEF592296C6040084DD2F /* DSDashPayTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1334,6 +1337,7 @@
 				2A7DCCB020DA080F0097049F /* DSWalletTests.m in Sources */,
 				2A1ECBDB20D8B7EC000177D8 /* DSKeyTests.m in Sources */,
 				2A1ECBDD20D8F4BD000177D8 /* DSPaymentRequestTests.m in Sources */,
+				2A7CEF5A2296C6040084DD2F /* DSDashPayTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
