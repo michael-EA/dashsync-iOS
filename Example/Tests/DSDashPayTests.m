@@ -172,20 +172,37 @@
     
     [self waitForExpectations:@[registerBU2Expectation] timeout:1];
     
-    uint32_t currentBlockHeight = STRG.chainManager.chain.lastBlockHeight;
-    uint32_t blocksToWait = 2;
-    
-    XCTNSNotificationExpectation *expectation = [[XCTNSNotificationExpectation alloc] initWithName:DSChainBlocksDidChangeNotification];
-    expectation.handler = ^BOOL(NSNotification * _Nonnull notification) {
-        return STRG.chainManager.chain.lastBlockHeight >= currentBlockHeight + blocksToWait;
-    };
+    [self waitForNumberOfBlocks:2];
+}
 
-    [self waitForExpectations:@[expectation] timeout:60 * 30]; // 30 min
+- (void)test_05_registerProfiles {
+    XCTAssert(STRG.blockchainUser1 && STRG.blockchainUser2);
+    if (!STRG.blockchainUser1 || !STRG.blockchainUser2) {
+        return;
+    }
+    
+    NSLog(@">>> registering profile %@", STRG.blockchainUser1.username);
+    XCTestExpectation *registerProfile1Expectation = [[XCTestExpectation alloc] initWithDescription:@"User 1 profile should be registered"];
+    [self registerProfile:STRG.blockchainUser1 completion:^(BOOL success) {
+        XCTAssert(success);
+        [registerProfile1Expectation fulfill];
+    }];
+    [self waitForExpectations:@[registerProfile1Expectation] timeout:60];
+    
+    NSLog(@">>> registering profile %@", STRG.blockchainUser2.username);
+    XCTestExpectation *registerProfile2Expectation = [[XCTestExpectation alloc] initWithDescription:@"User 2 profile should be registered"];
+    [self registerProfile:STRG.blockchainUser2 completion:^(BOOL success) {
+        XCTAssert(success);
+        [registerProfile2Expectation fulfill];
+    }];
+    [self waitForExpectations:@[registerProfile2Expectation] timeout:60];
+    
+    [self waitForNumberOfBlocks:2];
 }
 
 #pragma mark - Private
 
-- (void)registerBlockchainUser:(NSString *)username completion:(void(^)(DSBlockchainUser *))completion {
+- (void)registerBlockchainUser:(NSString *)username completion:(void(^)(DSBlockchainUser * _Nullable))completion {
     DSWallet *wallet = STRG.wallet;
     DSAccount *fundingAccount = nil;
     for (DSAccount * account in wallet.accounts) {
@@ -195,6 +212,11 @@
         }
     }
     XCTAssertNotNil(fundingAccount);
+    
+    if (!fundingAccount) {
+        completion(nil);
+        return;
+    }
     
     uint64_t topupAmount = 10000000;
 
@@ -216,16 +238,40 @@
                             }];
                         } else {
                             XCTAssert(NO, @"Transaction was not signed.");
+                            completion(nil);
                         }
                     }];
                 } else {
                     XCTAssert(NO, @"Unable to create BlockchainUserRegistrationTransaction.");
+                    completion(nil);
                 }
             }];
         } else {
             XCTAssert(NO, @"Unable to register blockchain user.");
+            completion(nil);
         }
     }];
+}
+
+- (void)waitForNumberOfBlocks:(uint32_t)blocksToWait {
+    uint32_t currentBlockHeight = STRG.chainManager.chain.lastBlockHeight;
+    
+    XCTNSNotificationExpectation *expectation = [[XCTNSNotificationExpectation alloc] initWithName:DSChainBlocksDidChangeNotification];
+    expectation.handler = ^BOOL(NSNotification * _Nonnull notification) {
+        return STRG.chainManager.chain.lastBlockHeight >= currentBlockHeight + blocksToWait;
+    };
+    
+    // wait 15 minutes * blocks_count
+    [self waitForExpectations:@[expectation] timeout:60 * 15 * blocksToWait];
+}
+
+- (void)registerProfile:(DSBlockchainUser *)blockchainUser completion:(void(^)(BOOL success))completion {
+    NSString *aboutMe = [NSString stringWithFormat:@"Hey I'm test demo user %@", blockchainUser.username];
+    NSString *avatarURLString = [NSString stringWithFormat:@"https://api.adorable.io/avatars/120/%@.png",
+                                 blockchainUser.username];
+    [blockchainUser createOrUpdateProfileWithAboutMeString:aboutMe
+                                           avatarURLString:avatarURLString
+                                                completion:completion];
 }
 
 @end
