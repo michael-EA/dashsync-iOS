@@ -29,6 +29,16 @@
 @property (nonatomic, strong) DSBlockchainUser *blockchainUser1;
 @property (nonatomic, strong) DSBlockchainUser *blockchainUser2;
 
+@property (nonatomic, assign) BOOL user1HasProfile;
+@property (nonatomic, assign) BOOL user2HasProfile;
+
+@property (nonatomic, assign) BOOL user1StateTransitionsFetched;
+@property (nonatomic, assign) BOOL user2StateTransitionsFetched;
+
+@property (nonatomic, assign) BOOL user1ProfileFetched;
+@property (nonatomic, assign) BOOL user2ProfileFetched;
+
+
 @end
 
 @implementation DSDashPayTestsStorage
@@ -176,28 +186,110 @@
 }
 
 - (void)test_05_registerProfiles {
-    XCTAssert(STRG.blockchainUser1 && STRG.blockchainUser2);
-    if (!STRG.blockchainUser1 || !STRG.blockchainUser2) {
+    BOOL canRunTest = STRG.blockchainUser1 && STRG.blockchainUser2;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
         return;
     }
     
-    NSLog(@">>> registering profile %@", STRG.blockchainUser1.username);
+    NSLog(@">>> registering profile 1 %@", STRG.blockchainUser1.username);
     XCTestExpectation *registerProfile1Expectation = [[XCTestExpectation alloc] initWithDescription:@"User 1 profile should be registered"];
     [self registerProfile:STRG.blockchainUser1 completion:^(BOOL success) {
         XCTAssert(success);
+        STRG.user1HasProfile = success;
         [registerProfile1Expectation fulfill];
     }];
     [self waitForExpectations:@[registerProfile1Expectation] timeout:60];
     
-    NSLog(@">>> registering profile %@", STRG.blockchainUser2.username);
+    NSLog(@">>> registering profile 2 %@", STRG.blockchainUser2.username);
     XCTestExpectation *registerProfile2Expectation = [[XCTestExpectation alloc] initWithDescription:@"User 2 profile should be registered"];
     [self registerProfile:STRG.blockchainUser2 completion:^(BOOL success) {
         XCTAssert(success);
+        STRG.user2HasProfile = success;
         [registerProfile2Expectation fulfill];
     }];
     [self waitForExpectations:@[registerProfile2Expectation] timeout:60];
     
     [self waitForNumberOfBlocks:2];
+}
+
+- (void)test_06_fetchStateTransitions {
+    BOOL canRunTest = STRG.user1HasProfile && STRG.user2HasProfile;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+
+    NSLog(@">>> fetching transitions 1 %@", STRG.blockchainUser1.username);
+    XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"User 1 transitions should be fetched"];
+    [self fetchTransitions:STRG.blockchainUser1 completion:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user1StateTransitionsFetched = success;
+        [expectation1 fulfill];
+    }];
+    [self waitForExpectations:@[expectation1] timeout:60];
+    
+    NSLog(@">>> fetching transitions 2 %@", STRG.blockchainUser2.username);
+    XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"User 2 transitions should be fetched"];
+    [self fetchTransitions:STRG.blockchainUser2 completion:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user2StateTransitionsFetched = success;
+        [expectation2 fulfill];
+    }];
+    [self waitForExpectations:@[expectation2] timeout:60];
+}
+
+- (void)test_07_fetchProfiles {
+    BOOL canRunTest = STRG.user1StateTransitionsFetched && STRG.user2StateTransitionsFetched;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
+    NSLog(@">>> fetching profile 1 %@", STRG.blockchainUser1.username);
+    XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"User 1 profile should be fetched"];
+    [STRG.blockchainUser1 fetchProfile:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user1ProfileFetched = success;
+        [expectation1 fulfill];
+    }];
+    [self waitForExpectations:@[expectation1] timeout:60];
+    
+    NSLog(@">>> fetching profile 2 %@", STRG.blockchainUser2.username);
+    XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"User 2 profile should be fetched"];
+    [STRG.blockchainUser2 fetchProfile:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user2ProfileFetched = success;
+        [expectation2 fulfill];
+    }];
+    [self waitForExpectations:@[expectation2] timeout:60];
+}
+
+- (void)test_08_sendContactRequest {
+    BOOL canRunTest = STRG.user1ProfileFetched && STRG.user2ProfileFetched;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
+    NSString *username = STRG.blockchainUser2.username;
+    DSBlockchainUser *blockchainUser = STRG.blockchainUser1;
+    DSAccount *account = [blockchainUser.wallet accountWithNumber:0];
+    NSParameterAssert(account);
+    
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"User 1 should send contact request"];
+    
+    NSLog(@">>> Sending contact request from user 1 to 2");
+    
+    DSPotentialContact *potentialContact = [[DSPotentialContact alloc] initWithUsername:username];
+    [blockchainUser sendNewFriendRequestToPotentialContact:potentialContact completion:^(BOOL success) {
+        XCTAssert(success);
+        [expectation fulfill];
+    }];
+    [self waitForExpectations:@[expectation] timeout:60];
+    
+    [self waitForNumberOfBlocks:1];
+    
 }
 
 #pragma mark - Private
@@ -272,6 +364,16 @@
     [blockchainUser createOrUpdateProfileWithAboutMeString:aboutMe
                                            avatarURLString:avatarURLString
                                                 completion:completion];
+}
+
+- (void)fetchTransitions:(DSBlockchainUser *)blockchainUser completion:(void(^)(BOOL success))completion {
+    [STRG.chainManager.DAPIClient getAllStateTransitionsForUser:blockchainUser completion:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Fetch transitions failed: %@", error);
+        }
+        
+        completion(error == nil);
+    }];
 }
 
 @end
