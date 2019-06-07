@@ -38,6 +38,13 @@
 @property (nonatomic, assign) BOOL user1ProfileFetched;
 @property (nonatomic, assign) BOOL user2ProfileFetched;
 
+@property (nonatomic, assign) BOOL contactRequestSent;
+
+@property (nonatomic, assign) BOOL user1IncomingContactRequestsFetched;
+@property (nonatomic, assign) BOOL user2IncomingContactRequestsFetched;
+
+@property (nonatomic, assign) BOOL user1OutgoingContactRequestsFetched;
+@property (nonatomic, assign) BOOL user2OutgoingContactRequestsFetched;
 
 @end
 
@@ -284,12 +291,64 @@
     DSPotentialContact *potentialContact = [[DSPotentialContact alloc] initWithUsername:username];
     [blockchainUser sendNewFriendRequestToPotentialContact:potentialContact completion:^(BOOL success) {
         XCTAssert(success);
+        STRG.contactRequestSent = success;
         [expectation fulfill];
     }];
     [self waitForExpectations:@[expectation] timeout:60];
     
     [self waitForNumberOfBlocks:1];
+}
+
+- (void)test_09_fetchIncomingContactRequests {
+    BOOL canRunTest = STRG.contactRequestSent;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
     
+    NSLog(@">>> fetching incoming contact requests 1 %@", STRG.blockchainUser1.username);
+    XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"User 1 incoming contact requests should be fetched"];
+    [STRG.blockchainUser1 fetchIncomingContactRequests:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user1IncomingContactRequestsFetched = success;
+        [expectation1 fulfill];
+    }];
+    [self waitForExpectations:@[expectation1] timeout:60];
+    
+    NSLog(@">>> fetching incoming contact requests 2 %@", STRG.blockchainUser2.username);
+    XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"User 2 incoming contact requests should be fetched"];
+    [STRG.blockchainUser2 fetchIncomingContactRequests:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user2IncomingContactRequestsFetched = success;
+        [expectation2 fulfill];
+    }];
+    [self waitForExpectations:@[expectation2] timeout:60];
+}
+
+- (void)test_09_fetchOutgoingContactRequests {
+    BOOL canRunTest = STRG.user1IncomingContactRequestsFetched && STRG.user2IncomingContactRequestsFetched;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
+    NSLog(@">>> fetching outgoing contact requests 1 %@", STRG.blockchainUser1.username);
+    XCTestExpectation *expectation1 = [[XCTestExpectation alloc] initWithDescription:@"User 1 outgoing contact requests should be fetched"];
+    [STRG.blockchainUser1 fetchOutgoingContactRequests:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user1OutgoingContactRequestsFetched = success;
+        [expectation1 fulfill];
+    }];
+    [self waitForExpectations:@[expectation1] timeout:60];
+    
+    NSLog(@">>> fetching outgoing contact requests 2 %@", STRG.blockchainUser2.username);
+    XCTestExpectation *expectation2 = [[XCTestExpectation alloc] initWithDescription:@"User 2 outgoing contact requests should be fetched"];
+    [STRG.blockchainUser2 fetchOutgoingContactRequests:^(BOOL success) {
+        XCTAssert(success);
+        STRG.user2OutgoingContactRequestsFetched = success;
+        [expectation2 fulfill];
+    }];
+    [self waitForExpectations:@[expectation2] timeout:60];
 }
 
 #pragma mark - Private
