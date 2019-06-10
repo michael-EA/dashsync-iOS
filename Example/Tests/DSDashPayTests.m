@@ -26,6 +26,8 @@
 @property (nonatomic, strong) DSChainManager *chainManager;
 @property (nonatomic, strong) DSWallet *wallet;
 
+@property (nonatomic, assign) BOOL synced;
+
 @property (nonatomic, strong) DSBlockchainUser *blockchainUser1;
 @property (nonatomic, strong) DSBlockchainUser *blockchainUser2;
 
@@ -45,6 +47,8 @@
 
 @property (nonatomic, assign) BOOL user1OutgoingContactRequestsFetched;
 @property (nonatomic, assign) BOOL user2OutgoingContactRequestsFetched;
+
+@property (nonatomic, assign) BOOL contactRequestAccepted;
 
 @end
 
@@ -114,8 +118,14 @@
 }
 
 - (void)test_02_addWallet {
+    BOOL canRunTest = STRG.chain != nil;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
     DSChain *chain = STRG.chain;
-    NSString *uniqueID = @"53e0b49";
+    NSString *uniqueID = @"f96a283";
     
     NSUInteger index = [chain.wallets indexOfObjectPassingTest:^BOOL(DSWallet * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return [obj.uniqueID isEqualToString:uniqueID];
@@ -123,8 +133,8 @@
     
     if (index == NSNotFound) {
         // after updating wallet seed phrase make sure to update uniqueID constant
-        NSString *seedPhrase = @"sail upper barrel furnance word mask hurt napkin filter address middle note";
-        NSTimeInterval creationDate = 1558428119;
+        NSString *seedPhrase = @"hint tool naive fruit account silly balcony anchor patch describe kiwi drift";
+        NSTimeInterval creationDate = 1559927578;
         DSWallet *wallet = [DSWallet standardWalletWithSeedPhrase:seedPhrase
                                                   setCreationDate:creationDate
                                                          forChain:chain
@@ -134,7 +144,6 @@
 
         XCTAssertEqualObjects(wallet.uniqueID, uniqueID);
     }
-    
     
     index = [chain.wallets indexOfObjectPassingTest:^BOOL(DSWallet * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return [obj.uniqueID isEqualToString:uniqueID];
@@ -146,6 +155,12 @@
 }
 
 - (void)test_03_sync {
+    BOOL canRunTest = STRG.wallet != nil;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
     __block BOOL isProgressDone = NO;
     __block BOOL isSyncFinished = NO;
     
@@ -165,9 +180,17 @@
     [[DashSync sharedSyncController] startSyncForChain:STRG.chain];
     
     [self waitForExpectations:@[expectation, finishExpectation] timeout:60 * 3]; // 3 min
+    
+    STRG.synced = isProgressDone || isSyncFinished;
 }
 
 - (void)test_04_registerBlockchainUsers {
+    BOOL canRunTest = STRG.synced;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
     NSString *username = [[NSUUID UUID].UUIDString componentsSeparatedByString:@"-"].lastObject;
     
     XCTestExpectation *registerBU1Expectation = [[XCTestExpectation alloc] initWithDescription:@"Blockchain user 1 should be registered"];
@@ -349,6 +372,43 @@
         [expectation2 fulfill];
     }];
     [self waitForExpectations:@[expectation2] timeout:60];
+}
+
+- (void)test_10_acceptContactRequest {
+    BOOL canRunTest = STRG.user1OutgoingContactRequestsFetched && STRG.user2OutgoingContactRequestsFetched;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
+    DSBlockchainUser *blockchainUser = STRG.blockchainUser2;
+    
+    // Fetch incoming contact request for user 2
+    // Fetch Request options are same as in DSIncomingContactsTableViewController
+    NSManagedObjectContext *context = [NSManagedObject context];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DSFriendRequestEntity"
+                                              inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setFetchBatchSize:10];
+    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"destinationContact == %@ && (SUBQUERY(destinationContact.outgoingRequests, $friendRequest, $friendRequest.destinationContact == SELF.sourceContact).@count == 0)", blockchainUser.ownContact];
+    [fetchRequest setPredicate:filterPredicate];
+    
+    [DSFriendRequestEntity setContext:context];
+    DSFriendRequestEntity *friendRequest = [DSFriendRequestEntity fetchObjects:fetchRequest].firstObject;
+    XCTAssertNotNil(friendRequest);
+    if (!friendRequest) {
+        return;
+    }
+    
+    NSLog(@">>> accepting contact request from 1 to 2");
+    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"User 2 should accept contact request"];
+    [blockchainUser acceptFriendRequest:friendRequest completion:^(BOOL success) {
+        XCTAssert(success);
+        STRG.contactRequestAccepted = success;
+        [expectation fulfill];
+    }];
+    [self waitForExpectations:@[expectation] timeout:60];
 }
 
 #pragma mark - Private
