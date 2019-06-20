@@ -411,6 +411,70 @@
     [self waitForExpectations:@[expectation] timeout:60];
 }
 
+- (void)test_11_sendDashToContact {
+    BOOL canRunTest = STRG.contactRequestAccepted;
+    XCTAssert(canRunTest);
+    if (!canRunTest) {
+        return;
+    }
+    
+    // Send from 1 to 2
+    
+    DSBlockchainUser *blockchainUser = STRG.blockchainUser1;
+    
+    __block BOOL fetchContactsResult = NO;
+    XCTestExpectation *contactsExpectation = [[XCTestExpectation alloc] initWithDescription:@"User 1 contacts should be fetched"];
+    [blockchainUser fetchProfile:^(BOOL success) {
+        XCTAssert(success, @"Should fetch User 1 profile");
+        if (!success) {
+            fetchContactsResult = success;
+            return;
+        }
+        
+        [self fetchIncomingAndOutgoingRequestForBlockchainUser:blockchainUser completion:^(BOOL success) {
+            XCTAssert(success);
+            fetchContactsResult = success;
+            [contactsExpectation fulfill];
+        }];
+    }];
+    [self waitForExpectations:@[contactsExpectation] timeout:60 * 2];
+    
+    if (!fetchContactsResult) {
+        return;
+    }
+    
+    NSManagedObjectContext *context = [NSManagedObject context];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"DSContactEntity"
+                                              inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:10];
+    
+    NSSortDescriptor *usernameSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"username" ascending:YES];
+    NSArray *sortDescriptors = @[ usernameSortDescriptor ];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"ANY friends == %@", blockchainUser.ownContact];
+    [fetchRequest setPredicate:filterPredicate];
+    
+    NSArray <DSContactEntity *> *allContacts = [DSContactEntity fetchObjects:fetchRequest inContext:context];
+    DSContactEntity *contact = allContacts.firstObject;
+    XCTAssertNotNil(contact, @"Contact should exists");
+    if (!contact) {
+        return;
+    }
+    
+    XCTestExpectation *sendExpectation = [[XCTestExpectation alloc] initWithDescription:@"User 1 should send Dash to contact (User 2)"];
+    [self sendDashToContact:contact fromBlockchainUser:blockchainUser completion:^(BOOL success) {
+        XCTAssert(success);
+        [sendExpectation fulfill];
+    }];
+    [self waitForExpectations:@[sendExpectation] timeout:60];
+}
+
 #pragma mark - Private
 
 - (void)registerBlockchainUser:(NSString *)username completion:(void(^)(DSBlockchainUser * _Nullable))completion {
@@ -493,6 +557,71 @@
         
         completion(error == nil);
     }];
+}
+
+- (void)fetchIncomingAndOutgoingRequestForBlockchainUser:(DSBlockchainUser *)blockchainUser completion:(void(^)(BOOL success))completion {
+    [blockchainUser fetchIncomingContactRequests:^(BOOL success) {
+        if (!success) {
+            completion(success);
+            return;
+        }
+        
+        [blockchainUser fetchOutgoingContactRequests:^(BOOL success) {
+            completion(success);
+        }];
+    }];
+}
+
+- (void)sendDashToContact:(DSContactEntity *)contact
+       fromBlockchainUser:(DSBlockchainUser *)blockchainUser
+               completion:(void(^)(BOOL success))completion {
+    DSFriendRequestEntity * friendRequest = [[contact.outgoingRequests filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"destinationContact.associatedBlockchainUserRegistrationHash == %@", blockchainUser.registrationTransactionHashData]] anyObject];
+    NSAssert(friendRequest, @"there must be a friendRequest");
+    
+    DSAccount *account = [blockchainUser.wallet accountWithNumber:0];
+    DSIncomingFundsDerivationPath * derivationPath = [account derivationPathForFriendshipWithIdentifier:friendRequest.friendshipIdentifier];
+    NSAssert(derivationPath.extendedPublicKey, @"Extended public key must exist already");
+    NSString *address = [derivationPath receiveAddress];
+    
+    // Send logic:
+    
+    DSPaymentRequest * paymentRequest = [DSPaymentRequest requestWithString:address onChain:account.wallet.chain];
+    paymentRequest.amount = 1000;
+    
+    BOOL isValid = paymentRequest.isValid;
+    XCTAssert(isValid, @"Payment request should be valid");
+    
+    if (isValid) {
+        [account.wallet.chain.chainManager.transactionManager confirmPaymentRequest:paymentRequest fromAccount:account acceptReusingAddress:YES addressIsFromPasteboard:NO requestingAdditionalInfo:^(DSRequestingAdditionalInfo additionalInfoRequestType) {
+        } presentChallenge:^(NSString * _Nonnull challengeTitle, NSString * _Nonnull challengeMessage, NSString * _Nonnull actionTitle, void (^ _Nonnull actionBlock)(void), void (^ _Nonnull cancelBlock)(void)) {
+            // always confirm challenge
+            actionBlock();
+        } transactionCreationCompletion:^BOOL(DSTransaction * _Nonnull tx, NSString * _Nonnull prompt, uint64_t amount) {
+            return TRUE; //just continue and let Dash Sync do it's thing
+        } signedCompletion:^BOOL(DSTransaction * _Nonnull tx, NSError * _Nullable error, BOOL cancelled) {
+            if (cancelled) {
+                XCTAssert(NO, @"Should not be cancelled");
+            } else if (error) {
+                XCTAssert(NO, @"Should not be any error %@", error);
+            }
+            
+            completion(NO);
+            
+            return TRUE;
+        } publishedCompletion:^(DSTransaction * _Nonnull tx, NSError * _Nullable error, BOOL sent) {
+            XCTAssert(sent, @"Tx should be sent");
+            
+            completion(sent);
+        } errorNotificationBlock:^(NSString * _Nonnull errorTitle, NSString * _Nonnull errorMessage, BOOL shouldCancel) {
+            BOOL hasAnError = (errorTitle || errorMessage);
+            XCTAssert(!hasAnError, @"Should not be any error %@ : %@", errorTitle, errorMessage);
+            
+            completion(NO);
+        }];
+    }
+    else {
+        completion(NO);
+    }
 }
 
 @end
