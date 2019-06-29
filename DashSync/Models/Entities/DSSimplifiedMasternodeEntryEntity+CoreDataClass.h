@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class DSAddressEntity, DSChainEntity, DSGovernanceVoteEntity, DSLocalMasternodeEntity, DSMasternodeListEntity, DSTransactionLockVoteEntity, DSSimplifiedMasternodeEntry,DSMasternodeList;
+@class DSAddressEntity, DSChainEntity, DSGovernanceVoteEntity, DSLocalMasternodeEntity, DSMasternodeListEntity, DSTransactionLockVoteEntity, DSSimplifiedMasternodeEntry,DSMasternodeList,DSPeerEntity;
 
 NS_ASSUME_NONNULL_BEGIN
 

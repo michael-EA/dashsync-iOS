@@ -374,6 +374,8 @@
     BOOL syncsMasternodeList = !!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_MasternodeList);
     BOOL syncsGovernanceObjects = !!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_Governance);
     [_peers sortUsingComparator:^NSComparisonResult(DSPeer *p1, DSPeer *p2) {
+        if (p1.isMasternode && !p2.isMasternode) return NSOrderedAscending;
+        if (!p1.isMasternode && p2.isMasternode) return NSOrderedDescending;
         //the following is to make sure we get
         if (syncsMasternodeList) {
             if ((!p1.lastRequestedMasternodeList || p1.lastRequestedMasternodeList < threeHoursAgo) && p2.lastRequestedMasternodeList > threeHoursAgo) return NSOrderedDescending;

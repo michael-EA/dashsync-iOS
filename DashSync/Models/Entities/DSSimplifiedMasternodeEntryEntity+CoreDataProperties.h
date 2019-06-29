@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) DSLocalMasternodeEntity *localMasternode;
 @property (nullable, nonatomic, retain) NSSet<DSMasternodeListEntity *> *masternodeLists;
 @property (nullable, nonatomic, retain) NSSet<DSTransactionLockVoteEntity *> *transactionLockVotes;
+@property (nullable, nonatomic, retain) DSPeerEntity *peer;
 
 @end
 

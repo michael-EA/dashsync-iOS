@@ -39,7 +39,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) int64_t services;
 @property (nonatomic) int16_t misbehavin;
 @property (nonatomic) int32_t priority;
-@property (nonatomic, retain) DSChainEntity *chain;
+@property (nonatomic,retain) DSChainEntity *chain;
+@property (nonatomic,retain) DSSimplifiedMasternodeEntryEntity *masternode;
 
 @end
 

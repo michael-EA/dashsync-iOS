@@ -32,5 +32,6 @@
 @dynamic transactionLockVotes;
 @dynamic previousSimplifiedMasternodeEntryHashes;
 @dynamic ipv6Address;
+@dynamic peer;
 
 @end

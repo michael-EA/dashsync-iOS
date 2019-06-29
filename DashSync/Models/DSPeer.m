@@ -125,6 +125,10 @@
     return [[self alloc] initWithHost:host onChain:chain];
 }
 
++ (instancetype)peerWithMasternode:(DSSimplifiedMasternodeEntry*)masternode {
+    return [[self alloc] initWithAddress:address andPort:port onChain:chain];
+}
+
 - (instancetype)initWithAddress:(UInt128)address andPort:(uint16_t)port onChain:(DSChain*)chain
 {
     if (! (self = [super init])) return nil;

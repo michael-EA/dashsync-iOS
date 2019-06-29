@@ -25,7 +25,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class DSChainEntity,DSPeer;
+@class DSChainEntity,DSPeer,DSSimplifiedMasternodeEntryEntity;
 
 NS_ASSUME_NONNULL_BEGIN
 

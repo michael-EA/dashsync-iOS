@@ -40,5 +40,6 @@
 @dynamic chain;
 @dynamic lastRequestedMasternodeList;
 @dynamic lastRequestedGovernanceSync;
+@dynamic masternode;
 
 @end

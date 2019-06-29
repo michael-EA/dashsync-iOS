@@ -163,7 +163,7 @@ typedef NS_ENUM(uint32_t, DSSyncCountInfo);
 
 typedef void (^MempoolCompletionBlock)(BOOL success, BOOL needed, BOOL interruptedByDisconnect);
 
-@class DSPeer, DSTransaction, DSMerkleBlock, DSChain,DSSpork,DSGovernanceObject,DSGovernanceVote,DSTransactionLockVote,DSInstantSendTransactionLock;
+@class DSPeer, DSTransaction, DSMerkleBlock, DSSimplifiedMasternodeEntry, DSChain, DSSpork, DSGovernanceObject, DSGovernanceVote, DSTransactionLockVote, DSInstantSendTransactionLock;
 
 @protocol DSPeerDelegate<NSObject>
 @required
@@ -282,11 +282,13 @@ typedef NS_ENUM(NSUInteger, DSPeerType) {
 @property (nonatomic, assign) BOOL needsFilterUpdate; // set this when wallet addresses need to be added to bloom filter
 @property (nonatomic, assign) uint32_t currentBlockHeight; // set this to local block height (helps detect tarpit nodes)
 @property (nonatomic, assign) BOOL synced; // use this to keep track of peer state
+@property (nonatomic, readonly) BOOL isMasternode;
 
 @property (nonatomic, readonly) DSChain * chain;
 
 + (instancetype)peerWithAddress:(UInt128)address andPort:(uint16_t)port onChain:(DSChain*)chain;
 + (instancetype)peerWithHost:(NSString *)host onChain:(DSChain*)chain;
++ (instancetype)peerWithMasternode:(DSSimplifiedMasternodeEntry*)masternode;
 
 - (instancetype)initWithAddress:(UInt128)address andPort:(uint16_t)port onChain:(DSChain*)chain;
 - (instancetype)initWithAddress:(UInt128)address port:(uint16_t)port onChain:(DSChain*)chain timestamp:(NSTimeInterval)timestamp
