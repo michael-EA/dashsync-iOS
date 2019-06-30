@@ -27,7 +27,7 @@
 //  THE SOFTWARE.
 
 #import "DSPeerManager+Protected.h"
-#import "DSPeer.h"
+#import "DSPeer+Protected.h"
 #import "DSPeerEntity+CoreDataClass.h"
 #import "DSTransaction.h"
 #import "DSTransactionEntity+CoreDataClass.h"
@@ -55,6 +55,7 @@
 #import "DSTransactionManager+Protected.h"
 #import "DSChainManager+Protected.h"
 #import "DSBloomFilter.h"
+#import "DSMasternodeList.h"
 #import <arpa/inet.h>
 
 #define PEER_LOGGING 1
@@ -77,7 +78,8 @@
 
 @interface DSPeerManager ()
 
-@property (nonatomic, strong) NSMutableOrderedSet *peers;
+@property (nonatomic, strong) NSMutableOrderedSet *masternodePeers;
+@property (nonatomic, strong) NSMutableOrderedSet *normalPeers;
 
 @property (nonatomic, strong) NSMutableSet *mutableConnectedPeers, *mutableMisbehavingPeers;
 @property (nonatomic, strong) DSPeer *downloadPeer, *fixedPeer;
@@ -86,6 +88,7 @@
 @property (nonatomic, strong) DSChain * chain;
 @property (nonatomic, assign) DSPeerManagerDesiredState desiredState;
 @property (nonatomic, strong) dispatch_queue_t chainPeerManagerQueue;
+@property (nonatomic, readonly) DSMasternodeManager *masternodeManager;
 
 @end
 
@@ -182,7 +185,10 @@
 
 - (NSUInteger)peerCount
 {
-    return self.peers.count;
+    if (self.masternodePeers.count > 300) {
+        return self.masternodePeers.count;
+    }
+    return self.normalPeers.count + self.masternodePeers.count;
 }
 
 
@@ -217,42 +223,91 @@
 
 -(void)clearPeers {
     [self disconnect];
-    _peers = nil;
+    _masternodePeers = nil;
+    _normalPeers = nil;
 }
 
-- (NSMutableOrderedSet *)peers
+-(NSOrderedSet*)peers {
+    if (self.masternodePeers.count >= _maxConnectCount) return self.masternodePeers;
+    NSMutableOrderedSet * rPeers = [self.masternodePeers mutableCopy];
+    [rPeers unionOrderedSet:self.normalPeers];
+    return rPeers;
+}
+
+- (NSMutableOrderedSet *)masternodePeers
 {
     if (_fixedPeer) return [NSMutableOrderedSet orderedSetWithObject:_fixedPeer];
-    if (_peers.count >= _maxConnectCount) return _peers;
+    if (_masternodePeers.count >= _maxConnectCount) return _masternodePeers;
     
     @synchronized(self) {
-        if (_peers.count >= _maxConnectCount) return _peers;
-        _peers = [NSMutableOrderedSet orderedSet];
+        if (_masternodePeers.count >= _maxConnectCount) return _masternodePeers;
+        _masternodePeers = [NSMutableOrderedSet orderedSet];
         
         [[DSPeerEntity context] performBlockAndWait:^{
-            for (DSPeerEntity *e in [DSPeerEntity objectsMatching:@"chain == %@",self.chain.chainEntity]) {
+            for (DSPeerEntity *e in [DSPeerEntity objectsMatching:@"chain == %@ && masternode != nil",self.chain.chainEntity]) {
                 @autoreleasepool {
-                    if (e.misbehavin == 0) [self->_peers addObject:[e peer]];
+                    if (e.misbehavin == 0) [self->_masternodePeers addObject:[e peer]];
                     else [self.mutableMisbehavingPeers addObject:[e peer]];
                 }
             }
         }];
         
-        [self sortPeers];
+        
         
         if ([self.chain isDevnetAny]) {
             
-            [_peers addObjectsFromArray:[self registeredDevnetPeers]];
+            [_masternodePeers addObjectsFromArray:[self registeredMasternodeDevnetPeers]];
             
-            [self sortPeers];
-            return _peers;
+            [self sortMasternodePeers];
+            return _masternodePeers;
+        }
+        
+        
+        
+        if ([self masternodeManager].currentMasternodeList) {
+            [_masternodePeers addObjectsFromArray:[[self masternodeManager].currentMasternodeList allPeers]];
+        }
+        
+        [self sortMasternodePeers];
+        
+        return _masternodePeers;
+    }
+}
+
+
+- (NSMutableOrderedSet *)normalPeers
+{
+    if (_fixedPeer) return [NSMutableOrderedSet orderedSetWithObject:_fixedPeer];
+    if (_normalPeers.count >= _maxConnectCount) return _normalPeers;
+    
+    @synchronized(self) {
+        if (_normalPeers.count >= _maxConnectCount) return _normalPeers;
+        _normalPeers = [NSMutableOrderedSet orderedSet];
+        
+        [[DSPeerEntity context] performBlockAndWait:^{
+            for (DSPeerEntity *e in [DSPeerEntity objectsMatching:@"chain == %@ && masternode == NIL",self.chain.chainEntity]) {
+                @autoreleasepool {
+                    if (e.misbehavin == 0) [self->_masternodePeers addObject:[e peer]];
+                    else [self.mutableMisbehavingPeers addObject:[e peer]];
+                }
+            }
+        }];
+        
+        [self sortNormalPeers];
+        
+        if ([self.chain isDevnetAny]) {
+            
+            [_normalPeers addObjectsFromArray:[self registeredNormalDevnetPeers]];
+            
+            [self sortNormalPeers];
+            return _normalPeers;
         }
         
         // DNS peer discovery
         NSTimeInterval now = [NSDate timeIntervalSince1970];
         NSMutableArray *peers = [NSMutableArray arrayWithObject:[NSMutableArray array]];
         NSArray * dnsSeeds = [self dnsSeeds];
-        if (_peers.count < PEER_MAX_CONNECTIONS || ((DSPeer *)_peers[PEER_MAX_CONNECTIONS - 1]).timestamp + 3*24*60*60 < now) {
+        if (_normalPeers.count < PEER_MAX_CONNECTIONS || ((DSPeer *)_masternodePeers[PEER_MAX_CONNECTIONS - 1]).timestamp + 3*DAY_TIME_INTERVAL < now) {
             while (peers.count < dnsSeeds.count) [peers addObject:[NSMutableArray array]];
         }
         
@@ -281,7 +336,7 @@
                             uint16_t port = CFSwapInt16BigToHost(((struct sockaddr_in *)p->ai_addr)->sin_port);
                             NSTimeInterval age = 3*24*60*60 + arc4random_uniform(4*24*60*60); // add between 3 and 7 days
                             
-                            [peers[i] addObject:[[DSPeer alloc] initWithAddress:addr port:port onChain:self.chain
+                            [peers[i] addObject:[[DSPeer alloc] initWithAddress:addr port:port type:DSPeerType_Unknown onChain:self.chain
                                                                       timestamp:(i > 0 ? now - age : now)
                                                                        services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
                         }
@@ -293,51 +348,52 @@
                 });
             }
             
-            for (NSArray *a in peers) [_peers addObjectsFromArray:a];
+            for (NSArray *a in peers) [_normalPeers addObjectsFromArray:a];
             
             if (![self.chain isMainnet] && ![self.chain isTestnet]) {
-                [self sortPeers];
-                return _peers;
+                [self sortNormalPeers];
+                return _normalPeers;
             }
             // if DNS peer discovery fails, fall back on a hard coded list of peers (list taken from satoshi client)
-            if (_peers.count < PEER_MAX_CONNECTIONS) {
-            if (![self.chain isMainnet] && ![TESTNET_MAIN_PEER isEqualToString:@""]) {
-                NSArray * serviceArray = [TESTNET_MAIN_PEER componentsSeparatedByString:@":"];
-                NSString * address = serviceArray[0];
-                NSString * port = ([serviceArray count] > 1)? serviceArray[1]:nil;
-                UInt128 ipAddress = { .u32 = { 0, 0, CFSwapInt32HostToBig(0xffff), 0 } };
-                struct in_addr addrV4;
-                if (inet_aton([address UTF8String], &addrV4) != 0) {
-                    uint32_t ip = ntohl(addrV4.s_addr);
-                    ipAddress.u32[3] = CFSwapInt32HostToBig(ip);
+            if (_normalPeers.count < PEER_MAX_CONNECTIONS) {
+                if (![self.chain isMainnet] && ![TESTNET_MAIN_PEER isEqualToString:@""]) {
+                    NSArray * serviceArray = [TESTNET_MAIN_PEER componentsSeparatedByString:@":"];
+                    NSString * address = serviceArray[0];
+                    NSString * port = ([serviceArray count] > 1)? serviceArray[1]:nil;
+                    UInt128 ipAddress = { .u32 = { 0, 0, CFSwapInt32HostToBig(0xffff), 0 } };
+                    struct in_addr addrV4;
+                    if (inet_aton([address UTF8String], &addrV4) != 0) {
+                        uint32_t ip = ntohl(addrV4.s_addr);
+                        ipAddress.u32[3] = CFSwapInt32HostToBig(ip);
+                    } else {
+                        DSDLog(@"invalid address");
+                    }
+                    [_normalPeers addObject:[[DSPeer alloc] initWithAddress:ipAddress port:port?[port intValue]:self.chain.standardPort type:DSPeerType_Unknown onChain:self.chain
+                                                                  timestamp:now - (WEEK_TIME_INTERVAL + arc4random_uniform(WEEK_TIME_INTERVAL))
+                                                                   services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
                 } else {
-                    DSDLog(@"invalid address");
+                    UInt128 addr = { .u32 = { 0, 0, CFSwapInt32HostToBig(0xffff), 0 } };
+                    
+                    NSString *bundlePath = [[NSBundle bundleForClass:self.class] pathForResource:@"DashSync" ofType:@"bundle"];
+                    NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
+                    NSString * path = [bundle pathForResource:[self.chain isMainnet]?FIXED_PEERS:TESTNET_FIXED_PEERS ofType:@"plist"];
+                    for (NSNumber *address in [NSArray arrayWithContentsOfFile:path]) {
+                        // give hard coded peers a timestamp between 7 and 14 days ago
+                        addr.u32[3] = CFSwapInt32HostToBig(address.unsignedIntValue);
+                        [_normalPeers addObject:[[DSPeer alloc] initWithAddress:addr port:self.chain.standardPort type:DSPeerType_Unknown  onChain:self.chain
+                                                                      timestamp:now - (WEEK_TIME_INTERVAL + arc4random_uniform(WEEK_TIME_INTERVAL))
+                                                                       services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
+                    }
                 }
-                [_peers addObject:[[DSPeer alloc] initWithAddress:ipAddress port:port?[port intValue]:self.chain.standardPort onChain:self.chain
-                                                        timestamp:now - (WEEK_TIME_INTERVAL + arc4random_uniform(WEEK_TIME_INTERVAL))
-                                                         services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
-            } else {
-                UInt128 addr = { .u32 = { 0, 0, CFSwapInt32HostToBig(0xffff), 0 } };
-                
-                NSString *bundlePath = [[NSBundle bundleForClass:self.class] pathForResource:@"DashSync" ofType:@"bundle"];
-                NSBundle *bundle = [NSBundle bundleWithPath:bundlePath];
-                NSString * path = [bundle pathForResource:[self.chain isMainnet]?FIXED_PEERS:TESTNET_FIXED_PEERS ofType:@"plist"];
-                for (NSNumber *address in [NSArray arrayWithContentsOfFile:path]) {
-                    // give hard coded peers a timestamp between 7 and 14 days ago
-                    addr.u32[3] = CFSwapInt32HostToBig(address.unsignedIntValue);
-                    [_peers addObject:[[DSPeer alloc] initWithAddress:addr port:self.chain.standardPort onChain:self.chain
-                                                            timestamp:now - (WEEK_TIME_INTERVAL + arc4random_uniform(WEEK_TIME_INTERVAL))
-                                                             services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
-                }
-            }
             }
             
-            [self sortPeers];
+            [self sortNormalPeers];
         }
         
-        return _peers;
+        return _normalPeers;
     }
 }
+
 
 
 - (void)changeCurrentPeers {
@@ -353,14 +409,14 @@
 - (void)peerMisbehaving:(DSPeer *)peer errorMessage:(NSString*)errorMessage
 {
     peer.misbehaving++;
-    [self.peers removeObject:peer];
+    [self.masternodePeers removeObject:peer];
     [self.mutableMisbehavingPeers addObject:peer];
     
     if (++self.misbehavingCount >= self.chain.peerMisbehavingThreshold) { // clear out stored peers so we get a fresh list from DNS for next connect
         self.misbehavingCount = 0;
         [self.mutableMisbehavingPeers removeAllObjects];
         [DSPeerEntity deleteAllObjects];
-        _peers = nil;
+        _masternodePeers = nil;
     }
     
     [peer disconnectWithError:[NSError errorWithDomain:@"DashSync" code:500
@@ -368,12 +424,20 @@
     [self connect];
 }
 
-- (void)sortPeers
+-(void)sortMasternodePeers {
+    return [self sortPeers:_masternodePeers];
+}
+
+-(void)sortNormalPeers {
+    return [self sortPeers:_normalPeers];
+}
+
+- (void)sortPeers:(NSMutableOrderedSet*)peers
 {
     NSTimeInterval threeHoursAgo = [[NSDate date] timeIntervalSince1970] - 10800;
     BOOL syncsMasternodeList = !!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_MasternodeList);
     BOOL syncsGovernanceObjects = !!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_Governance);
-    [_peers sortUsingComparator:^NSComparisonResult(DSPeer *p1, DSPeer *p2) {
+    [peers sortUsingComparator:^NSComparisonResult(DSPeer *p1, DSPeer *p2) {
         if (p1.isMasternode && !p2.isMasternode) return NSOrderedAscending;
         if (!p1.isMasternode && p2.isMasternode) return NSOrderedDescending;
         //the following is to make sure we get
@@ -400,7 +464,7 @@
 - (void)savePeers
 {
     DSDLog(@"[DSPeerManager] save peers");
-    NSMutableSet *peers = [[self.peers.set setByAddingObjectsFromSet:self.misbehavingPeers] mutableCopy];
+    NSMutableSet *peers = [[self.masternodePeers.set setByAddingObjectsFromSet:self.misbehavingPeers] mutableCopy];
     NSMutableSet *addrs = [NSMutableSet set];
     
     for (DSPeer *p in peers) {
@@ -439,7 +503,7 @@
 }
 
 -(DSPeer*)peerForLocation:(UInt128)IPAddress port:(uint16_t)port {
-    for (DSPeer * peer in self.peers) {
+    for (DSPeer * peer in self.masternodePeers) {
         if (uint128_eq(peer.address, IPAddress) && peer.port == port) {
             return peer;
         }
@@ -555,7 +619,7 @@
 }
 
 
--(NSArray*)registeredDevnetPeers {
+-(NSArray*)registeredMasternodeDevnetPeers {
     NSError * error = nil;
     NSMutableArray * registeredPeersArray = [getKeychainArray(self.chain.registeredPeersKey, &error) mutableCopy];
     if (error) return @[];
@@ -564,7 +628,27 @@
         UInt128 ipAddress = *(UInt128*)((NSData*)peerDictionary[@"address"]).bytes;
         uint16_t port = [peerDictionary[@"port"] unsignedShortValue];
         NSTimeInterval now = [NSDate timeIntervalSince1970];
-        [registeredPeers addObject:[[DSPeer alloc] initWithAddress:ipAddress port:port onChain:self.chain timestamp:now - (7*24*60*60 + arc4random_uniform(7*24*60*60)) services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
+        BOOL isMasternode = [self.masternodeManager hasMasternodeAtLocation:ipAddress port:port];
+        if (isMasternode) {
+            [registeredPeers addObject:[[DSPeer alloc] initWithAddress:ipAddress port:port type:isMasternode?DSPeerType_MasterNode:DSPeerType_FullNode onChain:self.chain timestamp:now - (WEEK_TIME_INTERVAL + arc4random_uniform(WEEK_TIME_INTERVAL)) services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
+        }
+    }
+    return [registeredPeers copy];
+}
+
+-(NSArray*)registeredNormalDevnetPeers {
+    NSError * error = nil;
+    NSMutableArray * registeredPeersArray = [getKeychainArray(self.chain.registeredPeersKey, &error) mutableCopy];
+    if (error) return @[];
+    NSMutableArray * registeredPeers = [NSMutableArray array];
+    for (NSDictionary * peerDictionary in registeredPeersArray) {
+        UInt128 ipAddress = *(UInt128*)((NSData*)peerDictionary[@"address"]).bytes;
+        uint16_t port = [peerDictionary[@"port"] unsignedShortValue];
+        NSTimeInterval now = [NSDate timeIntervalSince1970];
+        BOOL isMasternode = [self.masternodeManager hasMasternodeAtLocation:ipAddress port:port];
+        if (!isMasternode) {
+            [registeredPeers addObject:[[DSPeer alloc] initWithAddress:ipAddress port:port type:isMasternode?DSPeerType_MasterNode:DSPeerType_FullNode onChain:self.chain timestamp:now - (WEEK_TIME_INTERVAL + arc4random_uniform(WEEK_TIME_INTERVAL)) services:SERVICES_NODE_NETWORK | SERVICES_NODE_BLOOM]];
+        }
     }
     return [registeredPeers copy];
 }
@@ -619,7 +703,7 @@
         self.maxConnectCount = (self.fixedPeer) ? 1 : PEER_MAX_CONNECTIONS;
         if (self.connectedPeers.count >= self.maxConnectCount) return; // already connected to maxConnectCount peers
         
-        NSMutableOrderedSet *peers = [NSMutableOrderedSet orderedSetWithOrderedSet:self.peers];
+        NSMutableOrderedSet *peers = [NSMutableOrderedSet orderedSetWithOrderedSet:self.masternodePeers];
         
         if (peers.count > 100) [peers removeObjectsInRange:NSMakeRange(100, peers.count - 100)];
         
@@ -673,7 +757,7 @@
     [self.downloadPeer disconnect];
     dispatch_async(self.chainPeerManagerQueue, ^{
         if (self.downloadPeer) { // disconnect the current download peer so a new random one will be selected
-            [self.peers removeObject:self.downloadPeer];
+            [self.masternodePeers removeObject:self.downloadPeer];
         }
         if (completion) completion(TRUE);
     });
@@ -836,7 +920,7 @@
         [self peerMisbehaving:peer errorMessage:error.localizedDescription]; // if it's protocol error other than timeout, the peer isn't following the rules
     }
     else if (error) { // timeout or some non-protocol related network error
-        [self.peers removeObject:peer];
+        [self.masternodePeers removeObject:peer];
         self.connectFailures++;
     }
     
@@ -855,7 +939,7 @@
         // clear out stored peers so we get a fresh list from DNS on next connect attempt
         [self.mutableMisbehavingPeers removeAllObjects];
         [DSPeerEntity deleteAllObjects];
-        _peers = nil;
+        _masternodePeers = nil;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:DSTransactionManagerSyncFailedNotification
@@ -865,7 +949,7 @@
     else if (self.connectFailures < MAX_CONNECT_FAILURES) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if ((self.desiredState == DSPeerManagerDesiredState_Connected) && (self.taskId != UIBackgroundTaskInvalid ||
-                [UIApplication sharedApplication].applicationState != UIApplicationStateBackground)) {
+                                                                               [UIApplication sharedApplication].applicationState != UIApplicationStateBackground)) {
                 [self connect]; // try connecting to another peer
             }
         });
@@ -882,18 +966,34 @@
 - (void)peer:(DSPeer *)peer relayedPeers:(NSArray *)peers
 {
     DSDLog(@"%@:%d relayed %d peer(s)", peer.host, peer.port, (int)peers.count);
-    [self.peers addObjectsFromArray:peers];
-    [self.peers minusSet:self.misbehavingPeers];
-    [self sortPeers];
+    BOOL needsMasternodeSort = FALSE;
+    BOOL needsNormalSort = FALSE;
+    for (DSPeer * peer in peers) {
+        if (![self.misbehavingPeers containsObject:peer]) {
+            if (peer.type == DSPeerType_MasterNode) {
+                [self.masternodePeers addObject:peer];
+                needsMasternodeSort = TRUE;
+            } else {
+                [self.normalPeers addObject:peer];
+                needsNormalSort = TRUE;
+            }
+        }
+    }
+    if (needsMasternodeSort) {
+        [self sortMasternodePeers];
+    }
     
-    // limit total to 2500 peers
-    if (self.peers.count > 2500) [self.peers removeObjectsInRange:NSMakeRange(2500, self.peers.count - 2500)];
-    
-    NSTimeInterval now = [NSDate timeIntervalSince1970];
-    
-    // remove peers more than 3 hours old, or until there are only 1000 left
-    while (self.peers.count > 1000 && ((DSPeer *)self.peers.lastObject).timestamp + 3*60*60 < now) {
-        [self.peers removeObject:self.peers.lastObject];
+    if (needsNormalSort) {
+        [self sortNormalPeers];
+        // limit normal peers to 500 peers
+        if (self.normalPeers.count > 1000) [self.normalPeers removeObjectsInRange:NSMakeRange(1000, self.normalPeers.count - 1000)];
+        
+        NSTimeInterval now = [NSDate timeIntervalSince1970];
+        
+        // remove peers more than 3 hours old, or until there are only 1000 left
+        while (self.normalPeers.count > 500 && ((DSPeer *)self.normalPeers.lastObject).timestamp + 3*HOUR_TIME_INTERVAL < now) {
+            [self.normalPeers removeObject:self.normalPeers.lastObject];
+        }
     }
     
     if (peers.count > 1 && peers.count < 1000) [self savePeers]; // peer relaying is complete when we receive <1000

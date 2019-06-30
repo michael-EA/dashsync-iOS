@@ -13,6 +13,7 @@
 #import "NSData+Bitcoin.h"
 #import "NSMutableData+Dash.h"
 #import "DSQuorumEntry.h"
+#import "DSPeer.h"
 #import "DSMasternodeListEntity+CoreDataClass.h"
 #import "NSManagedObject+Sugar.h"
 
@@ -151,6 +152,14 @@ inline static int ceil_log2(int x)
         self.masternodeMerkleRoot = [self calculateMasternodeMerkleRoot];
     }
     return _masternodeMerkleRoot;
+}
+
+-(NSArray<DSPeer*>*)allPeers {
+    NSMutableArray * peers = [NSMutableArray array];
+    for (DSSimplifiedMasternodeEntry * masternode in self.simplifiedMasternodeEntries) {
+        [peers addObject:[DSPeer peerWithMasternode:masternode]];
+    }
+    return peers;
 }
 
 -(NSArray*)providerTxOrderedHashes {

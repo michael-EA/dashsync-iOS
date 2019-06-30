@@ -23,7 +23,7 @@
 //  THE SOFTWARE.
 
 #import "DSPeerEntity+CoreDataClass.h"
-#import "DSPeer.h"
+#import "DSPeer+Protected.h"
 #import "DSChain.h"
 #import "DSChainEntity+CoreDataClass.h"
 #import "NSData+Bitcoin.h"
@@ -60,7 +60,8 @@
     [self.managedObjectContext performBlockAndWait:^{
         UInt128 address = { .u32 = { 0, 0, CFSwapInt32HostToBig(0xffff), CFSwapInt32HostToBig(self.address) } };
         DSChain * chain = [self.chain chain];
-        peer = [[DSPeer alloc] initWithAddress:address port:self.port onChain:chain timestamp:self.timestamp services:self.services];
+        DSPeerType peerType = self.masternode?DSPeerType_MasterNode:DSPeerType_FullNode;
+        peer = [[DSPeer alloc] initWithAddress:address port:self.port type:peerType onChain:chain timestamp:self.timestamp services:self.services];
         peer.misbehaving = self.misbehavin;
         peer.priority = self.priority;
         peer.lowPreferenceTill = self.lowPreferenceTill;

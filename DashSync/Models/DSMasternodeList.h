@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class DSSimplifiedMasternodeEntry,DSChain,DSQuorumEntry;
+@class DSSimplifiedMasternodeEntry,DSChain,DSQuorumEntry,DSPeer;
 
 @interface DSMasternodeList : NSObject
 
@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readonly) DSChain * chain;
 @property (nonatomic,readonly) NSArray * reversedRegistrationTransactionHashes;
 @property (nonatomic,readonly) NSDictionary<NSData*,DSSimplifiedMasternodeEntry*> *simplifiedMasternodeListDictionaryByReversedRegistrationTransactionHash;
+@property (nonatomic,readonly) NSArray <DSPeer*> * allPeers;
 
 +(instancetype)masternodeListWithSimplifiedMasternodeEntries:(NSArray<DSSimplifiedMasternodeEntry*>*)simplifiedMasternodeEntries quorumEntries:(NSArray<DSQuorumEntry*>*)quorumEntries atBlockHash:(UInt256)blockHash atBlockHeight:(uint32_t)blockHeight onChain:(DSChain*)chain;
 

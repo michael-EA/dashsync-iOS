@@ -43,6 +43,7 @@
 #import "DSOptionsManager.h"
 #import "DSTransactionFactory.h"
 #import "DSTransactionHashEntity+CoreDataClass.h"
+#import "DSSimplifiedMasternodeEntryEntity+CoreDataClass.h"
 #import "NSManagedObject+Sugar.h"
 #import "DSChainEntity+CoreDataClass.h"
 #import "NSDate+Utils.h"
@@ -50,7 +51,9 @@
 #import "DSChainManager.h"
 #import "DSTransactionLockVote.h"
 #import "DSInstantSendTransactionLock.h"
+#import "DSSimplifiedMasternodeEntry.h"
 #import "DSSporkManager.h"
+#import "DSMasternodeManager.h"
 
 #define PEER_LOGGING 1
 #define LOG_ALL_HEADERS_IN_ACCEPT_HEADERS 0
@@ -117,7 +120,7 @@
 
 + (instancetype)peerWithAddress:(UInt128)address andPort:(uint16_t)port onChain:(DSChain*)chain
 {
-    return [[self alloc] initWithAddress:address andPort:port onChain:chain];
+    return [[self alloc] initWithAddress:address andPort:port type:DSPeerType_Unknown onChain:chain];
 }
 
 + (instancetype)peerWithHost:(NSString *)host onChain:(DSChain*)chain
@@ -126,10 +129,10 @@
 }
 
 + (instancetype)peerWithMasternode:(DSSimplifiedMasternodeEntry*)masternode {
-    return [[self alloc] initWithAddress:address andPort:port onChain:chain];
+    return [[self alloc] initWithAddress:masternode.address andPort:masternode.port type:DSPeerType_MasterNode onChain:masternode.chain];
 }
 
-- (instancetype)initWithAddress:(UInt128)address andPort:(uint16_t)port onChain:(DSChain*)chain
+- (instancetype)initWithAddress:(UInt128)address andPort:(uint16_t)port type:(DSPeerType)peerType onChain:(DSChain*)chain
 {
     if (! (self = [super init])) return nil;
     
@@ -137,6 +140,7 @@
     _port = (port == 0) ? [chain standardPort] : port;
     self.chain = chain;
     _outputBufferSemaphore = dispatch_semaphore_create(1);
+    _type = peerType;
     return self;
 }
 
@@ -162,10 +166,10 @@
     return self;
 }
 
-- (instancetype)initWithAddress:(UInt128)address port:(uint16_t)port onChain:(DSChain*)chain timestamp:(NSTimeInterval)timestamp
+- (instancetype)initWithAddress:(UInt128)address port:(uint16_t)port type:(DSPeerType)peerType onChain:(DSChain*)chain timestamp:(NSTimeInterval)timestamp
                        services:(uint64_t)services
 {
-    if (! (self = [self initWithAddress:address andPort:port onChain:chain])) return nil;
+    if (! (self = [self initWithAddress:address andPort:port type:peerType onChain:chain])) return nil;
     
     _timestamp = timestamp;
     _services = services;
@@ -1042,10 +1046,12 @@
         if (address.u64[0] != 0 || address.u32[2] != CFSwapInt32HostToBig(0xffff)) continue; // ignore IPv6 for now
         
         // if address time is more than 10 min in the future or older than reference date, set to 5 days old
-        if (timestamp > now + 10*60 || timestamp < 0) timestamp = now - 5*24*60*60;
+        if (timestamp > now + 10*60 || timestamp < 0) timestamp = now - 5*DAY_TIME_INTERVAL;
+        
+        BOOL isMasternode = [self.chain.chainManager.masternodeManager hasMasternodeAtLocation:address port:port];
         
         // subtract two hours and add it to the list
-        [peers addObject:[[DSPeer alloc] initWithAddress:address port:port onChain:self.chain timestamp:timestamp - 2*60*60
+        [peers addObject:[[DSPeer alloc] initWithAddress:address port:port type:isMasternode?DSPeerType_MasterNode:DSPeerType_FullNode onChain:self.chain timestamp:timestamp - 2*HOUR_TIME_INTERVAL
                                                 services:services]];
     }
     
@@ -1965,6 +1971,11 @@
 
 -(void)save {
     [[DSPeerEntity context] performBlock:^{
+        DSSimplifiedMasternodeEntryEntity * masternodeEntryEntity = nil;
+        if (self.isMasternode) {
+            masternodeEntryEntity = [DSSimplifiedMasternodeEntryEntity anyObjectMatching:@"address == %@ && port == %@", @(CFSwapInt32BigToHost(self.address.u32[3])),@(self.port)];
+        }
+        
         NSArray * peerEntities = [DSPeerEntity objectsMatching:@"address == %@ && port == %@", @(CFSwapInt32BigToHost(self.address.u32[3])),@(self.port)];
         if ([peerEntities count]) {
             DSPeerEntity * e = [peerEntities firstObject];
@@ -1977,10 +1988,13 @@
                 e.lowPreferenceTill = self.lowPreferenceTill;
                 e.lastRequestedMasternodeList = self.lastRequestedMasternodeList;
                 e.lastRequestedGovernanceSync = self.lastRequestedGovernanceSync;
+                e.masternode = masternodeEntryEntity;
             }
         } else {
             @autoreleasepool {
-                [[DSPeerEntity managedObject] setAttributesFromPeer:self]; // add new peers
+                DSPeerEntity * e = [DSPeerEntity managedObject];
+                [e setAttributesFromPeer:self]; // add new peers
+                e.masternode = masternodeEntryEntity;
             }
         }
     }];

@@ -290,10 +290,6 @@ typedef NS_ENUM(NSUInteger, DSPeerType) {
 + (instancetype)peerWithHost:(NSString *)host onChain:(DSChain*)chain;
 + (instancetype)peerWithMasternode:(DSSimplifiedMasternodeEntry*)masternode;
 
-- (instancetype)initWithAddress:(UInt128)address andPort:(uint16_t)port onChain:(DSChain*)chain;
-- (instancetype)initWithAddress:(UInt128)address port:(uint16_t)port onChain:(DSChain*)chain timestamp:(NSTimeInterval)timestamp
-services:(uint64_t)services;
-- (instancetype)initWithHost:(NSString *)host onChain:(DSChain*)chain;
 - (void)setChainDelegate:(id<DSPeerChainDelegate>)chainDelegate peerDelegate:(id<DSPeerDelegate>)peerDelegate transactionDelegate:(id<DSPeerTransactionDelegate>)transactionDelegate governanceDelegate:(id<DSPeerGovernanceDelegate>)governanceDelegate sporkDelegate:(id<DSPeerSporkDelegate>)sporkDelegate masternodeDelegate:(id<DSPeerMasternodeDelegate>)masternodeDelegate queue:(dispatch_queue_t)delegateQueue;
 - (void)connect;
 - (void)disconnect;
