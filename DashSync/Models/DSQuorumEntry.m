@@ -119,6 +119,7 @@
     self.quorumHash = quorumHash;
     self.quorumPublicKey = quorumPublicKey;
     self.quorumEntryHash = commitmentHash;
+    DSDLog(@"Quorum %u is %u verified at %d",self.llmqType,verified,[chain heightForBlockHash:quorumHash]);
     self.verified = verified;
     self.chain = chain;
     
@@ -190,7 +191,10 @@
 
 -(BOOL)validateWithMasternodeList:(DSMasternodeList*)masternodeList {
     
-    if (!masternodeList) return NO;
+    if (!masternodeList) {
+        DSDLog(@"Trying to validate a quorum without a masternode list");
+        return NO;
+    }
     
     //The quorumHash must match the current DKG session
     //todo
@@ -221,9 +225,10 @@
     NSArray<DSSimplifiedMasternodeEntry*> * masternodes = [masternodeList masternodesForQuorumModifier:self.llmqQuorumHash quorumCount:[DSQuorumEntry quorumSizeForType:self.llmqType]];
     NSMutableArray * publicKeyArray = [NSMutableArray array];
     uint32_t i = 0;
+    DSMerkleBlock * block = [self.chain blockForBlockHash:masternodeList.blockHash];
     for (DSSimplifiedMasternodeEntry * masternodeEntry in masternodes) {
         if ([self.signersBitset bitIsTrueAtIndex:i]) {
-            DSBLSKey * masternodePublicKey = [DSBLSKey blsKeyWithPublicKey:[masternodeEntry operatorPublicKeyAtBlockHash:masternodeList.blockHash] onChain:self.chain];
+            DSBLSKey * masternodePublicKey = [DSBLSKey blsKeyWithPublicKey:[masternodeEntry operatorPublicKeyAtBlock:block] onChain:self.chain];
             [publicKeyArray addObject:masternodePublicKey];
         }
         i++;
