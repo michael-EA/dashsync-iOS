@@ -507,11 +507,14 @@
             if (!signedCompletion(tx,nil,NO)) return; //give the option to stop the process to clients
             
             __block BOOL sent = NO;
+            __block BOOL showedError = NO;
             
             [self publishTransaction:tx completion:^(NSError *publishingError) {
                 if (publishingError) {
-                    if (!sent) {
+                    if (!sent && !showedError) {
+                        showedError = YES;
                         publishedCompletion(tx,publishingError,sent);
+                        errorNotificationBlock(DSLocalizedString(@"Connection Error",nil),DSLocalizedString(@"Please check you are connected to the internet", nil),YES);
                     }
                 }
                 else if (!sent) {
