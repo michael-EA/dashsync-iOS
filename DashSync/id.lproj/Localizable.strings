@@ -60,6 +60,9 @@
 "Connect timeout" = "Connect timeout";
 
 /* No comment provided by engineer. */
+"Connection Error" = "Connection Error";
+
+/* No comment provided by engineer. */
 "Couldn't make payment" = "Couldn't make payment";
 
 /* No comment provided by engineer. */
@@ -76,6 +79,9 @@
 
 /* No comment provided by engineer. */
 "Double spend" = "Double spend";
+
+/* No comment provided by engineer. */
+"Down" = "Down";
 
 /* No comment provided by engineer. */
 "Enter old PIN" = "Enter old PIN";
@@ -159,6 +165,9 @@
 "PIN for %@" = "PIN for %@";
 
 /* No comment provided by engineer. */
+"Please check you are connected to the internet" = "Please check you are connected to the internet";
+
+/* No comment provided by engineer. */
 "Recovery phrase" = "Recovery phrase";
 
 /* No comment provided by engineer. */
@@ -235,6 +244,9 @@
 
 /* No comment provided by engineer. */
 "Untrusted certificate" = "Untrusted certificate";
+
+/* No comment provided by engineer. */
+"Up" = "Up";
 
 /* Updating Price */
 "Updating Price" = "Memperbarui Harga";
