@@ -37,6 +37,7 @@
 		2A9FFEC622328D0E00956D5F /* DSContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A9FFEC522328D0E00956D5F /* DSContactsViewController.m */; };
 		2A9FFEC92232920900956D5F /* DSContactsTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A9FFEC82232920900956D5F /* DSContactsTabBarViewController.m */; };
 		2A9FFF012233B90000956D5F /* DSContactsNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A9FFF002233B90000956D5F /* DSContactsNavigationController.m */; };
+		2AA0FD2924A0EAF000345AAA /* DSCoreDataStackTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AA0FD2824A0EAF000345AAA /* DSCoreDataStackTests.m */; };
 		2AA2C5EB20E37B74007768B1 /* DSGovernanceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AA2C5EA20E37B74007768B1 /* DSGovernanceTests.m */; };
 		2AE125EE223B9B0600379C6F /* DSOutgoingContactsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE125ED223B9B0600379C6F /* DSOutgoingContactsTableViewController.m */; };
 		2AE125F4223BD14B00379C6F /* DSIncomingContactsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AE125F3223BD14B00379C6F /* DSIncomingContactsTableViewController.m */; };
@@ -337,6 +338,7 @@
 		2A9FFEC82232920900956D5F /* DSContactsTabBarViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSContactsTabBarViewController.m; sourceTree = "<group>"; };
 		2A9FFEFF2233B90000956D5F /* DSContactsNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSContactsNavigationController.h; sourceTree = "<group>"; };
 		2A9FFF002233B90000956D5F /* DSContactsNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSContactsNavigationController.m; sourceTree = "<group>"; };
+		2AA0FD2824A0EAF000345AAA /* DSCoreDataStackTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSCoreDataStackTests.m; sourceTree = "<group>"; };
 		2AA2C5EA20E37B74007768B1 /* DSGovernanceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSGovernanceTests.m; sourceTree = "<group>"; };
 		2AE125EC223B9B0600379C6F /* DSOutgoingContactsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSOutgoingContactsTableViewController.h; sourceTree = "<group>"; };
 		2AE125ED223B9B0600379C6F /* DSOutgoingContactsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSOutgoingContactsTableViewController.m; sourceTree = "<group>"; };
@@ -949,6 +951,7 @@
 				FBC9248C2414EF0600005D0D /* DSAttackTests.m */,
 				FBE07DD024673AC200A1079C /* DSSyncTests.m */,
 				FBE07DD22467440200A1079C /* DSChainedSigningTests.m */,
+				2AA0FD2824A0EAF000345AAA /* DSCoreDataStackTests.m */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -1867,6 +1870,7 @@
 				FBE07DD32467440200A1079C /* DSChainedSigningTests.m in Sources */,
 				2A7DCCAC20D9474F0097049F /* DSBIP39Tests.m in Sources */,
 				2A1ECBDF20D8F7DB000177D8 /* DSTransactionTests.m in Sources */,
+				2AA0FD2924A0EAF000345AAA /* DSCoreDataStackTests.m in Sources */,
 				2A1ECBD920D8B327000177D8 /* DSHashTests.m in Sources */,
 				2A7DCCB420DA198F0097049F /* DSPaymentProtocolTests.m in Sources */,
 				6003F5BC195388D20070C39A /* Tests.m in Sources */,
