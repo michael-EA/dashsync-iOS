@@ -53,7 +53,16 @@
     
     NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     
+    NSURL * storeURL = [self.class storeURL];
+    
     self.persistentContainer = [[NSPersistentContainer alloc] initWithName:@"DashSync" managedObjectModel:model];
+    
+    NSPersistentStoreDescription *description = [[NSPersistentStoreDescription alloc] initWithURL:storeURL];
+    description.shouldMigrateStoreAutomatically = YES;
+    description.shouldInferMappingModelAutomatically = YES;
+    self.persistentContainer.persistentStoreDescriptions = @[description];
+    
+    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     
     [self.persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *description, NSError *error) {
         if (error != nil) {
@@ -72,10 +81,18 @@
                     DSDLog(@"Failed to load Core Data stack again: %@", error);
                     abort();
                 }
+                else {
+                    dispatch_semaphore_signal(sem);
+                }
             }];
 #endif
         }
+        else {
+            dispatch_semaphore_signal(sem);
+        }
     }];
+    
+    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
     
     return self;
 }
