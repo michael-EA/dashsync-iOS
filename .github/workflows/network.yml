@@ -1,6 +1,9 @@
 name: Network
 
 on:
+	push:
+    branches:
+      - fix/fix-macos-universal-build
   pull_request:
     branches:
       - master
