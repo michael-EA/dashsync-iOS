@@ -87,7 +87,7 @@ prepare()
         popd # contrib/relic
     }
 
-    #download_bls # for debug only
+    download_bls
     download_gmp
     download_cmake_toolchain
 
@@ -309,14 +309,6 @@ build_all()
     SUFFIX=$1
     BUILD_IN=$2
 
-    # we don't need xcframework for macos
-    NEED_XCFRAMEWORK=1
-    XCFRAMEWORK_ARGS=""
-    if [[ $SUFFIX = "macos" ]]
-    then
-        NEED_XCFRAMEWORK=0
-    fi
-
     mkdir "artefacts/include"
 
     IFS='|' read -ra BUILD_PAIRS <<< "$BUILD_IN"
@@ -362,66 +354,55 @@ build_all()
         cp -rf contrib/relic/relic-macosx-arm64/include/*.h artefacts/include
         rm -rf artefacts/include/test-utils.hpp
 
-        rm -rf "artefacts/${PLATFORM}"
-        mkdir "artefacts/${PLATFORM}"
-
+        # Do lipo if we need https://developer.apple.com/forums/thread/666335?answerId=645963022#645963022
         if [[ $NEED_LIPO -gt 0 ]]
         then
+            rm -rf "artefacts/${PLATFORM}-fat"
+            mkdir "artefacts/${PLATFORM}-fat"
+
             # lipo gmp
-            xcrun lipo $GMP_LIPOARGS -create -output "artefacts/${PLATFORM}/libgmp.a"
+            xcrun lipo $GMP_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/libgmp.a"
 
             # lipo relic
-            xcrun lipo $RELIC_LIPOARGS -create -output "artefacts/${PLATFORM}/librelic.a"
+            xcrun lipo $RELIC_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/librelic.a"
             
             # lipo bls
-            xcrun lipo $BLS_LIPOARGS -create -output "artefacts/${PLATFORM}/libbls.a" 
-        else
-            mv "artefacts/${PLATFORM}-${ARCH}/libgmp.a" "artefacts/${PLATFORM}/libgmp.a"
-            mv "artefacts/${PLATFORM}-${ARCH}/librelic.a" "artefacts/${PLATFORM}/librelic.a"
-            mv "artefacts/${PLATFORM}-${ARCH}/libbls.a" "artefacts/${PLATFORM}/libbls.a" 
+            xcrun lipo $BLS_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/libbls.a" 
+
+            clean up
+            for i in "${!ARCHS[@]}"
+            do
+                local SINGLEARCH=${ARCHS[i]}
+
+                rm -rf "artefacts/${PLATFORM}-${SINGLEARCH}"
+            done
         fi
+    done
+}
 
-        # clean up
-        for i in "${!ARCHS[@]}"
-        do
-            local SINGLEARCH=${ARCHS[i]}
+function make_xcframework()
+{
+    pushd artefacts
 
-            rm -rf "artefacts/${PLATFORM}-${SINGLEARCH}"
-        done
+    XCFRAMEWORK_ARGS=""
+
+    for dir in */; do
+        if [ -d "$dir" ]; then
+            if [[ "$dir" != "include/" ]]; then
+                libtool -static -o "$dir/libbls_combined.a" "$dir/libgmp.a" "$dir/librelic.a" "$dir/libbls.a"
+
+                XCFRAMEWORK_ARGS+="-library $dir/libbls_combined.a -headers include "
+            fi
+        fi
     done
 
-    # Create xcframework if needed 
-    if [[ $NEED_XCFRAMEWORK -gt 0 ]]
-    then
-
-        IFS='|' read -ra BUILD_PAIRS <<< "$BUILD_IN"
-        for BUILD_PAIR in "${BUILD_PAIRS[@]}"
-        do
-            IFS=';' read -ra PARSED_PAIR <<< "$BUILD_PAIR"
-            PLATFORM=${PARSED_PAIR[0]}
-            
-            # Combine gmp, relic and bls into one static file
-            libtool -static -o "artefacts/${PLATFORM}/libbls_combined.a" "artefacts/${PLATFORM}/libgmp.a" "artefacts/${PLATFORM}/librelic.a" "artefacts/${PLATFORM}/libbls.a"
-            
-            XCFRAMEWORK_ARGS+="-library artefacts/${PLATFORM}/libbls_combined.a -headers artefacts/include   "
-        done
-
-        xcodebuild -create-xcframework $XCFRAMEWORK_ARGS -output "artefacts/${SUFFIX}/libbls.xcframework"
-
-        # clean up
-        IFS='|' read -ra BUILD_PAIRS <<< "$BUILD_IN"
-        for BUILD_PAIR in "${BUILD_PAIRS[@]}"
-        do
-            IFS=';' read -ra PARSED_PAIR <<< "$BUILD_PAIR"
-            PLATFORM=${PARSED_PAIR[0]}
-            rm -rf "artefacts/${PLATFORM}"
-        done
-    fi
+    xcodebuild -create-xcframework $XCFRAMEWORK_ARGS -output "libbls.xcframework"
 }
 
 prepare
 
 build_all "macos" "${MACOS};x86_64+arm64"
-build_all "watchos" "${WATCHOS};armv7k|${WATCHOS};arm64_32"
+build_all "watchos" "${WATCHOS};arm64_32|${WATCHSIMULATOR};x86_64" # compile only for arm64_32 because it includes armv7k, we can adjust cmake toolchain and compile it separately
 build_all "tvos" "${TVOS};arm64|${TVSIMULATOR};x86_64"
 build_all "ios" "${IPHONEOS};arm64|${IPHONESIMULATOR};arm64+x86_64"
+make_xcframework
