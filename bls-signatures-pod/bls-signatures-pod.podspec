@@ -32,6 +32,8 @@ Implements BLS signatures with aggregation as in Boneh, Drijvers, Neven 2018, us
   # Fetch submodules _after_ checking out to the needed commit in prepare command.
 
   s.prepare_command = <<-CMD
+#!/bin/sh
+
 set -x
 
 git submodule update --init
@@ -80,13 +82,6 @@ version_min_flag()
 
 prepare()
 {
-    download_bls()
-    {
-        git clone https://github.com/Chia-Network/bls-signatures.git
-        pushd bls-signatures
-        git checkout f114ffeff4653e5522d1b3e28687fa9f384a557f
-    }
-
     download_gmp()
     {
         GMP_VERSION="6.2.1"
@@ -119,7 +114,6 @@ prepare()
         popd # contrib/relic
     }
 
-    #download_bls # for debug only
     download_gmp
     download_cmake_toolchain
 
@@ -341,8 +335,6 @@ build_all()
     SUFFIX=$1
     BUILD_IN=$2
 
-    mkdir "artefacts/include"
-
     IFS='|' read -ra BUILD_PAIRS <<< "$BUILD_IN"
     for BUILD_PAIR in "${BUILD_PAIRS[@]}"
     do
@@ -377,15 +369,6 @@ build_all()
             NEED_LIPO=i
         done
 
-        # Copy all headers we will need
-        cp -rf src/*.hpp artefacts/include
-        cp -rf gmp/include/gmp.h artefacts/include
-        cp -rf contrib/relic/include/*.h artefacts/include
-        cp -rf contrib/relic/include/low/*.h artefacts/include
-        cp -rf contrib/relic/relic-iphoneos-arm64/include/*.h artefacts/include
-        cp -rf contrib/relic/relic-macosx-arm64/include/*.h artefacts/include
-        rm -rf artefacts/include/test-utils.hpp
-
         # Do lipo if we need https://developer.apple.com/forums/thread/666335?answerId=645963022#645963022
         if [[ $NEED_LIPO -gt 0 ]]
         then
@@ -401,7 +384,7 @@ build_all()
             # lipo bls
             xcrun lipo $BLS_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/libbls.a" 
 
-            clean up
+            # clean up
             for i in "${!ARCHS[@]}"
             do
                 local SINGLEARCH=${ARCHS[i]}
@@ -410,6 +393,31 @@ build_all()
             done
         fi
     done
+}
+
+function make_relic_headers_universal()
+{
+    RELIC_TARGET_DIR=relic-iphoneos-arm64
+
+    perl -p -e 's/#define WSIZE.*/#ifdef __LP64__\n#define WSIZE 64\n#else\n#define WSIZE 32\n#endif/' \
+    "contrib/relic/${RELIC_TARGET_DIR}/include/relic_conf.h" \
+    > "contrib/relic/${RELIC_TARGET_DIR}/include/relic_conf.h.new"
+
+    rm "contrib/relic/${RELIC_TARGET_DIR}/include/relic_conf.h"
+    mv "contrib/relic/${RELIC_TARGET_DIR}/include/relic_conf.h.new" "contrib/relic/${RELIC_TARGET_DIR}/include/relic_conf.h"   
+}
+
+function copy_headers()
+{
+    mkdir artefacts/include
+
+    # Copy all headers we will need
+    cp -rf src/*.hpp artefacts/include
+    cp -rf gmp/include/gmp.h artefacts/include
+    cp -rf contrib/relic/include/*.h artefacts/include
+    cp -rf contrib/relic/include/low/*.h artefacts/include
+    cp -rf contrib/relic/relic-iphoneos-arm64/include/*.h artefacts/include
+    rm -rf artefacts/include/test-utils.hpp
 }
 
 function make_xcframework()
@@ -437,6 +445,8 @@ build_all "macos" "${MACOS};x86_64+arm64"
 build_all "watchos" "${WATCHOS};arm64_32|${WATCHSIMULATOR};x86_64" # compile only for arm64_32 because it includes armv7k, we can adjust cmake toolchain and compile it separately
 build_all "tvos" "${TVOS};arm64|${TVSIMULATOR};x86_64"
 build_all "ios" "${IPHONEOS};arm64|${IPHONESIMULATOR};arm64+x86_64"
+make_relic_headers_universal
+copy_headers
 make_xcframework
   CMD
 
