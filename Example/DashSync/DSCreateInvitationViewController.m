@@ -49,7 +49,7 @@
 
     self.indexLabel.text = [NSString stringWithFormat:@"%d", [self.wallet unusedBlockchainInvitationIndex]];
 
-    self.topupAmountLabel.text = [NSString stringWithFormat:@"%d", 1000000]; //0.01 Dash
+    self.topupAmountLabel.text = [NSString stringWithFormat:@"%d", 1000000]; // 0.01 Dash
 }
 
 - (void)didReceiveMemoryWarning {
@@ -82,7 +82,7 @@
 
 /*
  #pragma mark - Navigation
- 
+
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
  // Get the new view controller using [segue destinationViewController].

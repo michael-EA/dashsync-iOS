@@ -17,7 +17,7 @@ extern NSUInteger mdc_levenshteinDistance(NSString *left, NSString *right);
 /**
  Performs the following sanity checks on the arguments passed to a
  distance function like mdc_levenshteinDistance:
- 
+
  1. Raises an exception if either left or right is nil.
  2. If right is lexicographically larger than left, swaps the two.
 

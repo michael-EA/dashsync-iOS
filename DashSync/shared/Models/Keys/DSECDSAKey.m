@@ -79,9 +79,9 @@ void CKDpriv(UInt256 *k, UInt256 *c, uint32_t i) {
         DSSecp256k1PointGen((DSECPoint *)buf, k);
 
     *(uint32_t *)&buf[sizeof(DSECPoint)] = CFSwapInt32HostToBig(i);
-    //DSLogPrivate(@"c is %@, buf is %@",uint256_hex(*c),[NSData dataWithBytes:buf length:sizeof(DSECPoint) + sizeof(i)].hexString);
+    // DSLogPrivate(@"c is %@, buf is %@",uint256_hex(*c),[NSData dataWithBytes:buf length:sizeof(DSECPoint) + sizeof(i)].hexString);
     HMAC(&I, SHA512, sizeof(UInt512), c, sizeof(*c), buf, sizeof(buf)); // I = HMAC-SHA512(c, k|P(k) || i)
-    //DSLogPrivate(@"c now is %@, I now is %@",uint256_hex(*c),uint512_hex(I));
+    // DSLogPrivate(@"c now is %@, I now is %@",uint256_hex(*c),uint512_hex(I));
     DSSecp256k1ModAdd(k, (UInt256 *)&I);     // k = IL + k (mod n)
     *c = *(UInt256 *)&I.u8[sizeof(UInt256)]; // c = IR
 
@@ -103,7 +103,7 @@ void CKDpriv256(UInt256 *k, UInt256 *c, UInt256 i, BOOL hardened) {
         DSSecp256k1PointGen((DSECPoint *)buf, k);
 
     if (iIs31Bits) {
-        //we are deriving a 31 bit integer
+        // we are deriving a 31 bit integer
         smallI = i.u32[0];
         if (hardened) smallI |= BIP32_HARD;
         smallI = CFSwapInt32HostToBig(smallI);
@@ -433,7 +433,7 @@ int DSSecp256k1PointMul(DSECPoint *p, const UInt256 *i) {
         return nil;
     }
 
-    //uint8_t * seckey = NULL;
+    // uint8_t * seckey = NULL;
 
     UInt256 key;
 
@@ -621,7 +621,7 @@ int DSSecp256k1PointMul(DSECPoint *p, const UInt256 *i) {
     NSParameterAssert(sig);
 
     if (sig.length > 65) {
-        //not compact
+        // not compact
         secp256k1_pubkey pk;
         secp256k1_ecdsa_signature s;
         BOOL r = NO;
@@ -634,7 +634,7 @@ int DSSecp256k1PointMul(DSECPoint *p, const UInt256 *i) {
 
         return r;
     } else {
-        //compact
+        // compact
         DSECDSAKey *key = [DSECDSAKey keyRecoveredFromCompactSig:sig andMessageDigest:md];
         return [key.publicKeyData isEqualToData:self.publicKeyData];
     }

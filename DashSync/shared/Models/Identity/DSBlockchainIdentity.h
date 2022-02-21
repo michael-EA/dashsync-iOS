@@ -39,10 +39,10 @@ typedef NS_ENUM(NSUInteger, DSBlockchainIdentityMonitorOptions)
 
 typedef NS_ENUM(NSUInteger, DSBlockchainIdentityQueryStep)
 {
-    DSBlockchainIdentityQueryStep_None = DSBlockchainIdentityRegistrationStep_None,         //0
-    DSBlockchainIdentityQueryStep_Identity = DSBlockchainIdentityRegistrationStep_Identity, //16
-    DSBlockchainIdentityQueryStep_Username = DSBlockchainIdentityRegistrationStep_Username, //32
-    DSBlockchainIdentityQueryStep_Profile = DSBlockchainIdentityRegistrationStep_Profile,   //64
+    DSBlockchainIdentityQueryStep_None = DSBlockchainIdentityRegistrationStep_None,         // 0
+    DSBlockchainIdentityQueryStep_Identity = DSBlockchainIdentityRegistrationStep_Identity, // 16
+    DSBlockchainIdentityQueryStep_Username = DSBlockchainIdentityRegistrationStep_Username, // 32
+    DSBlockchainIdentityQueryStep_Profile = DSBlockchainIdentityRegistrationStep_Profile,   // 64
     DSBlockchainIdentityQueryStep_IncomingContactRequests = 128,
     DSBlockchainIdentityQueryStep_OutgoingContactRequests = 256,
     DSBlockchainIdentityQueryStep_ContactRequests = DSBlockchainIdentityQueryStep_IncomingContactRequests | DSBlockchainIdentityQueryStep_OutgoingContactRequests,
@@ -58,7 +58,7 @@ typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRegistrationStatus)
     DSBlockchainIdentityRegistrationStatus_Unknown = 0,
     DSBlockchainIdentityRegistrationStatus_Registered = 1,
     DSBlockchainIdentityRegistrationStatus_Registering = 2,
-    DSBlockchainIdentityRegistrationStatus_NotRegistered = 3, //sent to DAPI, not yet confirmed
+    DSBlockchainIdentityRegistrationStatus_NotRegistered = 3, // sent to DAPI, not yet confirmed
 };
 
 typedef NS_ENUM(NSUInteger, DSBlockchainIdentityUsernameStatus)
@@ -67,7 +67,7 @@ typedef NS_ENUM(NSUInteger, DSBlockchainIdentityUsernameStatus)
     DSBlockchainIdentityUsernameStatus_Initial = 1,
     DSBlockchainIdentityUsernameStatus_PreorderRegistrationPending = 2,
     DSBlockchainIdentityUsernameStatus_Preordered = 3,
-    DSBlockchainIdentityUsernameStatus_RegistrationPending = 4, //sent to DAPI, not yet confirmed
+    DSBlockchainIdentityUsernameStatus_RegistrationPending = 4, // sent to DAPI, not yet confirmed
     DSBlockchainIdentityUsernameStatus_Confirmed = 5,
     DSBlockchainIdentityUsernameStatus_TakenOnNetwork = 6,
 };
@@ -260,7 +260,7 @@ FOUNDATION_EXPORT NSString *const DSBlockchainIdentityUpdateEventDashpaySyncroni
 - (void)encryptData:(NSData *)data withKeyAtIndex:(uint32_t)index forRecipientKey:(DSKey *)recipientKey completion:(void (^_Nullable)(NSData *encryptedData))completion;
 
 /*! @brief Register the blockchain identity to its wallet. This should only be done once on the creation of the blockchain identity.
-*/
+ */
 - (void)registerInWallet;
 
 /*! @brief Unregister the blockchain identity from the wallet. This should only be used if the blockchain identity is not yet registered or if a progressive wallet wipe is happening.
@@ -276,7 +276,7 @@ FOUNDATION_EXPORT NSString *const DSBlockchainIdentityUpdateEventDashpaySyncroni
 // MARK: - Keys
 
 /*! @brief Register the blockchain identity to its wallet from a credit funding registration transaction. This should only be done once on the creation of the blockchain identity.
-*/
+ */
 
 - (void)generateBlockchainIdentityExtendedPublicKeysWithPrompt:(NSString *)prompt completion:(void (^_Nullable)(BOOL registered))completion;
 

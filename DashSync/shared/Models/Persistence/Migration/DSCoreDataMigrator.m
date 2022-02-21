@@ -96,13 +96,13 @@
     if (metadata == nil) {
         metadata = [NSPersistentStoreCoordinator ds_metadataAt:[self documentsStoreURL]];
         if (metadata != nil) {
-            //Move to Application Support
+            // Move to Application Support
             originalStoreURL = [self documentsStoreURL];
             NSError *error = nil;
             NSString *appSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
-            //If there isn't an App Support Directory yet ...
+            // If there isn't an App Support Directory yet ...
             if (![[NSFileManager defaultManager] fileExistsAtPath:appSupportDir isDirectory:NULL]) {
-                //Create one
+                // Create one
                 if (![[NSFileManager defaultManager] createDirectoryAtPath:appSupportDir withIntermediateDirectories:YES attributes:nil error:&error]) {
                     NSLog(@"%@", error.localizedDescription);
                 } else {

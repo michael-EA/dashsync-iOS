@@ -28,7 +28,7 @@
 
 
 - (UInt256)sporkHash {
-    //hash calculation
+    // hash calculation
     NSMutableData *hashImportantData = [NSMutableData data];
     uint32_t index = (uint32_t)self.identifier;
     [hashImportantData appendBytes:&index length:4];
@@ -104,13 +104,13 @@
     return nil;
 }
 
-//starting in 12.3 sporks use addresses instead of public keys
+// starting in 12.3 sporks use addresses instead of public keys
 - (NSString *)sporkAddress {
     return self.chain.sporkAddress;
 }
 
 - (NSString *)identifierString {
-    switch (self.identifier) { //!OCLINT
+    switch (self.identifier) { //! OCLINT
         case DSSporkIdentifier_Spork2InstantSendEnabled:
             return @"Instant Send enabled";
         case DSSporkIdentifier_Spork3InstantSendBlockFiltering:

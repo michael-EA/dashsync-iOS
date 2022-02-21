@@ -92,7 +92,7 @@
     if (![self isMerkleTreeValid]) return NO;
 
     // check if timestamp is too far in future
-    //TODO: use estimated network time instead of system time (avoids timejacking attacks and misconfigured time)
+    // TODO: use estimated network time instead of system time (avoids timejacking attacks and misconfigured time)
     if (_timestamp > [NSDate timeIntervalSince1970] + MAX_TIME_DRIFT) return NO;
 
     return YES;
@@ -155,7 +155,7 @@
     if (abs(diff) > 1) {
         DSLog(@"weird difficulty for block at height %u with target %@ (off by %u)", self.height, uint256_hex(setCompactBE(self.target)), diff);
     }
-    return (abs(diff) < 2); //the core client is less precise with a rounding error that can sometimes cause a problem. We are very rarely 1 off
+    return (abs(diff) < 2); // the core client is less precise with a rounding error that can sometimes cause a problem. We are very rarely 1 off
 }
 
 - (int32_t)darkGravityWaveTargetWithPreviousBlocks:(NSDictionary *)previousBlocks {
@@ -181,7 +181,7 @@
         }
         // recent block is more than 10 minutes old
         if (self.timestamp > (previousBlock.timestamp + 2.5 * 60 * 4)) {
-            //DSLog(@"Our block is over 10 minutes old %d > %d", self.timestamp, previousBlock.timestamp);
+            // DSLog(@"Our block is over 10 minutes old %d > %d", self.timestamp, previousBlock.timestamp);
             UInt256 previousTarget = setCompactLE(previousBlock.target);
 
             UInt256 newTarget = uInt256MultiplyUInt32LE(previousTarget, 10);
@@ -200,15 +200,15 @@
         // Calculate average difficulty based on the blocks we iterate over in this for loop
         if (blockCount <= DGW_PAST_BLOCKS_MIN) {
             UInt256 currentTarget = setCompactLE(currentBlock.target);
-            //DSLog(@"currentTarget for block %d is %@", currentBlock.height, uint256_hex(currentTarget));
-            //if (self.height == 1070917)
-            //DSLog(@"%d",currentTarget);
+            // DSLog(@"currentTarget for block %d is %@", currentBlock.height, uint256_hex(currentTarget));
+            // if (self.height == 1070917)
+            // DSLog(@"%d",currentTarget);
             if (blockCount == 1) {
                 sumTargets = uInt256AddLE(currentTarget, currentTarget);
             } else {
                 sumTargets = uInt256AddLE(sumTargets, currentTarget);
             }
-            //DSLog(@"sumTarget for block %d is %@", currentBlock.height, uint256_hex(sumTargets));
+            // DSLog(@"sumTarget for block %d is %@", currentBlock.height, uint256_hex(sumTargets));
         }
 
         // If this is the second iteration (LastBlockTime was set)
@@ -234,16 +234,16 @@
     }
     UInt256 blockCount256 = ((UInt256){.u64 = {blockCount, 0, 0, 0}});
     // darkTarget is the difficulty
-    //DSLog(@"SumTargets for block %d is %@, blockCount is %@", self.height, uint256_hex(sumTargets), uint256_hex(blockCount256));
+    // DSLog(@"SumTargets for block %d is %@, blockCount is %@", self.height, uint256_hex(sumTargets), uint256_hex(blockCount256));
     UInt256 darkTarget = uInt256DivideLE(sumTargets, blockCount256);
 
     // nTargetTimespan is the time that the CountBlocks should have taken to be generated.
     uint32_t nTargetTimespan = (blockCount - 1) * (60 * 2.5);
 
-    //DSLog(@"Original dark target for block %d is %@", self.height, uint256_hex(darkTarget));
-    //DSLog(@"Max proof of work is %@", uint256_hex(self.chain.maxProofOfWork));
-    // Limit the re-adjustment to 3x or 0.33x
-    // We don't want to increase/decrease diff too much.
+    // DSLog(@"Original dark target for block %d is %@", self.height, uint256_hex(darkTarget));
+    // DSLog(@"Max proof of work is %@", uint256_hex(self.chain.maxProofOfWork));
+    //  Limit the re-adjustment to 3x or 0.33x
+    //  We don't want to increase/decrease diff too much.
     if (nActualTimespan < nTargetTimespan / 3.0f)
         nActualTimespan = nTargetTimespan / 3.0f;
     if (nActualTimespan > nTargetTimespan * 3.0f)
@@ -253,12 +253,12 @@
     darkTarget = uInt256MultiplyUInt32LE(darkTarget, nActualTimespan);
     UInt256 nTargetTimespan256 = ((UInt256){.u64 = {nTargetTimespan, 0, 0, 0}});
 
-    //DSLog(@"Middle dark target for block %d is %@", self.height, uint256_hex(darkTarget));
-    //DSLog(@"nTargetTimespan256 for block %d is %@", self.height, uint256_hex(nTargetTimespan256));
-    // Calculate the new difficulty based on actual and target timespan.
+    // DSLog(@"Middle dark target for block %d is %@", self.height, uint256_hex(darkTarget));
+    // DSLog(@"nTargetTimespan256 for block %d is %@", self.height, uint256_hex(nTargetTimespan256));
+    //  Calculate the new difficulty based on actual and target timespan.
     darkTarget = uInt256DivideLE(darkTarget, nTargetTimespan256);
 
-    //DSLog(@"Final dark target for block %d is %@", self.height, uint256_hex(darkTarget));
+    // DSLog(@"Final dark target for block %d is %@", self.height, uint256_hex(darkTarget));
 
     // If calculated difficulty is lower than the minimal diff, set the new difficulty to be the minimal diff.
     if (uint256_sup(darkTarget, self.chain.maxProofOfWork)) {
@@ -303,7 +303,7 @@
     if (!chainLock.saved) {
         [chainLock saveInitial];
         if (!chainLock.saved) {
-            //it is still not saved
+            // it is still not saved
             self.chainLockAwaitingSaving = chainLock;
         }
     }

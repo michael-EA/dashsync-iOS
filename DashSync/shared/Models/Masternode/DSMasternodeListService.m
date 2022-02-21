@@ -85,11 +85,11 @@
     [[DSInsightManager sharedInstance] blockForBlockHash:uint256_reverse(entryQuorumHash)
                                                  onChain:self.chain
                                               completion:^(DSBlock *_Nullable block, NSError *_Nullable error) {
-        if (!error && block) {
-            [self.chain addInsightVerifiedBlock:block forBlockHash:entryQuorumHash];
-        }
-        dispatch_semaphore_signal(sem);
-    }];
+                                                  if (!error && block) {
+                                                      [self.chain addInsightVerifiedBlock:block forBlockHash:entryQuorumHash];
+                                                  }
+                                                  dispatch_semaphore_signal(sem);
+                                              }];
     dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
 }
 

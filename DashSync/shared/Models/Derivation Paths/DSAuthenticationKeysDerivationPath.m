@@ -165,7 +165,7 @@
     if (a.count >= gapLimit) return [a subarrayWithRange:NSMakeRange(0, gapLimit)];
 
     @synchronized(self) {
-        //It seems weird to repeat this, but it's correct because of the original call receive address and change address
+        // It seems weird to repeat this, but it's correct because of the original call receive address and change address
         [a setArray:[self.addressesByIdentity objectForKey:@(identityIndex)]];
         i = a.count;
 

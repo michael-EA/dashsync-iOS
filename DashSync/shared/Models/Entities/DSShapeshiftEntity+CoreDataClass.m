@@ -88,7 +88,7 @@
     shapeshift.inputCoinAmount = amountIn;
     shapeshift.shapeshiftStatus = @(shapeshiftAddressStatus);
     shapeshift.isFixedAmount = @YES;
-    shapeshift.expiresAt = [NSDate dateWithTimeIntervalSinceNow:540]; //9 minutes (leave 1 minute as buffer)
+    shapeshift.expiresAt = [NSDate dateWithTimeIntervalSinceNow:540]; // 9 minutes (leave 1 minute as buffer)
     [context ds_save];
     return shapeshift;
 }
@@ -97,7 +97,7 @@
     static uint32_t height = 0;
     DSChainManager *manager = [[DSChainsManager sharedInstance] mainnetManager];
     uint32_t h = [[manager chain] lastSyncBlockHeight];
-    if (h > 20) height = h - 20; //only care about shapeshifts in last 20 blocks
+    if (h > 20) height = h - 20; // only care about shapeshifts in last 20 blocks
     NSArray *shapeshiftsInProgress = [DSShapeshiftEntity objectsInContext:context matching:@"(shapeshiftStatus == %@ || shapeshiftStatus == %@) && transaction.transactionHash.blockHeight > %@", @(eShapeshiftAddressStatus_NoDeposits), @(eShapeshiftAddressStatus_Received), @(height)];
 
     return shapeshiftsInProgress;

@@ -89,7 +89,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
         NSError *error = nil;
         BOOL hasSetPin = [self hasPin:&error];
         if (error) {
-            self.usesAuthentication = YES; //just to be safe
+            self.usesAuthentication = YES; // just to be safe
         } else {
             self.usesAuthentication = [self shouldUseAuthentication] && hasSetPin;
         }
@@ -134,11 +134,11 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
         [self updateSecureTime:serverTime];
         self.secureTimeUpdated = YES;
     } else {
-        //rare case
+        // rare case
         NSTimeInterval lastCheckpointTime = [[DSChainsManager sharedInstance] mainnetManager].chain.checkpoints.lastObject.timestamp;
-        NSTimeInterval lastBlockTime = [[DSChainsManager sharedInstance] mainnetManager].chain.lastSyncBlock.timestamp; //this will either be 0 or a real timestamp, both are fine for next check
+        NSTimeInterval lastBlockTime = [[DSChainsManager sharedInstance] mainnetManager].chain.lastSyncBlock.timestamp; // this will either be 0 or a real timestamp, both are fine for next check
         if (serverTime > lastCheckpointTime && serverTime > lastBlockTime) {
-            //there was definitely an issue with serverTime at some point.
+            // there was definitely an issue with serverTime at some point.
             [self updateSecureTime:serverTime];
             self.secureTimeUpdated = YES;
         }
@@ -159,7 +159,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
             setKeychainInt(requestingShouldUseAuthentication, USES_AUTHENTICATION_KEY, NO);
         } else {
             BOOL shouldUseAuthentication = getKeychainInt(USES_AUTHENTICATION_KEY, &error);
-            if (!shouldUseAuthentication && requestingShouldUseAuthentication) { //we are switching the app to use authentication in the future
+            if (!shouldUseAuthentication && requestingShouldUseAuthentication) { // we are switching the app to use authentication in the future
                 setKeychainInt(YES, USES_AUTHENTICATION_KEY, NO);
             }
         }
@@ -168,17 +168,17 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 
 - (BOOL)shouldUseAuthentication {
 #if !TARGET_OS_IOS
-    return NO; //disable authentication temporarily for macos
+    return NO; // disable authentication temporarily for macos
 #endif
     NSError *error = nil;
     if (!hasKeychainData(USES_AUTHENTICATION_KEY, &error)) {
-        return TRUE; //default true;
+        return TRUE; // default true;
     } else {
         BOOL shouldUseAuthentication = getKeychainInt(USES_AUTHENTICATION_KEY, &error);
         if (!error) {
             return shouldUseAuthentication;
         } else {
-            return TRUE; //default
+            return TRUE; // default
         }
     }
 }
@@ -199,7 +199,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
     DSPriceManager *manager = [DSPriceManager sharedInstance];
     NSString *prompt = (isSecure && name.length > 0) ? LOCK @" " : @"";
 
-    //BUG: XXX limit the length of name and memo to avoid having the amount clipped
+    // BUG: XXX limit the length of name and memo to avoid having the amount clipped
     if (!isSecure && errorMessage.length > 0) prompt = [prompt stringByAppendingString:REDX @" "];
     if (name.length > 0) prompt = [prompt stringByAppendingString:sanitizeString(name)];
     if (!isSecure && prompt.length > 0) prompt = [prompt stringByAppendingString:@"\n"];
@@ -258,7 +258,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 
 - (void)setPinIfNeededWithCompletion:(void (^)(BOOL needed, BOOL success))completion {
     NSError *error = nil;
-    BOOL hasPin = [self hasPin:&error]; //don't put pin in memory before needed
+    BOOL hasPin = [self hasPin:&error]; // don't put pin in memory before needed
 
     if (error || hasPin) {
         if (completion) {
@@ -288,7 +288,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 }
 
 - (void)removePin {
-    //You can only remove pin if there are no wallets
+    // You can only remove pin if there are no wallets
     if ([[DSChainsManager sharedInstance] hasAWallet]) {
         DSLog(@"Tried to remove a pin, but wallets exist on device");
         return;
@@ -310,7 +310,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
     if (error) return 0;
     if (!hasASpendingLimit) {
         if ([[NSUserDefaults standardUserDefaults] doubleForKey:BIOMETRIC_SPENDING_LIMIT_KEY]) {
-            //lets migrate this when we are authenticated
+            // lets migrate this when we are authenticated
             if ([self setBiometricSpendingLimitIfAuthenticated:[[NSUserDefaults standardUserDefaults] doubleForKey:BIOMETRIC_SPENDING_LIMIT_KEY]]) {
                 [[NSUserDefaults standardUserDefaults] removeObjectForKey:BIOMETRIC_SPENDING_LIMIT_KEY];
 
@@ -333,7 +333,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 - (BOOL)setBiometricSpendingLimitIfAuthenticated:(uint64_t)spendingLimit {
     if (![self didAuthenticate]) return FALSE;
 
-    if (setKeychainInt(spendingLimit, BIOMETRIC_ALLOWED_AMOUNT_LEFT_KEY, NO)) { //we are authenticated anyways so reset this
+    if (setKeychainInt(spendingLimit, BIOMETRIC_ALLOWED_AMOUNT_LEFT_KEY, NO)) { // we are authenticated anyways so reset this
         // use setDouble since setInteger won't hold a uint64_t
         setKeychainInt(spendingLimit, BIOMETRIC_SPENDING_LIMIT_KEY, YES);
         return TRUE;
@@ -356,7 +356,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
     uint64_t amountLeft = getKeychainInt(BIOMETRIC_ALLOWED_AMOUNT_LEFT_KEY, &error);
     if (error) return FALSE;
     if (amountLeft < amount) {
-        setKeychainInt(0, BIOMETRIC_ALLOWED_AMOUNT_LEFT_KEY, NO); //require pin because this is weird
+        setKeychainInt(0, BIOMETRIC_ALLOWED_AMOUNT_LEFT_KEY, NO); // require pin because this is weird
         return FALSE;
     }
     setKeychainInt(amountLeft - amount, BIOMETRIC_ALLOWED_AMOUNT_LEFT_KEY, NO);
@@ -406,7 +406,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
                                        completion:(PinCompletionBlock)completion {
     NSAssert(self.usesAuthentication, @"Authentication is not configured");
 
-    if (!self.usesAuthentication) { //if we don't have authentication
+    if (!self.usesAuthentication) { // if we don't have authentication
         completion(YES, NO, NO);
         return;
     }
@@ -478,7 +478,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 
 // prompts user to authenticate with touch id or passcode
 - (void)authenticateWithPrompt:(NSString *)authprompt usingBiometricAuthentication:(BOOL)usesBiometricAuthentication alertIfLockout:(BOOL)alertIfLockout completion:(PinCompletionBlock)completion {
-    if (!self.usesAuthentication) { //if we don't have authentication
+    if (!self.usesAuthentication) { // if we don't have authentication
         completion(YES, NO, NO);
         return;
     }
@@ -571,7 +571,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 
                     }];
         [alertController addAction:resetButton];
-        [alertController addAction:okButton]; //ok button should be on the right side as per Apple guidelines, as reset is the less desireable option
+        [alertController addAction:okButton]; // ok button should be on the right side as per Apple guidelines, as reset is the less desireable option
 
     } else {
         UIAlertAction *wipeButton = [UIAlertAction
@@ -590,7 +590,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
                         }
                         [self removePin];
                     }];
-        [alertController addAction:wipeButton]; //ok button should be on the right side as per Apple guidelines, as reset is the less desireable option
+        [alertController addAction:wipeButton]; // ok button should be on the right side as per Apple guidelines, as reset is the less desireable option
         [alertController addAction:resetButton];
     }
 
@@ -806,10 +806,10 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
                                           BOOL authenticated,
                                           BOOL shouldLockout,
                                           NSString *_Nullable attemptsMessage))completion {
-    //authentication logic is as follows
-    //you have 3 failed attempts initially
-    //after that you get locked out once immediately with a message saying
-    //then you have 4 attempts with exponentially increasing intervals to get your password right
+    // authentication logic is as follows
+    // you have 3 failed attempts initially
+    // after that you get locked out once immediately with a message saying
+    // then you have 4 attempts with exponentially increasing intervals to get your password right
 
     NSError *error = nil;
     NSString *pin = [self getPin:&error];
@@ -870,7 +870,7 @@ NSString *const DSApplicationTerminationRequestNotification = @"DSApplicationTer
 
             return;
         } else {
-            //no longer locked out, give the user a try
+            // no longer locked out, give the user a try
             attemptsMessage = [NSString localizedStringWithFormat:
                                             DSLocalizedString(@"%ld attempt(s) remaining", @"#bc-ignore!"),
                                         (long)(MAX_FAIL_COUNT - failCount)];

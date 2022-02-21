@@ -38,13 +38,13 @@
 
 + (DSDerivationPathEntity *_Nonnull)derivationPathEntityMatchingDerivationPath:(DSDerivationPath *)derivationPath inContext:(NSManagedObjectContext *)context {
     NSAssert(derivationPath.standaloneExtendedPublicKeyUniqueID, @"standaloneExtendedPublicKeyUniqueID must be set");
-    //DSChain * chain = derivationPath.chain;
+    // DSChain * chain = derivationPath.chain;
     NSArray *derivationPathEntities;
     NSError *archivingError = nil;
     NSData *archivedDerivationPath = [NSKeyedArchiver archivedDataWithRootObject:derivationPath requiringSecureCoding:NO error:&archivingError];
     NSAssert(archivedDerivationPath != nil && archivingError == nil, @"Archived derivation path should have been created");
     DSChainEntity *chainEntity = [derivationPath.chain chainEntityInContext:context];
-    //NSUInteger count = [chainEntity.derivationPaths count];
+    // NSUInteger count = [chainEntity.derivationPaths count];
     derivationPathEntities = [[chainEntity.derivationPaths objectsPassingTest:^BOOL(DSDerivationPathEntity *_Nonnull obj, BOOL *_Nonnull stop) {
         return ([obj.publicKeyIdentifier isEqualToString:derivationPath.standaloneExtendedPublicKeyUniqueID]);
     }] allObjects];
@@ -62,14 +62,14 @@
             derivationPathEntity.account = [DSAccountEntity accountEntityForWalletUniqueID:derivationPath.account.wallet.uniqueIDString index:derivationPath.account.accountNumber onChain:derivationPath.chain inContext:context];
         }
         if ([derivationPath isKindOfClass:[DSIncomingFundsDerivationPath class]]) {
-            //NSLog(@"--->creating derivation path entity on path %@ (%@) with no friendship identifier %@", derivationPath, derivationPath.stringRepresentation, [NSThread callStackSymbols]);
+            // NSLog(@"--->creating derivation path entity on path %@ (%@) with no friendship identifier %@", derivationPath, derivationPath.stringRepresentation, [NSThread callStackSymbols]);
             DSIncomingFundsDerivationPath *incomingFundsDerivationPath = (DSIncomingFundsDerivationPath *)derivationPath;
             NSPredicate *predicatee = [NSPredicate predicateWithFormat:@"sourceContact.associatedBlockchainIdentity.uniqueID == %@ && destinationContact.associatedBlockchainIdentity.uniqueID == %@", uint256_data(incomingFundsDerivationPath.contactSourceBlockchainIdentityUniqueId), uint256_data(incomingFundsDerivationPath.contactDestinationBlockchainIdentityUniqueId)];
             DSFriendRequestEntity *friendRequest = [DSFriendRequestEntity anyObjectForPredicate:predicatee inContext:context];
             if (friendRequest) {
                 derivationPathEntity.friendRequest = friendRequest;
             }
-            //NSLog(@"--->associated friendship identifier %@", friendRequest.friendshipIdentifier.hexString);
+            // NSLog(@"--->associated friendship identifier %@", friendRequest.friendshipIdentifier.hexString);
         }
         return derivationPathEntity;
     }
@@ -80,7 +80,7 @@
     NSParameterAssert(friendRequest);
 
     NSManagedObjectContext *context = friendRequest.managedObjectContext;
-    //DSChain * chain = derivationPath.chain;
+    // DSChain * chain = derivationPath.chain;
     NSError *archivingError = nil;
     NSData *archivedDerivationPath = [NSKeyedArchiver archivedDataWithRootObject:derivationPath requiringSecureCoding:NO error:&archivingError];
     NSAssert(archivedDerivationPath != nil && archivingError == nil, @"Archived derivation path should have been created");
@@ -88,8 +88,8 @@
 
     NSSet *derivationPathEntities = [chainEntity.derivationPaths filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"publicKeyIdentifier == %@ && chain == %@", derivationPath.standaloneExtendedPublicKeyUniqueID, [derivationPath.chain chainEntityInContext:context]]];
     if (![derivationPathEntities count]) {
-        //NSLog(@"-->creating derivation path entity on derivation path (%@) with friendship identifier %@ %@", derivationPath.stringRepresentation, friendRequest.friendshipIdentifier.hexString, [NSThread callStackSymbols]);
-        //NSLog(@"-->friend request is %@ %@", friendRequest, friendRequest.derivationPath);
+        // NSLog(@"-->creating derivation path entity on derivation path (%@) with friendship identifier %@ %@", derivationPath.stringRepresentation, friendRequest.friendshipIdentifier.hexString, [NSThread callStackSymbols]);
+        // NSLog(@"-->friend request is %@ %@", friendRequest, friendRequest.derivationPath);
         NSAssert(friendRequest.derivationPath == nil, @"The friend request should not already have a derivationPath");
         DSDerivationPathEntity *derivationPathEntity = [DSDerivationPathEntity managedObjectInBlockedContext:context];
         derivationPathEntity.derivationPath = archivedDerivationPath;

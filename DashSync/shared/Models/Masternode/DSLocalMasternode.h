@@ -28,19 +28,19 @@ typedef NS_ENUM(NSUInteger, DSLocalMasternodeStatus)
 @property (nonatomic, readonly) NSString *ipAddressAndIfNonstandardPortString;
 @property (nonatomic, readonly) uint16_t port;
 @property (nonatomic, readonly) NSString *portString;
-@property (nonatomic, readonly) DSWallet *operatorKeysWallet; //only if this is contained in the wallet.
-@property (nonatomic, readonly) uint32_t operatorWalletIndex; //the derivation path index of keys
+@property (nonatomic, readonly) DSWallet *operatorKeysWallet; // only if this is contained in the wallet.
+@property (nonatomic, readonly) uint32_t operatorWalletIndex; // the derivation path index of keys
 @property (nonatomic, readonly) NSData *operatorPublicKeyData;
-@property (nonatomic, readonly) DSWallet *ownerKeysWallet; //only if this is contained in the wallet.
+@property (nonatomic, readonly) DSWallet *ownerKeysWallet; // only if this is contained in the wallet.
 @property (nonatomic, readonly) uint32_t ownerWalletIndex;
 @property (nonatomic, readonly) NSData *ownerPublicKeyData;
-@property (nonatomic, readonly) DSWallet *votingKeysWallet; //only if this is contained in the wallet.
+@property (nonatomic, readonly) DSWallet *votingKeysWallet; // only if this is contained in the wallet.
 @property (nonatomic, readonly) uint32_t votingWalletIndex;
 @property (nonatomic, readonly) NSData *votingPublicKeyData;
-@property (nonatomic, readonly) DSWallet *holdingKeysWallet; //only if this is contained in the wallet.
+@property (nonatomic, readonly) DSWallet *holdingKeysWallet; // only if this is contained in the wallet.
 @property (nonatomic, readonly) uint32_t holdingWalletIndex;
-@property (nonatomic, readonly) NSMutableIndexSet *previousOperatorWalletIndexes; //previously used operator indexes
-@property (nonatomic, readonly) NSMutableIndexSet *previousVotingWalletIndexes;   //previously used voting indexes
+@property (nonatomic, readonly) NSMutableIndexSet *previousOperatorWalletIndexes; // previously used operator indexes
+@property (nonatomic, readonly) NSMutableIndexSet *previousVotingWalletIndexes;   // previously used voting indexes
 @property (nonatomic, readonly) DSChain *chain;
 @property (nonatomic, nullable, readonly) NSString *payoutAddress;
 @property (nonatomic, readonly) NSString *operatorPayoutAddress;
@@ -85,7 +85,7 @@ typedef NS_ENUM(NSUInteger, DSLocalMasternodeStatus)
 
 - (BOOL)forceOwnerPrivateKey:(DSECDSAKey *)ownerPrivateKey;
 
-//the voting key can either be private or public key
+// the voting key can either be private or public key
 - (BOOL)forceVotingKey:(DSECDSAKey *)votingKey;
 
 @end

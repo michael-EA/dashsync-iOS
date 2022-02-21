@@ -56,30 +56,30 @@
 
 @implementation DSGovernanceObject
 
-//From the reference implementation
+// From the reference implementation
 //
-//uint256 CGovernanceObject::GetHash() const
+// uint256 CGovernanceObject::GetHash() const
 //{
-//    // Note: doesn't match serialization
+//     // Note: doesn't match serialization
 //
-//    // CREATE HASH OF ALL IMPORTANT PIECES OF DATA
+//     // CREATE HASH OF ALL IMPORTANT PIECES OF DATA
 //
-//    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
-//    ss << nHashParent;
-//    ss << nRevision;
-//    ss << nTime;
-//    ss << GetDataAsHexString();
-//    ss << masternodeOutpoint << uint8_t{} << 0xffffffff; // adding dummy values here to match old hashing
-//    ss << vchSig;
-//    // fee_tx is left out on purpose
+//     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+//     ss << nHashParent;
+//     ss << nRevision;
+//     ss << nTime;
+//     ss << GetDataAsHexString();
+//     ss << masternodeOutpoint << uint8_t{} << 0xffffffff; // adding dummy values here to match old hashing
+//     ss << vchSig;
+//     // fee_tx is left out on purpose
 //
-//    DBG( printf("CGovernanceObject::GetHash %i %li %s\n", nRevision, nTime, GetDataAsHexString().c_str()); );
+//     DBG( printf("CGovernanceObject::GetHash %i %li %s\n", nRevision, nTime, GetDataAsHexString().c_str()); );
 //
-//    return ss.GetHash();
-//}
+//     return ss.GetHash();
+// }
 
 + (UInt256)hashWithParentHash:(NSData *)parentHashData revision:(uint32_t)revision timeStampData:(NSData *)timestampData governanceMessageHexData:(NSData *)hexData masternodeUTXO:(DSUTXO)masternodeUTXO signature:(NSData *)signature onChain:(DSChain *)chain {
-    //hash calculation
+    // hash calculation
     NSMutableData *hashImportantData = [NSMutableData data];
     [hashImportantData appendData:parentHashData];
     [hashImportantData appendBytes:&revision length:4];
@@ -119,7 +119,7 @@
     NSNumber *varIntLength = nil;
     NSData *governanceMessageData;
     NSData *hexData;
-    if (chain.protocolVersion < 70209) { //switch to outpoint in 70209
+    if (chain.protocolVersion < 70209) { // switch to outpoint in 70209
         governanceMessageData = [NSData dataFromHexString:[message stringAtOffset:offset length:&varIntLength]];
         hexData = [message subdataWithRange:NSMakeRange(offset, varIntLength.integerValue)];
     } else {
@@ -137,11 +137,11 @@
     masternodeUTXO.hash = [message readUInt256AtOffset:&offset];
     if (length - offset < 4) return nil;
     masternodeUTXO.n = [message readUInt32AtOffset:&offset];
-    if (chain.protocolVersion < 70209) { //switch to outpoint in 70209
+    if (chain.protocolVersion < 70209) { // switch to outpoint in 70209
         if (length - offset < 1) return nil;
         uint8_t sigscriptSize = [message readUInt8AtOffset:&offset];
         if (length - offset < sigscriptSize) return nil;
-        //NSData * sigscript = [message subdataWithRange:NSMakeRange(offset, sigscriptSize)];
+        // NSData * sigscript = [message subdataWithRange:NSMakeRange(offset, sigscriptSize)];
         offset += sigscriptSize;
         if (length - offset < 4) return nil;
         //__unused uint32_t sequenceNumber = [message readUInt32AtOffset:&offset];
@@ -202,7 +202,7 @@
 - (UInt256)governanceObjectHash {
     if (uint256_eq(_governanceObjectHash, UINT256_ZERO)) {
         NSTimeInterval timestamp = self.timestamp;
-        DSUTXO o = (DSUTXO) {UINT256_ZERO, 0};
+        DSUTXO o = (DSUTXO){UINT256_ZERO, 0};
         _governanceObjectHash = [DSGovernanceObject hashWithParentHash:[NSData dataWithUInt256:self.parentHash] revision:self.revision timeStampData:[NSData dataWithBytes:&timestamp length:sizeof(timestamp)] governanceMessageHexData:self.proposalInfo masternodeUTXO:o signature:[NSData data] onChain:self.chain];
     }
     return _governanceObjectHash;
@@ -366,7 +366,7 @@
 - (void)requestGovernanceVotesFromPeer:(DSPeer *)peer {
     if (![self.needsRequestsGovernanceVoteHashEntities count]) {
         self.finishedSync = TRUE;
-        //we are done syncing
+        // we are done syncing
         return;
     }
     self.finishedSync = FALSE;
@@ -424,11 +424,11 @@
             }
         }
         self.knownGovernanceVoteHashes = rHashes;
-        self.needsRequestsGovernanceVoteHashEntities = nil; //just so it can lazy load again
+        self.needsRequestsGovernanceVoteHashEntities = nil; // just so it can lazy load again
         DSLog(@"-> %lu - %lu", (unsigned long)[self.knownGovernanceVoteHashes count], (unsigned long)self.totalGovernanceVoteCount);
         if ([self.knownGovernanceVoteHashes count] >= self.totalGovernanceVoteCount) {
-            //we have more than we should have
-            //for a vote it doesn't matter and will happen often
+            // we have more than we should have
+            // for a vote it doesn't matter and will happen often
             DSLog(@"All governance vote hashes received for object %@", self.identifier);
             //        [self.managedObjectContext performBlockAndWait:^{
             //            [DSGovernanceVoteHashEntity setContext:self.managedObjectContext];
@@ -437,7 +437,7 @@
             //        }];
             [self requestGovernanceVotesFromPeer:peer];
         } // else {
-          //things are missing, most likely they will come in later
+          // things are missing, most likely they will come in later
         //}
     }
 }
@@ -454,9 +454,9 @@
             break;
         }
     }
-    //NSAssert(relatedHashEntity, @"There needs to be a relatedHashEntity");
+    // NSAssert(relatedHashEntity, @"There needs to be a relatedHashEntity");
     if (!relatedHashEntity) return;
-    //todo this seems weird
+    // todo this seems weird
     [[DSGovernanceVoteEntity managedObjectInBlockedContext:self.managedObjectContext] setAttributesFromGovernanceVote:governanceVote forHashEntity:relatedHashEntity];
     [self.needsRequestsGovernanceVoteHashEntities removeObject:relatedHashEntity];
     [self.governanceVotes addObject:governanceVote];
@@ -495,7 +495,7 @@
         data = [dataString dataUsingEncoding:NSUTF8StringEncoding];
         return data;
     } else {
-        //figure out how to handle this on iOS 10
+        // figure out how to handle this on iOS 10
         NSData *data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
         return data;
         // Fallback on earlier versions
@@ -527,7 +527,7 @@
         if (uint256_is_zero(self.collateralHash)) return FALSE;
 
     } else if (self.type == DSGovernanceObjectType_Trigger) {
-        //todo validation here
+        // todo validation here
         return TRUE;
     }
     return FALSE;

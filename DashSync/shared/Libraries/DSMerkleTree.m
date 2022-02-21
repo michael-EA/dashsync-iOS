@@ -170,7 +170,7 @@ inline static int ceil_log2(int x) {
 }
 
 - (BOOL)merkleTreeHasRoot:(UInt256)desiredMerkleRoot {
-    //DSLog(@"%@ - %@",uint256_hex(merkleRoot),uint256_hex(_merkleRoot));
+    // DSLog(@"%@ - %@",uint256_hex(merkleRoot),uint256_hex(_merkleRoot));
     if (self.treeElementCount > 0 && !uint256_eq(self.merkleRoot, desiredMerkleRoot)) return NO; // merkle root check failed
     return YES;
 }

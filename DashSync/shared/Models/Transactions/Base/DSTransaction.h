@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 #define TX_FEE_PER_INPUT 10000ULL                                                  // standard ix fee per input
 #define TX_OUTPUT_SIZE 34                                                          // estimated size for a typical transaction output
 #define TX_INPUT_SIZE 148                                                          // estimated size for a typical compact pubkey transaction input
-#define TX_MIN_OUTPUT_AMOUNT (TX_FEE_PER_B * 3 * (TX_OUTPUT_SIZE + TX_INPUT_SIZE)) //no txout can be below this amount
+#define TX_MIN_OUTPUT_AMOUNT (TX_FEE_PER_B * 3 * (TX_OUTPUT_SIZE + TX_INPUT_SIZE)) // no txout can be below this amount
 #define TX_MAX_SIZE 100000                                                         // no tx can be larger than this size in bytes
 #define TX_UNCONFIRMED INT32_MAX                                                   // block height indicating transaction is unconfirmed
 #define TX_MAX_LOCK_HEIGHT 500000000                                               // a lockTime below this value is a block height, otherwise a timestamp
@@ -121,9 +121,9 @@ typedef NS_ENUM(NSInteger, DSTransactionSortType)
 - (instancetype)initWithInputHashes:(NSArray *)hashes inputIndexes:(NSArray *)indexes inputScripts:(NSArray *)scripts
                     outputAddresses:(NSArray *)addresses
                       outputAmounts:(NSArray *)amounts
-                            onChain:(DSChain *)chain; //for v1
+                            onChain:(DSChain *)chain; // for v1
 
-- (instancetype)initWithInputHashes:(NSArray *)hashes inputIndexes:(NSArray *)indexes inputScripts:(NSArray *)scripts inputSequences:(NSArray *)inputSequences outputAddresses:(NSArray *)addresses outputAmounts:(NSArray *)amounts onChain:(DSChain *)chain; //for v2 onwards
+- (instancetype)initWithInputHashes:(NSArray *)hashes inputIndexes:(NSArray *)indexes inputScripts:(NSArray *)scripts inputSequences:(NSArray *)inputSequences outputAddresses:(NSArray *)addresses outputAmounts:(NSArray *)amounts onChain:(DSChain *)chain; // for v2 onwards
 
 - (void)addInputHash:(UInt256)hash index:(NSUInteger)index script:(NSData *_Nullable)script;
 - (void)addInputHash:(UInt256)hash index:(NSUInteger)index script:(NSData *_Nullable)script signature:(NSData *_Nullable)signature
@@ -158,11 +158,11 @@ typedef NS_ENUM(NSInteger, DSTransactionSortType)
 
 - (DSTransactionEntity *)saveInContext:(NSManagedObjectContext *)context;
 
-- (BOOL)saveInitial; //returns if the save took place
+- (BOOL)saveInitial; // returns if the save took place
 
 - (BOOL)setInitialPersistentAttributesInContext:(NSManagedObjectContext *)context;
 
-//instant send
+// instant send
 
 - (void)setInstantSendReceivedWithInstantSendLock:(DSInstantSendTransactionLock *)instantSendLock;
 

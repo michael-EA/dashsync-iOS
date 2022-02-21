@@ -65,7 +65,7 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSWalletBalanceDidChangeNotification;
 
 @property (nonatomic, readonly) NSArray<NSString *> *providerOperatorAddresses;
 
-//This is unique among all wallets and all chains
+// This is unique among all wallets and all chains
 @property (nonatomic, readonly) NSString *uniqueIDString;
 
 @property (nonatomic, readonly) NSTimeInterval walletCreationTime;
@@ -148,10 +148,10 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSWalletBalanceDidChangeNotification;
                andTimestamp:(NSTimeInterval)timestamp
        forTransactionHashes:(NSArray *)txHashes;
 
-//add an account to the wallet
+// add an account to the wallet
 - (void)addAccount:(DSAccount *)account;
 
-//add another account to the wallet if authenticated
+// add another account to the wallet if authenticated
 - (DSAccount *_Nullable)addAnotherAccountIfAuthenticated;
 
 // returns an account where all derivation paths have the following account number
@@ -192,7 +192,7 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSWalletBalanceDidChangeNotification;
 // this is used to save transactions atomically with the block
 - (void)persistIncomingTransactionsAttributesForBlockSaveWithNumber:(uint32_t)blockNumber inContext:(NSManagedObjectContext *)context;
 
-//returns the seed phrase after authenticating
+// returns the seed phrase after authenticating
 - (void)seedPhraseAfterAuthentication:(void (^_Nullable)(NSString *_Nullable seedPhrase))completion;
 - (void)seedPhraseAfterAuthenticationWithPrompt:(NSString *_Nullable)authprompt completion:(void (^_Nullable)(NSString *_Nullable seedPhrase))completion;
 
@@ -200,29 +200,29 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSWalletBalanceDidChangeNotification;
 
 - (DSKey *_Nullable)privateKeyForAddress:(NSString *_Nonnull)address fromSeed:(NSData *_Nonnull)seed;
 
-//generate a random Mnemonic seed
+// generate a random Mnemonic seed
 + (NSString *_Nullable)generateRandomSeedPhrase;
 
-//generate a random Mnemonic seed in a specified language
+// generate a random Mnemonic seed in a specified language
 + (NSString *_Nullable)generateRandomSeedPhraseForLanguage:(DSBIP39Language)language;
 
-//This removes all blockchain information from the wallet, used for resync
+// This removes all blockchain information from the wallet, used for resync
 - (void)wipeBlockchainInfoInContext:(NSManagedObjectContext *)context;
 
-//This removes all extra accounts, past the first (or sometimes second one).
+// This removes all extra accounts, past the first (or sometimes second one).
 - (void)wipeBlockchainExtraAccountsInContext:(NSManagedObjectContext *)context;
 
-//This removes all wallet based information from the wallet, used when deletion of wallet is wanted
+// This removes all wallet based information from the wallet, used when deletion of wallet is wanted
 - (void)wipeWalletInfo;
 
-//Recreate derivation paths and addresses
+// Recreate derivation paths and addresses
 - (void)reloadDerivationPaths;
 
 - (void)unregisterBlockchainIdentity:(DSBlockchainIdentity *)blockchainIdentity;
 - (void)addBlockchainIdentities:(NSArray<DSBlockchainIdentity *> *)blockchainIdentities;
 - (void)addBlockchainIdentity:(DSBlockchainIdentity *)blockchainIdentity;
 
-//Verify makes sure the keys for the blockchain identity are good
+// Verify makes sure the keys for the blockchain identity are good
 - (BOOL)registerBlockchainIdentities:(NSArray<DSBlockchainIdentity *> *)blockchainIdentities verify:(BOOL)verify;
 - (BOOL)registerBlockchainIdentity:(DSBlockchainIdentity *)blockchainIdentity verify:(BOOL)verify;
 - (BOOL)registerBlockchainIdentity:(DSBlockchainIdentity *)blockchainIdentity;
@@ -251,14 +251,14 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSWalletBalanceDidChangeNotification;
 
 - (void)copyForChain:(DSChain *)chain completion:(void (^_Nonnull)(DSWallet *_Nullable copiedWallet))completion;
 
-- (void)registerMasternodeOperator:(DSLocalMasternode *)masternode;                                               //will use indexes
-- (void)registerMasternodeOperator:(DSLocalMasternode *)masternode withOperatorPublicKey:(DSBLSKey *)operatorKey; //will use defined key
+- (void)registerMasternodeOperator:(DSLocalMasternode *)masternode;                                               // will use indexes
+- (void)registerMasternodeOperator:(DSLocalMasternode *)masternode withOperatorPublicKey:(DSBLSKey *)operatorKey; // will use defined key
 
 - (void)registerMasternodeOwner:(DSLocalMasternode *)masternode;
-- (void)registerMasternodeOwner:(DSLocalMasternode *)masternode withOwnerPrivateKey:(DSECDSAKey *)ownerKey; //will use defined key
+- (void)registerMasternodeOwner:(DSLocalMasternode *)masternode withOwnerPrivateKey:(DSECDSAKey *)ownerKey; // will use defined key
 
 - (void)registerMasternodeVoter:(DSLocalMasternode *)masternode;
-- (void)registerMasternodeVoter:(DSLocalMasternode *)masternode withVotingKey:(DSECDSAKey *)votingKey; //will use defined key
+- (void)registerMasternodeVoter:(DSLocalMasternode *)masternode withVotingKey:(DSECDSAKey *)votingKey; // will use defined key
 
 - (BOOL)containsProviderVotingAuthenticationHash:(UInt160)votingAuthenticationHash;
 - (BOOL)containsProviderOwningAuthenticationHash:(UInt160)owningAuthenticationHash;

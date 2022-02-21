@@ -135,7 +135,7 @@
 - (BOOL)verifyDerivationPathNotAlreadyPresent:(DSDerivationPath *)derivationPath {
     for (DSDerivationPath *derivationPath3 in self.mFundDerivationPaths) {
         if ([derivationPath isDerivationPathEqual:derivationPath3]) {
-            //Added derivation paths should be different from existing ones on account
+            // Added derivation paths should be different from existing ones on account
             return FALSE;
         }
     }
@@ -165,10 +165,10 @@
             DSDerivationPath *derivationPath2 = [derivationPaths objectAtIndex:j];
             NSAssert([derivationPath isDerivationPathEqual:derivationPath2] == NO, @"Derivation paths should all be different");
         }
-        //to do redo this check
-        //        if ([self.mFundDerivationPaths count] || i != 0) {
-        //            NSAssert(([derivationPath indexAtPosition:[derivationPath length] - 1] & ~(BIP32_HARD)) == _accountNumber, @"all derivationPaths need to be on same account");
-        //        }
+        // to do redo this check
+        //         if ([self.mFundDerivationPaths count] || i != 0) {
+        //             NSAssert(([derivationPath indexAtPosition:[derivationPath length] - 1] & ~(BIP32_HARD)) == _accountNumber, @"all derivationPaths need to be on same account");
+        //         }
     }
 }
 
@@ -219,7 +219,7 @@
 
 - (void)loadTransactions {
     if (_wallet.isTransient) return;
-    //NSDate *startTime = [NSDate date];
+    // NSDate *startTime = [NSDate date];
     [self.managedObjectContext performBlockAndWait:^{
 #if TEST_LOG_ALL_TRANSACTIONS
         NSArray<DSTransactionEntity *> *transactions = [DSTransactionEntity objectsInContext:self.managedObjectContext matching:@"transactionHash.chain == %@", [self.wallet.chain chainEntityInContext:self.managedObjectContext]];
@@ -235,14 +235,14 @@
             @autoreleasepool {
                 NSFetchRequest *fetchRequest = [DSTxOutputEntity fetchRequest];
 
-                //for some reason it is faster to search by the wallet unique id on the account, then it is by the account itself, this might change if there are more than 1 account;
+                // for some reason it is faster to search by the wallet unique id on the account, then it is by the account itself, this might change if there are more than 1 account;
                 fetchRequest.predicate = [NSPredicate predicateWithFormat:@"account.walletUniqueID = %@ && account.index = %@", self.wallet.uniqueIDString, @(self.accountNumber)];
                 [fetchRequest setRelationshipKeyPathsForPrefetching:@[@"transaction.inputs", @"transaction.outputs", @"transaction.transactionHash", @"spentInInput.transaction.inputs", @"spentInInput.transaction.outputs", @"spentInInput.transaction.transactionHash"]];
 
                 NSError *fetchRequestError = nil;
-                //NSDate *transactionOutputsStartTime = [NSDate date];
+                // NSDate *transactionOutputsStartTime = [NSDate date];
                 NSArray *transactionOutputs = [self.managedObjectContext executeFetchRequest:fetchRequest error:&fetchRequestError];
-                //DSLog(@"TransactionOutputsStartTime: %f", -[transactionOutputsStartTime timeIntervalSinceNow]);
+                // DSLog(@"TransactionOutputsStartTime: %f", -[transactionOutputsStartTime timeIntervalSinceNow]);
                 for (DSTxOutputEntity *e in transactionOutputs) {
                     @autoreleasepool {
                         if (e.transaction.transactionHash) {
@@ -259,7 +259,7 @@
 
                         DSTxInputEntity *spentInInput = e.spentInInput;
 
-                        if (spentInInput && (spentInInput.transaction.transactionHash)) { //this has been spent, also add the transaction where it is being spent
+                        if (spentInInput && (spentInInput.transaction.transactionHash)) { // this has been spent, also add the transaction where it is being spent
                             NSValue *hash = uint256_obj(spentInInput.transaction.transactionHash.txHash.UInt256);
                             if (self.allTx[hash] == nil) {
                                 DSTransaction *transaction = [spentInInput.transaction transactionForChain:self.wallet.chain];
@@ -274,7 +274,7 @@
             }
         }
     }];
-    //DSLog(@"Time: %f", -[startTime timeIntervalSinceNow]);
+    // DSLog(@"Time: %f", -[startTime timeIntervalSinceNow]);
     [self sortTransactions];
     _balance = UINT64_MAX; // trigger balance changed notification even if balance is zero
     [self updateBalance];
@@ -322,7 +322,7 @@
 // MARK: - Calculated Attributes
 
 - (NSString *)uniqueID {
-    return [NSString stringWithFormat:@"%@-0-%u", self.wallet.uniqueIDString, self.accountNumber]; //0 is for type 0
+    return [NSString stringWithFormat:@"%@-0-%u", self.wallet.uniqueIDString, self.accountNumber]; // 0 is for type 0
 }
 
 - (uint32_t)blockHeight {
@@ -511,7 +511,7 @@
 - (BOOL)containsAddress:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return FALSE;
     }
 
@@ -525,7 +525,7 @@
 - (BOOL)containsInternalAddress:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return FALSE;
     }
 
@@ -540,7 +540,7 @@
 - (BOOL)baseDerivationPathsContainAddress:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return FALSE;
     }
 
@@ -556,15 +556,15 @@
 - (BOOL)containsExternalAddress:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return FALSE;
     }
 
     for (DSDerivationPath *derivationPath in self.fundDerivationPaths) {
         if ([derivationPath isKindOfClass:[DSFundsDerivationPath class]]) {
             if ([(DSFundsDerivationPath *)derivationPath containsReceiveAddress:address]) return TRUE;
-        } else if ([derivationPath isKindOfClass:[DSIncomingFundsDerivationPath class]]) {              //!OCLINT
-            if ([(DSIncomingFundsDerivationPath *)derivationPath containsAddress:address]) return TRUE; //!OCLINT
+        } else if ([derivationPath isKindOfClass:[DSIncomingFundsDerivationPath class]]) {              //! OCLINT
+            if ([(DSIncomingFundsDerivationPath *)derivationPath containsAddress:address]) return TRUE; //! OCLINT
         }
     }
     return FALSE;
@@ -573,7 +573,7 @@
 - (DSIncomingFundsDerivationPath *)externalDerivationPathContainingAddress:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return nil;
     }
 
@@ -587,7 +587,7 @@
 - (BOOL)addressIsUsed:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return FALSE;
     }
 
@@ -600,7 +600,7 @@
 - (BOOL)transactionAddressAlreadySeenInOutputs:(NSString *)address {
     NSParameterAssert(address);
     if (![address isKindOfClass:[NSString class]]) {
-        //in case address is of type [NSNull null]
+        // in case address is of type [NSNull null]
         return FALSE;
     }
 
@@ -717,9 +717,9 @@
                 continue;
             }
 
-            //TODO: don't add outputs below TX_MIN_OUTPUT_AMOUNT
-            //TODO: don't add coin generation outputs < 100 blocks deep
-            //NOTE: balance/UTXOs will then need to be recalculated when last block changes
+            // TODO: don't add outputs below TX_MIN_OUTPUT_AMOUNT
+            // TODO: don't add coin generation outputs < 100 blocks deep
+            // NOTE: balance/UTXOs will then need to be recalculated when last block changes
             for (DSTransactionOutput *output in tx.outputs) {
                 for (DSDerivationPath *derivationPath in self.fundDerivationPaths) {
                     if ([derivationPath containsAddress:output.address]) {
@@ -1058,10 +1058,10 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
         amount += [amounts[i++] unsignedLongLongValue];
     }
 
-    //TODO: use up all UTXOs for all used addresses to avoid leaving funds in addresses whose public key is revealed
-    //TODO: avoid combining addresses in a single transaction when possible to reduce information leakage
-    //TODO: use up UTXOs received from any of the output scripts that this transaction sends funds to, to mitigate an
-    //      attacker double spending and requesting a refund
+    // TODO: use up all UTXOs for all used addresses to avoid leaving funds in addresses whose public key is revealed
+    // TODO: avoid combining addresses in a single transaction when possible to reduce information leakage
+    // TODO: use up UTXOs received from any of the output scripts that this transaction sends funds to, to mitigate an
+    //       attacker double spending and requesting a refund
     for (NSValue *output in self.utxos) {
         [output getValue:&o];
         tx = self.allTx[uint256_obj(o.hash)];
@@ -1071,12 +1071,12 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
         if ([transaction isMemberOfClass:[DSProviderRegistrationTransaction class]]) {
             DSProviderRegistrationTransaction *providerRegistrationTransaction = (DSProviderRegistrationTransaction *)transaction;
             if (dsutxo_eq(providerRegistrationTransaction.collateralOutpoint, o)) {
-                continue; //don't spend the collateral
+                continue; // don't spend the collateral
             }
             DSUTXO reversedCollateral = (DSUTXO){.hash = uint256_reverse(providerRegistrationTransaction.collateralOutpoint.hash), providerRegistrationTransaction.collateralOutpoint.n};
 
             if (dsutxo_eq(reversedCollateral, o)) {
-                continue; //don't spend the collateral
+                continue; // don't spend the collateral
             }
         }
         [transaction addInputHash:tx.txHash
@@ -1119,7 +1119,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
                 break;
             }
             feeAmount = [self.wallet.chain feeForTxSize:transaction.size + TX_OUTPUT_SIZE + cpfpSize]; // assume we will add a change output
-            //if (self.balance > amount) feeAmount += (self.balance - amount) % 100; // round off balance to 100 satoshi
+            // if (self.balance > amount) feeAmount += (self.balance - amount) % 100; // round off balance to 100 satoshi
         }
 
         if (balance == amount + feeAmount || balance >= amount + feeAmount + self.wallet.chain.minOutputAmount) break;
@@ -1180,7 +1180,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
 #endif
         tx.blockHeight = height;
         if (tx.timestamp == UINT32_MAX || tx.timestamp == 0) {
-            //We should only update the timestamp one time
+            // We should only update the timestamp one time
             tx.timestamp = timestamp;
         }
 
@@ -1222,19 +1222,19 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
     if (!transaction) return FALSE;
     UInt256 transactionHash = transaction.txHash;
     for (DSTransaction *possibleDependentTransaction in self.transactions) {           // remove dependent transactions
-        if (possibleDependentTransaction.blockHeight < transaction.blockHeight) break; //because transactions are sorted we can break
+        if (possibleDependentTransaction.blockHeight < transaction.blockHeight) break; // because transactions are sorted we can break
 
         if (!uint256_eq(transactionHash, possibleDependentTransaction.txHash) &&
             [possibleDependentTransaction.inputs indexOfObjectPassingTest:^BOOL(DSTransactionInput *_Nonnull obj, NSUInteger idx, BOOL *_Nonnull stop) {
                 return uint256_eq(obj.inputHash, transactionHash);
             }] != NSNotFound) {
-            //this transaction is dependent on one we want to remove
+            // this transaction is dependent on one we want to remove
             [dependentTransactions addObject:possibleDependentTransaction];
         }
     }
 
     for (DSTransaction *transaction in dependentTransactions) {
-        //remove all dependent transactions
+        // remove all dependent transactions
         [self removeTransaction:transaction saveImmediately:NO];
     }
 
@@ -1388,9 +1388,9 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
     if (uint256_is_zero(txHash)) return NO;
 
     if (![self canContainTransaction:transaction]) {
-        //this transaction is not meant for this account
+        // this transaction is not meant for this account
         if (transaction.blockHeight == TX_UNCONFIRMED) {
-            if ([self checkIsFirstTransaction:transaction]) _firstTransactionHash = txHash; //it's okay if this isn't really the first, as it will be close enough (500 blocks close)
+            if ([self checkIsFirstTransaction:transaction]) _firstTransactionHash = txHash; // it's okay if this isn't really the first, as it will be close enough (500 blocks close)
             self.allTx[hash] = transaction;
         }
         return NO;
@@ -1405,23 +1405,23 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
         return YES;
     }
 
-    //TODO: handle tx replacement with input sequence numbers (now replacements appear invalid until confirmation)
+    // TODO: handle tx replacement with input sequence numbers (now replacements appear invalid until confirmation)
 #if DEBUG
     DSLogPrivate(@"[DSAccount] received unseen transaction %@", transaction);
 #else
     DSLog(@"[DSAccount] received unseen transaction %@", @"<REDACTED>");
 #endif
-    if ([self checkIsFirstTransaction:transaction]) _firstTransactionHash = txHash; //it's okay if this isn't really the first, as it will be close enough (500 blocks close)
+    if ([self checkIsFirstTransaction:transaction]) _firstTransactionHash = txHash; // it's okay if this isn't really the first, as it will be close enough (500 blocks close)
     self.allTx[hash] = transaction;
     [self.transactions insertObject:transaction atIndex:0];
     for (NSString *address in transaction.inputAddresses) {
         for (DSFundsDerivationPath *derivationPath in self.fundDerivationPaths) {
-            [derivationPath registerTransactionAddress:address]; //only will register if derivation path contains address
+            [derivationPath registerTransactionAddress:address]; // only will register if derivation path contains address
         }
     }
     for (DSTransactionOutput *output in transaction.outputs) {
         for (DSFundsDerivationPath *derivationPath in self.fundDerivationPaths) {
-            [derivationPath registerTransactionAddress:output.address]; //only will register if derivation path contains address
+            [derivationPath registerTransactionAddress:output.address]; // only will register if derivation path contains address
         }
     }
     [transaction loadBlockchainIdentitiesFromDerivationPaths:self.fundDerivationPaths];
@@ -1457,8 +1457,8 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
 - (BOOL)transactionIsValid:(DSTransaction *)transaction {
     NSParameterAssert(transaction);
 
-    //TODO: XXX attempted double spends should cause conflicted tx to remain unverified until they're confirmed
-    //TODO: XXX verify signatures for spends
+    // TODO: XXX attempted double spends should cause conflicted tx to remain unverified until they're confirmed
+    // TODO: XXX verify signatures for spends
     if (transaction.blockHeight != TX_UNCONFIRMED) return YES;
 
     if (self.allTx[uint256_obj(transaction.txHash)] != nil) {
@@ -1517,11 +1517,11 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
     return ([self transactionOutputsAreLockedTill:transaction] != 0);
 }
 
-//true if this transaction outputs can not be used in inputs
+// true if this transaction outputs can not be used in inputs
 - (uint32_t)transactionOutputsAreLockedTill:(DSTransaction *)transaction {
     NSParameterAssert(transaction);
 
-    if ([transaction isKindOfClass:[DSCoinbaseTransaction class]]) { //only allow these to be spent after 100 inputs
+    if ([transaction isKindOfClass:[DSCoinbaseTransaction class]]) { // only allow these to be spent after 100 inputs
         DSCoinbaseTransaction *coinbaseTransaction = (DSCoinbaseTransaction *)transaction;
         if (coinbaseTransaction.height + 100 > self.wallet.chain.lastSyncBlockHeight) return coinbaseTransaction.height + 100;
     }
@@ -1574,7 +1574,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
     NSParameterAssert(transaction);
 
     uint64_t amount = 0;
-    //TODO: don't include outputs below TX_MIN_OUTPUT_AMOUNT
+    // TODO: don't include outputs below TX_MIN_OUTPUT_AMOUNT
     for (DSTransactionOutput *output in transaction.outputs) {
         if (output.address && [self containsAddress:output.address])
             amount += output.amount;
@@ -1585,7 +1585,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
 - (uint64_t)amountReceivedFromTransactionOnExternalAddresses:(DSTransaction *)transaction {
     NSParameterAssert(transaction);
     uint64_t amount = 0;
-    //TODO: don't include outputs below TX_MIN_OUTPUT_AMOUNT
+    // TODO: don't include outputs below TX_MIN_OUTPUT_AMOUNT
     for (DSTransactionOutput *output in transaction.outputs) {
         if (output.address && [self containsExternalAddress:output.address])
             amount += output.amount;
@@ -1596,7 +1596,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
 - (uint64_t)amountReceivedFromTransactionOnInternalAddresses:(DSTransaction *)transaction {
     NSParameterAssert(transaction);
     uint64_t amount = 0;
-    //TODO: don't include outputs below TX_MIN_OUTPUT_AMOUNT
+    // TODO: don't include outputs below TX_MIN_OUTPUT_AMOUNT
     for (DSTransactionOutput *output in transaction.outputs) {
         if (output.address && [self containsInternalAddress:output.address])
             amount += output.amount;
@@ -1803,7 +1803,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
                                                       return;
                                                   }
 
-                                                  //TODO: make sure not to create a transaction larger than TX_MAX_SIZE
+                                                  // TODO: make sure not to create a transaction larger than TX_MAX_SIZE
                                                   for (NSValue *output in utxos) {
                                                       DSUTXO o;
 
@@ -1821,7 +1821,7 @@ static NSUInteger transactionAddressIndex(DSTransaction *transaction, NSArray *a
                                                   }
 
                                                   // we will be adding a wallet output (34 bytes), also non-compact pubkey sigs are larger by 32bytes each
-                                                  if (fee) feeAmount = [self.wallet.chain feeForTxSize:tx.size + 34 + (key.publicKeyData.length - 33) * tx.inputs.count]; //input count doesn't matter for non instant transactions
+                                                  if (fee) feeAmount = [self.wallet.chain feeForTxSize:tx.size + 34 + (key.publicKeyData.length - 33) * tx.inputs.count]; // input count doesn't matter for non instant transactions
 
                                                   if (feeAmount + self.wallet.chain.minOutputAmount > balance) {
                                                       completion(nil, 0, [NSError errorWithDomain:@"DashSync"

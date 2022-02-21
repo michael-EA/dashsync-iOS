@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) UInt256 transactionHash;
 @property (nonatomic, readonly) UInt768 signature;
 @property (nonatomic, readonly) NSArray *inputOutpoints;
-@property (nonatomic, readonly) BOOL signatureVerified; //verifies the signature and quorum together
+@property (nonatomic, readonly) BOOL signatureVerified; // verifies the signature and quorum together
 @property (nonatomic, readonly) DSQuorumEntry *intendedQuorum;
 @property (nonatomic, readonly) BOOL saved;
 @property (nonatomic, readonly) UInt256 requestID;

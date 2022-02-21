@@ -57,7 +57,7 @@
 + (instancetype)masterBlockchainIdentityContactsDerivationPathForAccountNumber:(uint32_t)accountNumber onChain:(DSChain *)chain {
     NSUInteger coinType = (chain.chainType == DSChainType_MainNet) ? 5 : 1;
     UInt256 indexes[] = {uint256_from_long(FEATURE_PURPOSE), uint256_from_long(coinType), uint256_from_long(FEATURE_PURPOSE_DASHPAY), uint256_from_long(accountNumber)};
-    //todo full uint256 derivation
+    // todo full uint256 derivation
     BOOL hardenedIndexes[] = {YES, YES, YES, YES};
     return [self derivationPathWithIndexes:indexes hardened:hardenedIndexes length:4 type:DSDerivationPathType_PartialPath signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_ContactBasedFundsRoot onChain:chain];
 }
@@ -88,7 +88,7 @@
     NSData *extendedPublicKeyData = [self deserializedExtendedPublicKey:serializedExtendedPublicKey onChain:chain rDepth:&depth rTerminalHardened:&terminalHardened rTerminalIndex:&terminalIndex];
     UInt256 indexes[] = {terminalIndex};
     BOOL hardenedIndexes[] = {terminalHardened};
-    DSDerivationPath *derivationPath = [[self alloc] initWithIndexes:indexes hardened:hardenedIndexes length:0 type:DSDerivationPathType_ViewOnlyFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_Unknown onChain:chain]; //we are going to assume this is only ecdsa for now
+    DSDerivationPath *derivationPath = [[self alloc] initWithIndexes:indexes hardened:hardenedIndexes length:0 type:DSDerivationPathType_ViewOnlyFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_Unknown onChain:chain]; // we are going to assume this is only ecdsa for now
     derivationPath.extendedPublicKey = [DSKey keyWithExtendedPublicKeyData:extendedPublicKeyData forKeyType:DSKeyType_ECDSA];
     derivationPath.depth = @(depth);
     [derivationPath standaloneSaveExtendedPublicKeyToKeyChain];
@@ -218,7 +218,7 @@
             NSAssert(account.accountNumber == [self accountNumber], @"account number doesn't match derivation path ending");
         }
         _account = account;
-        //when we set the account load addresses
+        // when we set the account load addresses
     }
 }
 
@@ -490,7 +490,7 @@
 
 // MARK: - Identifiers
 
-//Derivation paths can be stored based on the wallet and derivation or based solely on the public key
+// Derivation paths can be stored based on the wallet and derivation or based solely on the public key
 
 - (NSString *)createIdentifierForDerivationPath {
     return [NSData dataWithUInt256:[[self extendedPublicKeyData] SHA256]].shortHexString;
@@ -569,7 +569,7 @@
 
 - (DSKey *)generateExtendedPublicKeyFromSeed:(NSData *)seed storeUnderWalletUniqueId:(NSString *)walletUniqueId storePrivateKey:(BOOL)storePrivateKey {
     if (!seed) return nil;
-    if (![self length] && self.reference != DSDerivationPathReference_Root) return nil; //there needs to be at least 1 length
+    if (![self length] && self.reference != DSDerivationPathReference_Root) return nil; // there needs to be at least 1 length
     DSKey *seedKey = [DSKey keyWithSeedData:seed forKeyType:self.signingAlgorithm];
     if (!seedKey) return nil;
     _extendedPublicKey = [seedKey privateDeriveTo256BitDerivationPath:self];
@@ -593,9 +593,9 @@
     NSParameterAssert(parentDerivationPath);
     NSAssert(self.length > parentDerivationPath.length, @"length must be inferior to the parent derivation path length");
     NSAssert(parentDerivationPath.extendedPublicKey, @"the parent derivation path must have an extended public key");
-    if (![self length]) return nil;                             //there needs to be at least 1 length
+    if (![self length]) return nil;                             // there needs to be at least 1 length
     if (self.length <= parentDerivationPath.length) return nil; // we need to be longer
-    if (!parentDerivationPath.extendedPublicKey) return nil;    //parent derivation path
+    if (!parentDerivationPath.extendedPublicKey) return nil;    // parent derivation path
     if (parentDerivationPath.signingAlgorithm != self.signingAlgorithm) return nil;
     for (NSInteger i = 0; i < [parentDerivationPath length] - 1; i++) {
         NSAssert(uint256_eq([parentDerivationPath indexAtPosition:i], [self indexAtPosition:i]), @"This derivation path must start with elements of the parent derivation path");
@@ -622,7 +622,7 @@
     NSParameterAssert(indexPath);
     NSParameterAssert(seed);
     if (!seed || !indexPath) return nil;
-    if (![self length]) return nil; //there needs to be at least 1 length
+    if (![self length]) return nil; // there needs to be at least 1 length
     DSKey *topKey = [DSKey keyWithSeedData:seed forKeyType:self.signingAlgorithm];
     NSAssert(topKey, @"Top key should exist");
     if (!topKey) return nil;
@@ -711,10 +711,10 @@
 
 // MARK: - Deprecated
 
-//this is for upgrade purposes only
+// this is for upgrade purposes only
 - (DSKey *)deprecatedIncorrectExtendedPublicKeyFromSeed:(NSData *)seed {
     if (!seed) return nil;
-    if (![self length]) return nil; //there needs to be at least 1 length
+    if (![self length]) return nil; // there needs to be at least 1 length
     NSMutableData *mpk = [NSMutableData secureData];
     UInt512 I;
 
@@ -794,7 +794,7 @@
 }
 
 - (NSString *)serializedExtendedPublicKey {
-    //todo make sure this works with BLS keys
+    // todo make sure this works with BLS keys
     if (self.extendedPublicKeyData.length < 36) return nil;
 
     uint32_t fingerprint = [self.extendedPublicKeyData UInt32AtOffset:0];

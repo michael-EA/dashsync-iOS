@@ -102,7 +102,7 @@
     if (rArray.count >= gapLimit) return [rArray subarrayWithRange:NSMakeRange(0, gapLimit)];
 
     @synchronized(self) {
-        //It seems weird to repeat this, but it's correct because of the original call receive address and change address
+        // It seems weird to repeat this, but it's correct because of the original call receive address and change address
         rArray = [self.mOrderedAddresses mutableCopy];
         i = rArray.count;
 

@@ -49,18 +49,18 @@
 
 @interface RHIntervalTree : NSObject
 
-- (instancetype _Nonnull)initWithIntervalObjects:(NSArray *_Nonnull)intervals; //all added objects should implement the RHIntervalProtocol
+- (instancetype _Nonnull)initWithIntervalObjects:(NSArray *_Nonnull)intervals; // all added objects should implement the RHIntervalProtocol
 
 @property (nonatomic, readonly) NSInteger minStart;
 @property (nonatomic, readonly) NSInteger maxStop;
 
 @property (nonatomic, readonly, copy) NSArray *_Nonnull allObjects;
 
-//Contained methods return objects fully contained within the start and stop(inclusive) coordinates.
+// Contained methods return objects fully contained within the start and stop(inclusive) coordinates.
 - (NSArray *_Nonnull)containedObjectsInRange:(NSRange)range;
 - (NSArray *_Nonnull)containedObjectsBetweenStart:(NSInteger)start andStop:(NSInteger)stop;
 
-//Overlapping methods return objects which are contained or partially overlap the start and stop(inclusive) coordinates.
+// Overlapping methods return objects which are contained or partially overlap the start and stop(inclusive) coordinates.
 - (NSArray *_Nonnull)overlappingObjectsForIndex:(NSUInteger)idx;
 - (NSArray *_Nonnull)overlappingObjectsForRange:(NSRange)range;
 - (NSArray *_Nonnull)overlappingObjectsForStart:(NSInteger)start andStop:(NSInteger)stop;
@@ -71,7 +71,7 @@
 @end
 
 
-//convenience object that implements the RHIntervalProtocol
+// convenience object that implements the RHIntervalProtocol
 @interface RHInterval : NSObject <RHIntervalProtocol>
 
 @property (nonatomic, readonly, strong) id<NSObject> _Nullable object;

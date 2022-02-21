@@ -51,7 +51,7 @@ NSString *const DSMasternodeManagerNotificationMasternodeListKey = @"DSMasternod
 
 NSString *const DSQuorumListDidChangeNotification = @"DSQuorumListDidChangeNotification";
 
-NSString *const DSMasternodeListDiffValidationErrorNotification = @"DSMasternodeListDiffValidationErrorNotification"; //Also for Quorums
+NSString *const DSMasternodeListDiffValidationErrorNotification = @"DSMasternodeListDiffValidationErrorNotification"; // Also for Quorums
 
 NSString *const DSGovernanceObjectListDidChangeNotification = @"DSGovernanceObjectListDidChangeNotification";
 NSString *const DSGovernanceVotesDidChangeNotification = @"DSGovernanceVotesDidChangeNotification";

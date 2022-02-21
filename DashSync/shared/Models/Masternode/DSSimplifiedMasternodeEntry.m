@@ -33,7 +33,7 @@
 @property (nonatomic, assign) UInt256 simplifiedMasternodeEntryHash;
 @property (nonatomic, assign) UInt128 address;
 @property (nonatomic, assign) uint16_t port;
-@property (nonatomic, assign) UInt384 operatorPublicKey; //this is using BLS
+@property (nonatomic, assign) UInt384 operatorPublicKey; // this is using BLS
 @property (nonatomic, assign) UInt160 keyIDVoting;
 @property (nonatomic, assign) BOOL isValid;
 @property (nonatomic, assign) uint32_t knownConfirmedAtHeight;
@@ -179,7 +179,7 @@
         uint32_t distance = previousBlock.height - blockHeight;
         if (distance < minDistance) {
             minDistance = distance;
-            //NSLog(@"SME Hash for proTxHash %@ : Using %@ instead of %@ for list at block height %u", uint256_hex(self.providerRegistrationTransactionHash), uint256_hex(previousSimplifiedMasternodeEntryHashes[previousBlock].UInt256), uint256_hex(usedSimplifiedMasternodeEntryHash), blockHeight);
+            // NSLog(@"SME Hash for proTxHash %@ : Using %@ instead of %@ for list at block height %u", uint256_hex(self.providerRegistrationTransactionHash), uint256_hex(previousSimplifiedMasternodeEntryHashes[previousBlock].UInt256), uint256_hex(usedSimplifiedMasternodeEntryHash), blockHeight);
             usedSimplifiedMasternodeEntryHash = previousSimplifiedMasternodeEntryHashes[previousBlock].UInt256;
         }
     }

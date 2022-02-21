@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  A subclass of `DSOperation` that executes zero or more operations as part of its
  own execution. This class of operation is very useful for abstracting several
  smaller operations into a larger operation.
- 
+
  Additionally, `DSGroupOperation`s are useful if you establish a chain of dependencies,
  but part of the chain may "loop". For example, if you have an operation that
  requires the user to be authenticated, you may consider putting the "login"

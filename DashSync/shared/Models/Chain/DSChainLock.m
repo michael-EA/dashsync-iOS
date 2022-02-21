@@ -93,7 +93,7 @@
     self.blockHash = blockHash;
     self.signatureVerified = signatureVerified;
     self.quorumVerified = quorumVerified;
-    self.saved = YES; //this is coming already from the persistant store and not from the network
+    self.saved = YES; // this is coming already from the persistant store and not from the network
     return self;
 }
 
@@ -171,16 +171,16 @@
     if (self.signatureVerified) {
         self.intendedQuorum = quorumEntry;
         self.quorumVerified = self.intendedQuorum.verified;
-        //We should also set the chain's last chain lock
+        // We should also set the chain's last chain lock
         if (!self.chain.lastChainLock || self.chain.lastChainLock.height < self.height) {
             self.chain.lastChainLock = self;
         }
     } else if (quorumEntry.verified && offset == 8) {
-        //try again a few blocks more in the past
+        // try again a few blocks more in the past
         DSLog(@"trying with offset 0");
         return [self verifySignatureWithQuorumOffset:0];
     } else if (quorumEntry.verified && offset == 0) {
-        //try again a few blocks more in the future
+        // try again a few blocks more in the future
         DSLog(@"trying with offset 16");
         return [self verifySignatureWithQuorumOffset:16];
     }
@@ -194,7 +194,7 @@
 
 - (void)saveInitial {
     if (_saved) return;
-    //saving here will only create, not update.
+    // saving here will only create, not update.
     NSManagedObjectContext *context = [NSManagedObjectContext chainContext];
     [context performBlockAndWait:^{ // add the transaction to core data
         if ([DSChainLockEntity countObjectsInContext:context matching:@"merkleBlock.blockHash == %@", uint256_data(self.blockHash)] == 0) {

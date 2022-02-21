@@ -86,7 +86,7 @@
 
     self.payloadOffset = off;
 
-    //todo verify inputs hash
+    // todo verify inputs hash
 
     if ([self payloadData].length != payloadLength) return nil;
     self.txHash = self.data.SHA256_2;

@@ -201,7 +201,7 @@
                 if (options & NSPredicateCBORDataOptions_DataToBase64 && [rightExpression.constantValue isKindOfClass:[NSData class]]) {
                     [mArray addObject:[((NSData *)rightExpression.constantValue) base64String]];
                 } else if (options & NSPredicateCBORDataOptions_DataToBase64 && [rightExpression.constantValue isKindOfClass:[NSArray class]]) {
-                    //We might have an array of data
+                    // We might have an array of data
                     NSMutableArray *base64Array = [NSMutableArray array];
                     for (NSObject *member in rightExpression.constantValue) {
                         if ([member isKindOfClass:[NSData class]]) {
@@ -231,7 +231,7 @@
 }
 
 - (DSPlatformTreeQuery *)platformTreeQuery {
-    //todo
+    // todo
     return nil;
 }
 
@@ -244,9 +244,9 @@
 }
 
 - (NSData *)secondaryIndexPathForQueryType:(DSPlatformQueryType)queryType {
-    //ToDo: We probably need to not have the last element of the whereClause
+    // ToDo: We probably need to not have the last element of the whereClause
     NSArray *array = [self whereClauseArrayWithOptions:NSPredicateCBORDataOptions_DataToBase64];
-    //This will be replaced
+    // This will be replaced
     switch (queryType) {
         case DSPlatformQueryType_OneElement:
             return [[array componentsJoinedByString:@"|"] dataUsingEncoding:NSUTF8StringEncoding];

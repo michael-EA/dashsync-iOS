@@ -127,7 +127,7 @@
     uint32_t height = blockHeightLookup(self.blockHash);
     if (height == UINT32_MAX) {
         DSLog(@"Block height lookup queried an unknown block %@", uint256_hex(self.blockHash));
-        return nil; //this should never happen
+        return nil; // this should never happen
     }
     for (NSData *proTxHash in proTxHashes) {
         DSSimplifiedMasternodeEntry *simplifiedMasternodeEntry = [self.mSimplifiedMasternodeListDictionaryByReversedRegistrationTransactionHash objectForKey:proTxHash];
@@ -144,7 +144,7 @@
     uint32_t height = blockHeightLookup(self.blockHash);
     if (height == UINT32_MAX) {
         DSLog(@"Block height lookup queried an unknown block %@", uint256_hex(self.blockHash));
-        return nil; //this should never happen
+        return nil; // this should never happen
     }
     for (NSData *proTxHash in proTxHashes) {
         DSSimplifiedMasternodeEntry *simplifiedMasternodeEntry = [self.mSimplifiedMasternodeListDictionaryByReversedRegistrationTransactionHash objectForKey:proTxHash];

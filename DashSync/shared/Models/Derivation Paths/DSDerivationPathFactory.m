@@ -271,27 +271,27 @@
 
 - (NSArray<DSDerivationPath *> *)unloadedSpecializedDerivationPathsForWallet:(DSWallet *)wallet {
     NSMutableArray *mArray = [NSMutableArray array];
-    //Masternode Owner
+    // Masternode Owner
     DSAuthenticationKeysDerivationPath *providerOwnerKeysDerivationPath = [DSAuthenticationKeysDerivationPath providerOwnerKeysDerivationPathForChain:wallet.chain];
     providerOwnerKeysDerivationPath.wallet = wallet;
     [mArray addObject:providerOwnerKeysDerivationPath];
 
 
-    //Masternode Operator
+    // Masternode Operator
     DSAuthenticationKeysDerivationPath *providerOperatorKeysDerivationPath = [DSAuthenticationKeysDerivationPath providerOperatorKeysDerivationPathForChain:wallet.chain];
     providerOperatorKeysDerivationPath.wallet = wallet;
 
     [mArray addObject:providerOperatorKeysDerivationPath];
 
 
-    //Masternode Voting
+    // Masternode Voting
     DSAuthenticationKeysDerivationPath *providerVotingKeysDerivationPath = [DSAuthenticationKeysDerivationPath providerVotingKeysDerivationPathForChain:wallet.chain];
     providerVotingKeysDerivationPath.wallet = wallet;
 
     [mArray addObject:providerVotingKeysDerivationPath];
 
 
-    //Masternode Holding
+    // Masternode Holding
     DSMasternodeHoldingsDerivationPath *providerFundsDerivationPath = [DSMasternodeHoldingsDerivationPath providerFundsDerivationPathForChain:wallet.chain];
     providerFundsDerivationPath.wallet = wallet;
 
@@ -299,7 +299,7 @@
 
 
     if (wallet.chain.isEvolutionEnabled) {
-        //Blockchain Identities
+        // Blockchain Identities
         DSAuthenticationKeysDerivationPath *blockchainIdentitiesECDSADerivationPath = [DSAuthenticationKeysDerivationPath blockchainIdentityECDSAKeysDerivationPathForChain:wallet.chain];
         blockchainIdentitiesECDSADerivationPath.wallet = wallet;
 

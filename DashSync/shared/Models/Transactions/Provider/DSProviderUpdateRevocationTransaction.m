@@ -60,7 +60,7 @@
     off += 96;
     self.payloadOffset = off;
 
-    //todo verify inputs hash
+    // todo verify inputs hash
 
     if ([self payloadData].length != payloadLength) return nil;
     self.txHash = self.data.SHA256_2;
@@ -128,7 +128,7 @@
 - (NSData *)payloadDataForHash {
     NSMutableData *data = [NSMutableData data];
     [data appendData:[self basePayloadData]];
-    //no need to add 0 here
+    // no need to add 0 here
     return data;
 }
 

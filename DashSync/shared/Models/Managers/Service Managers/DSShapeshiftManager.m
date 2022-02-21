@@ -154,7 +154,7 @@
 /*
  url: shapeshift.io/marketinfo/dash_btc
  method: GET
- 
+
  Success Output:
  {
  "pair"     : "dash_btc",
@@ -291,9 +291,9 @@
  destTag    = (Optional) Destination tag that you want appended to a Ripple payment to you
  rsAddress  = (Optional) For new NXT accounts to be funded, you supply this on NXT payment to you
  apiKey     = (Optional) Your affiliate PUBLIC KEY, for volume tracking, affiliate payments, split-shifts, etc...
- 
+
  example data: {"withdrawal":"AAAAAAAAAAAAA", "pair":"btc_ltc", returnAddress:"BBBBBBBBBBB"}
- 
+
  Success Output:
  {
  deposit: [Deposit Address (or memo field if input coin is BTS / BITUSD)],
@@ -354,7 +354,7 @@
  data required:
  email    = the address for receipt email to be sent to
  txid       = the transaction id of the transaction TO the user (ie the txid for the withdrawal NOT the deposit)
- 
+
  Success Output:
  {"email":
  {
@@ -413,12 +413,12 @@
  url: shapeshift.io/sendamount
  method: POST
  data type: JSON
- 
+
  //1. Send amount request
- 
- 
+
+
  Data required:
- 
+
  amount          = the amount to be sent to the withdrawal address
  withdrawal      = the address for coin to be sent to
  pair            = what coins are being exchanged in the form [input coin]_[output coin]  ie ltc_btc
@@ -426,13 +426,13 @@
  destTag         = (Optional) Destination tag that you want appended to a Ripple payment to you
  rsAddress       = (Optional) For new NXT accounts to be funded, supply this on NXT payment to you
  apiKey          = (Optional) Your affiliate PUBLIC KEY, for volume tracking, affiliate payments, split-shifts, etc...
- 
+
  example data {"amount":123, "withdrawal":"123ABC", "pair":"ltc_btc", returnAddress:"BBBBBBB"}
- 
- 
+
+
  Success Output:
- 
- 
+
+
  {
  success:
  {
@@ -446,7 +446,7 @@
  apiPubKey: [public API attached to this shift, if one was given]
  }
  }
- 
+
  */
 ////////////////////////////////////////////////////////////////////
 
@@ -498,15 +498,15 @@
  method: POST
  data type: JSON
  data required: address  = The deposit address associated with the pending transaction
- 
+
  Example data : {address : "1HB5XMLmzFVj8ALj6mfBsbifRoD4miY36v"}
- 
+
  Success Output:
- 
+
  {  success  : " Pending Transaction cancelled "  }
- 
+
  Error Output:
- 
+
  {  error  : {errorMessage}  }
  */
 ////////////////////////////////////////////////////////////////////

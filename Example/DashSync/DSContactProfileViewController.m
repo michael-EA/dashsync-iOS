@@ -145,7 +145,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.blockchainIdentity.currentDashpayUsername) {
         return @[self.displayNameCellModel, self.avatarCellModel, self.aboutMeCellModel];
     } else {
-        //show username model if no username is set
+        // show username model if no username is set
         return @[self.usernameCellModel, self.displayNameCellModel, self.avatarCellModel, self.aboutMeCellModel];
     }
 }

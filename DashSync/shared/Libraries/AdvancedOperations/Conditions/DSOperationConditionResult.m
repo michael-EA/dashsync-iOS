@@ -58,7 +58,7 @@
     // Check conditions.
     dispatch_group_t conditionGroup = dispatch_group_create();
 
-    //array of OperationConditionResult
+    // array of OperationConditionResult
     NSMutableArray *results = [NSMutableArray arrayWithCapacity:conditions.count];
 
     // Ask each condition to evaluate and store its result in the "results" array.

@@ -87,7 +87,7 @@
     chain.chainManager = self;
     self.sporkManager = [[DSSporkManager alloc] initWithChain:chain];
     self.masternodeManager = [[DSMasternodeManager alloc] initWithChain:chain];
-    self.DAPIClient = [[DSDAPIClient alloc] initWithChain:chain]; //this must be
+    self.DAPIClient = [[DSDAPIClient alloc] initWithChain:chain]; // this must be
     [self.masternodeManager setUp];
     self.governanceSyncManager = [[DSGovernanceSyncManager alloc] initWithChain:chain];
     self.transactionManager = [[DSTransactionManager alloc] initWithChain:chain];
@@ -118,7 +118,7 @@
     if (self.maxTransactionsInfoData) {
         self.maxTransactionsInfoDataFirstHeight = [self.maxTransactionsInfoData UInt16AtOffset:0] * 500;
         self.maxTransactionsInfoDataLastHeight = [self.maxTransactionsInfoData UInt16AtOffset:self.maxTransactionsInfoData.length - 6] * 500;
-        //We need MaxTransactionsInfoDataLastHeight to be after the last checkpoint so there is no gap in info. We can gather Max Transactions after the last checkpoint from the initial terminal sync.
+        // We need MaxTransactionsInfoDataLastHeight to be after the last checkpoint so there is no gap in info. We can gather Max Transactions after the last checkpoint from the initial terminal sync.
         NSAssert(self.maxTransactionsInfoDataLastHeight > self.chain.checkpoints.lastObject.height, @"MaxTransactionsInfoDataLastHeight should always be after the last checkpoint for the system to work");
     }
 
@@ -199,13 +199,13 @@
     while (checkHeight < self.maxTransactionsInfoDataLastHeight) {
         uint16_t averageValue = [self averageTransactionsFor500RangeAtHeight:checkHeight];
 
-        if (i != 0 && averageValue > 10) { //before 12 just ignore
+        if (i != 0 && averageValue > 10) { // before 12 just ignore
             float maxVariance = endingVarianceLevel * (powf((float)i, convergencePolynomial) + internalVarianceParameter) / powf((float)i, convergencePolynomial);
-            //NSLog(@"height %d averageValue %hu currentAverage %.2f variance %.2f",checkHeight,averageValue,currentAverage,fabsf(averageValue - currentAverage)/currentAverage);
+            // NSLog(@"height %d averageValue %hu currentAverage %.2f variance %.2f",checkHeight,averageValue,currentAverage,fabsf(averageValue - currentAverage)/currentAverage);
             if (fabsf(averageValue - currentAverage) > maxVariance * currentAverage) {
-                //there was a big change in variance
-                if (recursionLevel > recursionMaxLevel) break; //don't recurse again
-                //We need to make sure that this wasn't a 1 time variance
+                // there was a big change in variance
+                if (recursionLevel > recursionMaxLevel) break; // don't recurse again
+                // We need to make sure that this wasn't a 1 time variance
                 float nextAverage = 0;
                 NSArray *nextAverages = nil;
 
@@ -241,7 +241,7 @@
     if (height < self.maxTransactionsInfoDataFirstHeight) return 0;
     if (height > self.maxTransactionsInfoDataFirstHeight + self.maxTransactionsInfoData.length * 500 / 6) return 0;
     uint32_t offset = floor(((double)height - self.maxTransactionsInfoDataFirstHeight) * 2.0 / 500.0) * 3;
-    //uint32_t checkHeight = [self.maxTransactionsInfoData UInt16AtOffset:offset]*500;
+    // uint32_t checkHeight = [self.maxTransactionsInfoData UInt16AtOffset:offset]*500;
     uint16_t average = [self.maxTransactionsInfoData UInt16AtOffset:offset + 2];
     uint16_t max = [self.maxTransactionsInfoData UInt16AtOffset:offset + 4];
     NSAssert(average < max, @"Sanity check that average < max");
@@ -252,7 +252,7 @@
     if (height < self.maxTransactionsInfoDataFirstHeight) return 0;
     if (height > self.maxTransactionsInfoDataFirstHeight + self.maxTransactionsInfoData.length * 500 / 6) return 0;
     uint32_t offset = floor(((double)height - self.maxTransactionsInfoDataFirstHeight) * 2.0 / 500.0) * 3;
-    //uint32_t checkHeight = [self.maxTransactionsInfoData UInt16AtOffset:offset]*500;
+    // uint32_t checkHeight = [self.maxTransactionsInfoData UInt16AtOffset:offset]*500;
     uint16_t average = [self.maxTransactionsInfoData UInt16AtOffset:offset + 2];
     uint16_t max = [self.maxTransactionsInfoData UInt16AtOffset:offset + 4];
     NSAssert(average < max, @"Sanity check that average < max");
@@ -273,10 +273,10 @@
     uint32_t chainBlocks = [self chainBlocksToSync];
     uint32_t terminalBlocks = [self terminalHeadersToSync];
     uint32_t masternodeListsToSync = self.masternodeManager.estimatedMasternodeListsToSync;
-    //a unit of weight is the time it would take to sync 1000 blocks;
-    //terminal headers are 4 times faster the blocks
-    //the first masternode list is worth 20000 blocks
-    //each masternode list after that is worth 2000 blocks
+    // a unit of weight is the time it would take to sync 1000 blocks;
+    // terminal headers are 4 times faster the blocks
+    // the first masternode list is worth 20000 blocks
+    // each masternode list after that is worth 2000 blocks
     uint32_t chainWeight = chainBlocks;
     uint32_t terminalWeight = terminalBlocks / 4;
     uint32_t masternodeWeight = masternodeListsToSync ? (20000 + 2000 * (masternodeListsToSync - 1)) : 0;
@@ -577,7 +577,7 @@
 
 - (void)chainWillStartSyncingBlockchain:(DSChain *)chain {
     if (!self.gotSporksAtChainSyncStart) {
-        [self.sporkManager getSporks]; //get the sporks early on
+        [self.sporkManager getSporks]; // get the sporks early on
     }
 }
 
@@ -625,7 +625,7 @@
                                                       userInfo:@{DSChainManagerNotificationChainKey: self, DSPeerManagerNotificationPeerKey: peer}];
     dispatch_async(self.chain.networkingQueue, ^{
         if ((self.syncPhase != DSChainSyncPhase_ChainSync && self.syncPhase != DSChainSyncPhase_Synced) && self.chain.needsInitialTerminalHeadersSync) {
-            //masternode list should be synced first and the masternode list is old
+            // masternode list should be synced first and the masternode list is old
             self.syncPhase = DSChainSyncPhase_InitialTerminalBlocks;
             [peer sendGetheadersMessageWithLocators:[self.chain terminalBlocksLocatorArray] andHashStop:UINT256_ZERO];
         } else if (([[DSOptionsManager sharedInstance] syncType] & DSSyncType_MasternodeList) && ((self.masternodeManager.lastMasternodeListBlockHeight < self.chain.lastTerminalBlockHeight - 8) || (self.masternodeManager.lastMasternodeListBlockHeight == UINT32_MAX))) {
@@ -749,7 +749,7 @@
     [self setCount:count forSyncCountInfo:syncCountInfo inContext:self.chain.chainManagedObjectContext];
     switch (syncCountInfo) {
         case DSSyncCountInfo_List: {
-            //deprecated
+            // deprecated
             break;
         }
         case DSSyncCountInfo_GovernanceObject: {
@@ -764,7 +764,7 @@
         case DSSyncCountInfo_GovernanceObjectVote: {
             if (peer.governanceRequestState == DSGovernanceRequestState_GovernanceObjectVoteHashesReceived) {
                 if (count == 0) {
-                    //there were no votes
+                    // there were no votes
                     DSLog(@"no votes on object, going to next object");
                     peer.governanceRequestState = DSGovernanceRequestState_GovernanceObjectVotes;
                     [self.governanceSyncManager finishedGovernanceVoteSyncWithPeer:peer];

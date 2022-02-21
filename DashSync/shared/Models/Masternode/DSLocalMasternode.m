@@ -39,11 +39,11 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, assign) UInt128 ipAddress;
 @property (nonatomic, assign) uint16_t port;
-@property (nonatomic, strong) DSWallet *operatorKeysWallet; //only if this is contained in the wallet.
-@property (nonatomic, strong) DSWallet *holdingKeysWallet;  //only if this is contained in the wallet.
-@property (nonatomic, strong) DSWallet *ownerKeysWallet;    //only if this is contained in the wallet.
-@property (nonatomic, strong) DSWallet *votingKeysWallet;   //only if this is contained in the wallet.
-@property (nonatomic, assign) uint32_t operatorWalletIndex; //the derivation path index of keys
+@property (nonatomic, strong) DSWallet *operatorKeysWallet; // only if this is contained in the wallet.
+@property (nonatomic, strong) DSWallet *holdingKeysWallet;  // only if this is contained in the wallet.
+@property (nonatomic, strong) DSWallet *ownerKeysWallet;    // only if this is contained in the wallet.
+@property (nonatomic, strong) DSWallet *votingKeysWallet;   // only if this is contained in the wallet.
+@property (nonatomic, assign) uint32_t operatorWalletIndex; // the derivation path index of keys
 @property (nonatomic, assign) uint32_t ownerWalletIndex;
 @property (nonatomic, assign) uint32_t votingWalletIndex;
 @property (nonatomic, assign) uint32_t holdingWalletIndex;
@@ -124,7 +124,7 @@
     DSWallet *votingWallet = [providerRegistrationTransaction.chain walletHavingProviderVotingAuthenticationHash:providerRegistrationTransaction.votingKeyHash foundAtIndex:&votingAddressIndex];
     DSWallet *operatorWallet = [providerRegistrationTransaction.chain walletHavingProviderOperatorAuthenticationKey:providerRegistrationTransaction.operatorKey foundAtIndex:&operatorAddressIndex];
     DSWallet *holdingWallet = [providerRegistrationTransaction.chain walletContainingMasternodeHoldingAddressForProviderRegistrationTransaction:providerRegistrationTransaction foundAtIndex:&holdingAddressIndex];
-    //DSLogPrivate(@"%@",[uint160_data(providerRegistrationTransaction.ownerKeyHash) addressFromHash160DataForChain:providerRegistrationTransaction.chain]);
+    // DSLogPrivate(@"%@",[uint160_data(providerRegistrationTransaction.ownerKeyHash) addressFromHash160DataForChain:providerRegistrationTransaction.chain]);
     self.operatorKeysWallet = operatorWallet;
     self.holdingKeysWallet = holdingWallet;
     self.ownerKeysWallet = ownerWallet;
@@ -141,7 +141,7 @@
     self.providerUpdateRevocationTransactions = [NSMutableArray array];
     self.previousOperatorWalletIndexes = [NSMutableIndexSet indexSet];
     self.previousVotingWalletIndexes = [NSMutableIndexSet indexSet];
-    self.status = DSLocalMasternodeStatus_Registered; //because it comes from a transaction already
+    self.status = DSLocalMasternodeStatus_Registered; // because it comes from a transaction already
     [self associateName];
     return self;
 }
@@ -165,7 +165,7 @@
     return YES;
 }
 
-//the voting key can either be private or public key
+// the voting key can either be private or public key
 - (BOOL)forceVotingKey:(DSECDSAKey *)votingKey {
     if (self.votingWalletIndex != UINT32_MAX) return NO;
     [self.ownerKeysWallet registerMasternodeVoter:self withVotingKey:votingKey];
@@ -442,7 +442,7 @@
 
                                                       [providerRegistrationTransaction updateInputsHash];
 
-                                                      //there is no need to sign the payload here.
+                                                      // there is no need to sign the payload here.
 
                                                       self.status = DSLocalMasternodeStatus_Created;
 
@@ -489,7 +489,7 @@
 
                                                       [providerUpdateServiceTransaction signPayloadWithKey:operatorKey];
 
-                                                      //there is no need to sign the payload here.
+                                                      // there is no need to sign the payload here.
 
                                                       completion(providerUpdateServiceTransaction);
                                                   }];
@@ -528,7 +528,7 @@
 
                                                       [providerUpdateRegistrarTransaction signPayloadWithKey:ownerKey];
 
-                                                      //there is no need to sign the payload here.
+                                                      // there is no need to sign the payload here.
 
                                                       completion(providerUpdateRegistrarTransaction);
                                                   }];
@@ -558,7 +558,7 @@
                                                       uint64_t fee = [self.providerRegistrationTransaction.chain feeForTxSize:194]; // assume we will add a change output
                                                       DSTransaction *reclaimTransaction = [[DSTransaction alloc] initWithInputHashes:@[uint256_obj(self.providerRegistrationTransaction.txHash)] inputIndexes:@[@(index)] inputScripts:@[script] outputAddresses:@[fundingAccount.changeAddress] outputAmounts:@[@(MASTERNODE_COST - fee)] onChain:self.providerRegistrationTransaction.chain];
 
-                                                      //there is no need to sign the payload here.
+                                                      // there is no need to sign the payload here.
                                                       completion(reclaimTransaction);
                                                   }];
 }

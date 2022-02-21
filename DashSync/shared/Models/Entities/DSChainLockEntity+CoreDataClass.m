@@ -30,7 +30,7 @@
     chainLockEntity.validSignature = chainLock.signatureVerified;
     chainLockEntity.signature = [NSData dataWithUInt768:chainLock.signature];
     chainLockEntity.merkleBlock = merkleBlockEntity;
-    chainLockEntity.quorum = [chainLock.intendedQuorum matchingQuorumEntryEntityInContext:context]; //the quorum might not yet
+    chainLockEntity.quorum = [chainLock.intendedQuorum matchingQuorumEntryEntityInContext:context]; // the quorum might not yet
     if (chainLock.signatureVerified) {
         DSChainEntity *chainEntity = [chainLock.intendedQuorum.chain chainEntityInContext:context];
         if (!chainEntity.lastChainLock || chainEntity.lastChainLock.merkleBlock.height < chainLock.height) {

@@ -26,7 +26,7 @@
 #define DSDSMNELog(s, ...)
 #endif
 
-//DSLog(s, ##__VA_ARGS__)
+// DSLog(s, ##__VA_ARGS__)
 
 @implementation DSSimplifiedMasternodeEntryEntity
 
@@ -39,7 +39,7 @@
         NSAssert(simplifiedMasternodeEntry.updateHeight == blockHeight, @"the block height should be the same as the entry update height");
         self.updateHeight = blockHeight;
 
-        //we should only update if the data received is the most recent
+        // we should only update if the data received is the most recent
         if (!uint128_eq(self.ipv6Address.UInt128, simplifiedMasternodeEntry.address)) {
             self.ipv6Address = uint128_data(simplifiedMasternodeEntry.address);
             uint32_t address32 = CFSwapInt32BigToHost(simplifiedMasternodeEntry.address.u32[3]);
@@ -56,7 +56,7 @@
 
         if (![self.confirmedHash isEqualToData:confirmedHashData]) {
             NSAssert(self.confirmedHash == nil || uint256_is_zero(self.confirmedHash.UInt256), @"If this changes the previous should be empty");
-            //this should only happen once at confirmation
+            // this should only happen once at confirmation
             self.confirmedHash = confirmedHashData;
             self.knownConfirmedAtHeight = blockHeight;
             DSDSMNELog(@"changing confirmedHashData to %@", confirmedHashData.hexString);
@@ -131,46 +131,46 @@
 }
 
 - (void)mergePreviousFieldsUsingSimplifiedMasternodeEntrysPreviousFields:(DSSimplifiedMasternodeEntry *)simplifiedMasternodeEntry atBlockHeight:(uint32_t)blockHeight {
-    //we should not update current values but we should merge some fields
-    //currentPrevious means the current set of previous values
-    //oldPrevious means the old set of previous values
+    // we should not update current values but we should merge some fields
+    // currentPrevious means the current set of previous values
+    // oldPrevious means the old set of previous values
 
-    //SimplifiedMasternodeEntryHashes
+    // SimplifiedMasternodeEntryHashes
     NSDictionary *oldPreviousSimplifiedMasternodeEntryHashesDictionary = [self blockHashDictionaryFromBlockDictionary:simplifiedMasternodeEntry.previousSimplifiedMasternodeEntryHashes];
     if (oldPreviousSimplifiedMasternodeEntryHashesDictionary && oldPreviousSimplifiedMasternodeEntryHashesDictionary.count) {
         NSDictionary *currentPreviousSimplifiedMasternodeEntryHashesDictionary = self.previousSimplifiedMasternodeEntryHashes;
         if (!currentPreviousSimplifiedMasternodeEntryHashesDictionary || currentPreviousSimplifiedMasternodeEntryHashesDictionary.count == 0) {
             self.previousSimplifiedMasternodeEntryHashes = oldPreviousSimplifiedMasternodeEntryHashesDictionary;
         } else {
-            //we should merge the 2 dictionaries
+            // we should merge the 2 dictionaries
             NSMutableDictionary *mergedDictionary = [currentPreviousSimplifiedMasternodeEntryHashesDictionary mutableCopy];
             [mergedDictionary addEntriesFromDictionary:oldPreviousSimplifiedMasternodeEntryHashesDictionary];
             self.previousSimplifiedMasternodeEntryHashes = mergedDictionary;
         }
     }
 
-    //OperatorBLSPublicKeys
+    // OperatorBLSPublicKeys
     NSDictionary *oldPreviousOperatorBLSPublicKeysDictionary = [self blockHashDictionaryFromBlockDictionary:simplifiedMasternodeEntry.previousOperatorPublicKeys];
     if (oldPreviousOperatorBLSPublicKeysDictionary && oldPreviousOperatorBLSPublicKeysDictionary.count) {
         NSDictionary *currentPreviousOperatorBLSPublicKeysDictionary = self.previousOperatorBLSPublicKeys;
         if (!currentPreviousOperatorBLSPublicKeysDictionary || currentPreviousOperatorBLSPublicKeysDictionary.count == 0) {
             self.previousOperatorBLSPublicKeys = oldPreviousOperatorBLSPublicKeysDictionary;
         } else {
-            //we should merge the 2 dictionaries
+            // we should merge the 2 dictionaries
             NSMutableDictionary *mergedDictionary = [currentPreviousOperatorBLSPublicKeysDictionary mutableCopy];
             [mergedDictionary addEntriesFromDictionary:oldPreviousOperatorBLSPublicKeysDictionary];
             self.previousOperatorBLSPublicKeys = mergedDictionary;
         }
     }
 
-    //MasternodeValidity
+    // MasternodeValidity
     NSDictionary *oldPreviousValidityDictionary = [self blockHashDictionaryFromBlockDictionary:simplifiedMasternodeEntry.previousValidity];
     if (oldPreviousValidityDictionary && oldPreviousValidityDictionary.count) {
         NSDictionary *currentPreviousValidityDictionary = self.previousValidity;
         if (!currentPreviousValidityDictionary || currentPreviousValidityDictionary.count == 0) {
             self.previousValidity = oldPreviousValidityDictionary;
         } else {
-            //we should merge the 2 dictionaries
+            // we should merge the 2 dictionaries
             NSMutableDictionary *mergedDictionary = [currentPreviousValidityDictionary mutableCopy];
             [mergedDictionary addEntriesFromDictionary:oldPreviousValidityDictionary];
             self.previousValidity = mergedDictionary;
@@ -178,7 +178,7 @@
     }
 
     if (uint256_is_not_zero(self.confirmedHash.UInt256) && uint256_is_not_zero(simplifiedMasternodeEntry.confirmedHash) && (self.knownConfirmedAtHeight > blockHeight)) {
-        //we now know it was confirmed earlier so update to earlier
+        // we now know it was confirmed earlier so update to earlier
         self.knownConfirmedAtHeight = blockHeight;
     }
 }

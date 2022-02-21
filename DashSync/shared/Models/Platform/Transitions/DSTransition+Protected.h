@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DSTransition ()
 
-@property (nonatomic, assign) BOOL saved; //don't trust this
+@property (nonatomic, assign) BOOL saved; // don't trust this
 
 @property (nonatomic, assign) uint16_t version;
 @property (nonatomic, assign) DSTransitionType type;

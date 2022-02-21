@@ -27,7 +27,7 @@
     }
 
     if (!quorumEntryEntity) {
-        if (potentialQuorumEntry.saved) { //it was deleted in the meantime, and should be ignored
+        if (potentialQuorumEntry.saved) { // it was deleted in the meantime, and should be ignored
             return nil;
         } else {
             quorumEntryEntity = [DSQuorumEntryEntity managedObjectInBlockedContext:context];

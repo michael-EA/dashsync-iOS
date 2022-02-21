@@ -88,7 +88,7 @@
     responseHandler.completionQueue = completionQueue;
     responseHandler.successHandler = ^(NSDictionary *successDictionary) {
         DSTransaction *transaction = [DSTransactionFactory transactionWithMessage:successDictionary[@"transactionData"] onChain:self.chain];
-        //ToDo: set block height properly
+        // ToDo: set block height properly
         transaction.blockHeight = self.chain.lastChainLock ? self.chain.lastChainLock.height : self.chain.lastTerminalBlockHeight;
         if (transaction) {
             if (success) {

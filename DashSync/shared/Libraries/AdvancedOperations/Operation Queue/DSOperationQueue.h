@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The delegate of an `DSOperationQueue` can respond to `DSOperation` lifecycle
  events by implementing these methods.
- 
+
  In general, implementing `DSOperationQueueDelegate` is not necessary; you would
  want to use an `DSOperationObserver` instead. However, there are a couple of
  situations where using `DSOperationQueueDelegate` can lead to simpler code.
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  `DSOperationQueue` is an `NSOperationQueue` subclass that implements a large
  number of "extra features" related to the `DSOperation` class:
- 
+
  - Notifying a delegate of all operation completion
  - Extracting generated dependencies from operation conditions
  - Setting up dependencies to enforce mutual exclusivity

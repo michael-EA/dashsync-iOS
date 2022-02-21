@@ -192,7 +192,6 @@
 // MARK:- Table View Data Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     if (indexPath.section == IP_ADDRESSES_SECTION && indexPath.row == _insertedIPAddresses.count + 1) {
         if (self.activeAddDevnetIPAddressTableViewCell) {
             NSIndexPath *activeIndexPath = [self.tableView indexPathForCell:self.activeAddDevnetIPAddressTableViewCell];

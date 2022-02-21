@@ -47,7 +47,7 @@
 @implementation DSBlockchainInvitation
 
 - (instancetype)initAtIndex:(uint32_t)index inWallet:(DSWallet *)wallet {
-    //this is the creation of a new blockchain identity
+    // this is the creation of a new blockchain identity
     NSParameterAssert(wallet);
 
     if (!(self = [super init])) return nil;
@@ -140,7 +140,7 @@
     [self.identity setInvitationRegistrationCreditFundingTransaction:fundingTransaction];
     [self registerInWalletForBlockchainIdentityUniqueId:fundingTransaction.creditBurnIdentityIdentifier];
 
-    //we need to also set the address of the funding transaction to being used so future identities past the initial gap limit are found
+    // we need to also set the address of the funding transaction to being used so future identities past the initial gap limit are found
     [fundingTransaction markInvitationAddressAsUsedInWallet:self.wallet];
 }
 
@@ -167,7 +167,7 @@
 - (BOOL)unregisterLocally {
     NSAssert(self.identity.isOutgoingInvitation, @"The underlying identity is not from an invitation");
     if (!self.identity.isOutgoingInvitation) return FALSE;
-    if (self.identity.isRegistered) return FALSE; //if the invitation has already been used we can not unregister it
+    if (self.identity.isRegistered) return FALSE; // if the invitation has already been used we can not unregister it
     [self.wallet unregisterBlockchainInvitation:self];
     [self deletePersistentObjectAndSave:YES inContext:[NSManagedObjectContext platformContext]];
     return TRUE;
@@ -368,7 +368,7 @@
             });
             return;
         }
-        NSString *registrationFundingPrivateKeyString = [registrationFundingPrivateKey serializedPrivateKeyForChain:self.chain]; //in WIF format
+        NSString *registrationFundingPrivateKeyString = [registrationFundingPrivateKey serializedPrivateKeyForChain:self.chain]; // in WIF format
 
         NSString *serializedISLock = [self.identity.registrationCreditFundingTransaction.instantSendLockAwaitingProcessing.toData hexString];
 

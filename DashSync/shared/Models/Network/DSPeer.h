@@ -69,8 +69,8 @@ typedef NS_ENUM(uint32_t, DSInvType)
 #define USER_AGENT [NSString stringWithFormat:@"/dashwallet:%@/", \
                              NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"]]
 
-#define WEEK_TIME_INTERVAL 604800 //7*24*60*60
-#define DAY_TIME_INTERVAL 86400   //24*60*60
+#define WEEK_TIME_INTERVAL 604800 // 7*24*60*60
+#define DAY_TIME_INTERVAL 86400   // 24*60*60
 #define HOUR_TIME_INTERVAL 3600
 
 // explanation of message types at: https://en.bitcoin.it/wiki/Protocol_specification
@@ -85,7 +85,7 @@ typedef NS_ENUM(uint32_t, DSInvType)
 #define MSG_TX @"tx"
 #define MSG_IX @"ix"           // deprecated in version 14
 #define MSG_TXLVOTE @"txlvote" // deprecated in version 14
-#define MSG_ISLOCK @"islock"   //version 14
+#define MSG_ISLOCK @"islock"   // version 14
 #define MSG_BLOCK @"block"
 #define MSG_CHAINLOCK @"clsig"
 #define MSG_HEADERS @"headers"
@@ -101,17 +101,17 @@ typedef NS_ENUM(uint32_t, DSInvType)
 #define MSG_REJECT @"reject"           // BIP61: https://github.com/bitcoin/bips/blob/master/bip-0061.mediawiki
 #define MSG_SENDHEADERS @"sendheaders" // BIP130: https://github.com/bitcoin/bips/blob/master/bip-0130.mediawiki
 #define MSG_FEEFILTER @"feefilter"     // BIP133: https://github.com/bitcoin/bips/blob/master/bip-0133.mediawiki
-#define MSG_SENDDSQ @"senddsq"         //version 14
-#define MSQ_SENDCMPCT @"sendcmpct"     //version 12.3
+#define MSG_SENDDSQ @"senddsq"         // version 14
+#define MSQ_SENDCMPCT @"sendcmpct"     // version 12.3
 
-//Dash specific
+// Dash specific
 
-//Control
+// Control
 
 #define MSG_SPORK @"spork"
 #define MSG_GETSPORKS @"getsporks"
 
-//Masternode
+// Masternode
 
 #define MSG_DSEG @"dseg"
 #define MSG_MNB @"mnb"
@@ -124,13 +124,13 @@ typedef NS_ENUM(uint32_t, DSInvType)
 #define MSG_GETMNLISTDIFF @"getmnlistd"
 #define MSG_MNLISTDIFF @"mnlistdiff"
 
-//Governance
+// Governance
 
 #define MSG_GOVOBJ @"govobj"
 #define MSG_GOVOBJVOTE @"govobjvote"
 #define MSG_GOVOBJSYNC @"govsync"
 
-//Private send
+// Private send
 
 #define MSG_DARKSENDANNOUNCE @"dsa"
 #define MSG_DARKSENDCONTROL @"dsc"

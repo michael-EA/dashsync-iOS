@@ -76,8 +76,8 @@
     self.store = [[DSMasternodeListStore alloc] initWithChain:chain];
     self.service = [[DSMasternodeListService alloc] initWithChain:chain
                                                 blockHeightLookup:^uint32_t(UInt256 blockHash) {
-        return [self heightForBlockHash:blockHash];
-    }];
+                                                    return [self heightForBlockHash:blockHash];
+                                                }];
     _timedOutAttempt = 0;
     _timeOutObserverTry = 0;
     return self;
@@ -133,7 +133,7 @@
     }
     double amountLeft = self.masternodeListRetrievalQueueCount;
     double maxAmount = self.masternodeListRetrievalQueueMaxAmount;
-    if (!maxAmount || self.store.masternodeListsByBlockHash.count <= 1) { //1 because there might be a default
+    if (!maxAmount || self.store.masternodeListsByBlockHash.count <= 1) { // 1 because there might be a default
         return self.store.masternodeListsToSync;
     }
     return amountLeft;
@@ -190,10 +190,10 @@
     }
     [self processRequestFromFileForBlockHash:checkpoint.blockHash
                                   completion:^(DSMasternodeList *masternodeList) {
-        if (masternodeList) {
-            self.currentMasternodeList = masternodeList;
-        }
-    }];
+                                      if (masternodeList) {
+                                          self.currentMasternodeList = masternodeList;
+                                      }
+                                  }];
 }
 
 - (DSMasternodeList *)loadMasternodeListAtBlockHash:(NSData *)blockHash withBlockHeightLookup:(BlockHeightFinder)blockHeightLookup {
@@ -259,32 +259,32 @@
 - (void)dequeueMasternodeListRequest {
     [self.service fetchMasternodeListsToRetrieve:^(NSOrderedSet<NSData *> *list) {
         for (NSData *blockHashData in list) {
-            //we should check the associated block still exists
+            // we should check the associated block still exists
             if ([self hasBlockForBlockHash:blockHashData]) {
-                //there is the rare possibility we have the masternode list as a checkpoint, so lets first try that
+                // there is the rare possibility we have the masternode list as a checkpoint, so lets first try that
                 NSUInteger pos = [list indexOfObject:blockHashData];
                 UInt256 blockHash = blockHashData.UInt256;
                 [self processRequestFromFileForBlockHash:blockHash
                                               completion:^(DSMasternodeList *masternodeList) {
-                    if (masternodeList) {
-                        if (!KEEP_OLD_QUORUMS && uint256_eq(self.store.lastQueriedBlockHash, masternodeList.blockHash)) {
-                            [self.store removeOldMasternodeLists];
-                        }
-                        if (![self.service retrievalQueueCount]) {
-                            [self.chain.chainManager.transactionManager checkWaitingForQuorums];
-                        }
-                        [self.service.retrievalQueue removeObject:blockHashData];
-                    } else {
-                        //we need to go get it
-                        UInt256 previousMasternodeAlreadyKnownBlockHash = [self.store closestKnownBlockHashForBlockHash:blockHash];
-                        UInt256 previousMasternodeInQueueBlockHash = (pos ? [list objectAtIndex:pos - 1].UInt256 : UINT256_ZERO);
-                        uint32_t previousMasternodeAlreadyKnownHeight = [self heightForBlockHash:previousMasternodeAlreadyKnownBlockHash];
-                        uint32_t previousMasternodeInQueueHeight = (pos ? [self heightForBlockHash:previousMasternodeInQueueBlockHash] : UINT32_MAX);
-                        UInt256 previousBlockHash = pos ? (previousMasternodeAlreadyKnownHeight > previousMasternodeInQueueHeight ? previousMasternodeAlreadyKnownBlockHash : previousMasternodeInQueueBlockHash) : previousMasternodeAlreadyKnownBlockHash;
-                        NSAssert(([self heightForBlockHash:previousBlockHash] != UINT32_MAX) || uint256_is_zero(previousBlockHash), @"This block height should be known");
-                        [self.service retrieveMasternodeList:previousBlockHash forBlockHash:blockHash];
-                    }
-                }];
+                                                  if (masternodeList) {
+                                                      if (!KEEP_OLD_QUORUMS && uint256_eq(self.store.lastQueriedBlockHash, masternodeList.blockHash)) {
+                                                          [self.store removeOldMasternodeLists];
+                                                      }
+                                                      if (![self.service retrievalQueueCount]) {
+                                                          [self.chain.chainManager.transactionManager checkWaitingForQuorums];
+                                                      }
+                                                      [self.service.retrievalQueue removeObject:blockHashData];
+                                                  } else {
+                                                      // we need to go get it
+                                                      UInt256 previousMasternodeAlreadyKnownBlockHash = [self.store closestKnownBlockHashForBlockHash:blockHash];
+                                                      UInt256 previousMasternodeInQueueBlockHash = (pos ? [list objectAtIndex:pos - 1].UInt256 : UINT256_ZERO);
+                                                      uint32_t previousMasternodeAlreadyKnownHeight = [self heightForBlockHash:previousMasternodeAlreadyKnownBlockHash];
+                                                      uint32_t previousMasternodeInQueueHeight = (pos ? [self heightForBlockHash:previousMasternodeInQueueBlockHash] : UINT32_MAX);
+                                                      UInt256 previousBlockHash = pos ? (previousMasternodeAlreadyKnownHeight > previousMasternodeInQueueHeight ? previousMasternodeAlreadyKnownBlockHash : previousMasternodeInQueueBlockHash) : previousMasternodeAlreadyKnownBlockHash;
+                                                      NSAssert(([self heightForBlockHash:previousBlockHash] != UINT32_MAX) || uint256_is_zero(previousBlockHash), @"This block height should be known");
+                                                      [self.service retrieveMasternodeList:previousBlockHash forBlockHash:blockHash];
+                                                  }
+                                              }];
             } else {
                 DSLog(@"Missing block (%@)", blockHashData.hexString);
                 [self.service.retrievalQueue removeObject:blockHashData];
@@ -299,7 +299,7 @@
         DSMerkleBlock *merkleBlock = [self.chain blockFromChainTip:blocksAgo];
         UInt256 merkleBlockHash = merkleBlock.blockHash;
         if ([self.service hasLatestBlockInRetrievalQueueWithHash:merkleBlockHash]) {
-            //we are asking for the same as the last one
+            // we are asking for the same as the last one
             return;
         }
         if ([self.store addBlockToValidationQueue:merkleBlock]) {
@@ -316,7 +316,7 @@
 
 - (void)getCurrentMasternodeListWithSafetyDelay:(uint32_t)safetyDelay {
     if (safetyDelay) {
-        //the safety delay checks to see if this was called in the last n seconds.
+        // the safety delay checks to see if this was called in the last n seconds.
         self.timeIntervalForMasternodeRetrievalSafetyDelay = [[NSDate date] timeIntervalSince1970];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(safetyDelay * NSEC_PER_SEC)), self.chain.networkingQueue, ^{
             NSTimeInterval timeElapsed = [[NSDate date] timeIntervalSince1970] - self.timeIntervalForMasternodeRetrievalSafetyDelay;
@@ -360,7 +360,7 @@
     self.store.lastQueriedBlockHash = blockHash;
     NSData *blockHashData = uint256_data(blockHash);
     [self.store.masternodeListQueriesNeedingQuorumsValidated addObject:blockHashData];
-    //this is safe
+    // this is safe
     [self getMasternodeListsForBlockHashes:[NSOrderedSet orderedSetWithObject:blockHashData]];
     return TRUE;
 }
@@ -378,26 +378,26 @@
                              lastBlock:block
                     useInsightAsBackup:NO
                             completion:^(DSMnDiffProcessingResult *result) {
-        if (![result isValid]) {
-            DSLog(@"Invalid File for block at height %u with merkleRoot %@", block.height, uint256_hex(block.merkleRoot));
-            completion(nil);
-            return;
-        }
-        //valid Coinbase might be false if no merkle block
-        if (block && !result.validCoinbase) {
-            DSLog(@"Invalid Coinbase for block at height %u with merkleRoot %@", block.height, uint256_hex(block.merkleRoot));
-            completion(nil);
-            return;
-        }
-        __block DSMasternodeList *masternodeList = result.masternodeList;
-        [self.store saveMasternodeList:masternodeList
-                      addedMasternodes:result.addedMasternodes
-                   modifiedMasternodes:result.modifiedMasternodes
-                          addedQuorums:result.addedQuorums
-                            completion:^(NSError *_Nonnull error) {
-            completion(masternodeList);
-        }];
-    }];
+                                if (![result isValid]) {
+                                    DSLog(@"Invalid File for block at height %u with merkleRoot %@", block.height, uint256_hex(block.merkleRoot));
+                                    completion(nil);
+                                    return;
+                                }
+                                // valid Coinbase might be false if no merkle block
+                                if (block && !result.validCoinbase) {
+                                    DSLog(@"Invalid Coinbase for block at height %u with merkleRoot %@", block.height, uint256_hex(block.merkleRoot));
+                                    completion(nil);
+                                    return;
+                                }
+                                __block DSMasternodeList *masternodeList = result.masternodeList;
+                                [self.store saveMasternodeList:masternodeList
+                                              addedMasternodes:result.addedMasternodes
+                                           modifiedMasternodes:result.modifiedMasternodes
+                                                  addedQuorums:result.addedQuorums
+                                                    completion:^(NSError *_Nonnull error) {
+                                                        completion(masternodeList);
+                                                    }];
+                            }];
 }
 
 
@@ -410,7 +410,7 @@
         if (!lastBlock && [peer.chain allowInsightBlocksForVerification]) {
             lastBlock = [[peer.chain insightVerifiedBlocksByHashDictionary] objectForKey:uint256_data(blockHash)];
             if (!lastBlock && peer.chain.isTestnet) {
-                //We can trust insight if on testnet
+                // We can trust insight if on testnet
                 [self.service blockUntilAddInsight:blockHash];
                 lastBlock = [[peer.chain insightVerifiedBlocksByHashDictionary] objectForKey:uint256_data(blockHash)];
             }
@@ -428,7 +428,7 @@
         hasBlock = [self.store hasBlocksWithHash:blockHash];
     }
     if (!hasBlock && self.chain.isTestnet) {
-        //We can trust insight if on testnet
+        // We can trust insight if on testnet
         [self.service blockUntilAddInsight:blockHash];
         hasBlock = !![[self.chain insightVerifiedBlocksByHashDictionary] objectForKey:blockHashData];
     }
@@ -467,7 +467,7 @@
     if (!baseMasternodeList &&
         !uint256_eq(self.chain.genesisHash, baseBlockHash) &&
         uint256_is_not_zero(baseBlockHash)) {
-        //this could have been deleted in the meantime, if so rerequest
+        // this could have been deleted in the meantime, if so rerequest
         [self issueWithMasternodeListFromPeer:peer];
         DSLog(@"No base masternode list");
         return;
@@ -485,61 +485,61 @@
                              lastBlock:lastBlock
                     useInsightAsBackup:self.chain.isTestnet
                             completion:^(DSMnDiffProcessingResult *result) {
-        DSMasternodeList *masternodeList = result.masternodeList;
-        NSData *masternodeListBlockHashData = uint256_data(masternodeList.blockHash);
-        if (![self.service.retrievalQueue containsObject:masternodeListBlockHashData]) {
-            //We most likely wiped data in the meantime
-            [self.service cleanListsInRetrieval];
-            [self dequeueMasternodeListRequest];
-            return;
-        }
-        if ([result isValid] && result.validCoinbase) {
-            NSOrderedSet *neededMissingMasternodeLists = result.neededMissingMasternodeLists;
-            NSData *blockHashData = uint256_data(blockHash);
-            if ([neededMissingMasternodeLists count] && [self.store.masternodeListQueriesNeedingQuorumsValidated containsObject:blockHashData]) {
-                self.store.processingMasternodeListDiffHashes = nil;
-                self.store.masternodeListAwaitingQuorumValidation = masternodeList;
-                [self.service.retrievalQueue removeObject:blockHashData];
-                NSMutableOrderedSet *neededMasternodeLists = [neededMissingMasternodeLists mutableCopy];
-                [neededMasternodeLists addObject:blockHashData]; //also get the current one again
-                [self getMasternodeListsForBlockHashes:neededMasternodeLists];
-            } else {
-                UInt256 blockHash = masternodeList.blockHash;
-                if (uint256_eq(self.store.lastQueriedBlockHash, blockHash)) {
-                    self.currentMasternodeList = masternodeList;
-                }
-                if (uint256_eq(self.store.masternodeListAwaitingQuorumValidation.blockHash, blockHash)) {
-                    self.store.masternodeListAwaitingQuorumValidation = nil;
-                }
-                [self.store saveMasternodeList:masternodeList
-                              addedMasternodes:result.addedMasternodes
-                           modifiedMasternodes:result.modifiedMasternodes
-                                  addedQuorums:result.addedQuorums
-                                    completion:^(NSError *error) {
-                    if (!error || !self.masternodeListRetrievalQueueCount) { //if it is 0 then we most likely have wiped chain info
-                        return;
-                    }
-                    [self wipeMasternodeInfo];
-                    dispatch_async(self.chain.networkingQueue, ^{
-                        [self getCurrentMasternodeListWithSafetyDelay:0];
-                    });
-                }];
-                if (!KEEP_OLD_QUORUMS && uint256_eq(self.store.lastQueriedBlockHash, blockHash)) {
-                    [self.store removeOldMasternodeLists];
-                }
-                self.store.processingMasternodeListDiffHashes = nil;
-                [self.service.retrievalQueue removeObject:masternodeListBlockHashData];
-                [self dequeueMasternodeListRequest];
-                if (![self.service retrievalQueueCount]) {
-                    [self.chain.chainManager.transactionManager checkWaitingForQuorums];
-                }
-                [[NSUserDefaults standardUserDefaults] removeObjectForKey:CHAIN_FAULTY_DML_MASTERNODE_PEERS];
-            }
-        } else {
-            self.store.processingMasternodeListDiffHashes = nil;
-            [self issueWithMasternodeListFromPeer:peer];
-        }
-    }];
+                                DSMasternodeList *masternodeList = result.masternodeList;
+                                NSData *masternodeListBlockHashData = uint256_data(masternodeList.blockHash);
+                                if (![self.service.retrievalQueue containsObject:masternodeListBlockHashData]) {
+                                    // We most likely wiped data in the meantime
+                                    [self.service cleanListsInRetrieval];
+                                    [self dequeueMasternodeListRequest];
+                                    return;
+                                }
+                                if ([result isValid] && result.validCoinbase) {
+                                    NSOrderedSet *neededMissingMasternodeLists = result.neededMissingMasternodeLists;
+                                    NSData *blockHashData = uint256_data(blockHash);
+                                    if ([neededMissingMasternodeLists count] && [self.store.masternodeListQueriesNeedingQuorumsValidated containsObject:blockHashData]) {
+                                        self.store.processingMasternodeListDiffHashes = nil;
+                                        self.store.masternodeListAwaitingQuorumValidation = masternodeList;
+                                        [self.service.retrievalQueue removeObject:blockHashData];
+                                        NSMutableOrderedSet *neededMasternodeLists = [neededMissingMasternodeLists mutableCopy];
+                                        [neededMasternodeLists addObject:blockHashData]; // also get the current one again
+                                        [self getMasternodeListsForBlockHashes:neededMasternodeLists];
+                                    } else {
+                                        UInt256 blockHash = masternodeList.blockHash;
+                                        if (uint256_eq(self.store.lastQueriedBlockHash, blockHash)) {
+                                            self.currentMasternodeList = masternodeList;
+                                        }
+                                        if (uint256_eq(self.store.masternodeListAwaitingQuorumValidation.blockHash, blockHash)) {
+                                            self.store.masternodeListAwaitingQuorumValidation = nil;
+                                        }
+                                        [self.store saveMasternodeList:masternodeList
+                                                      addedMasternodes:result.addedMasternodes
+                                                   modifiedMasternodes:result.modifiedMasternodes
+                                                          addedQuorums:result.addedQuorums
+                                                            completion:^(NSError *error) {
+                                                                if (!error || !self.masternodeListRetrievalQueueCount) { // if it is 0 then we most likely have wiped chain info
+                                                                    return;
+                                                                }
+                                                                [self wipeMasternodeInfo];
+                                                                dispatch_async(self.chain.networkingQueue, ^{
+                                                                    [self getCurrentMasternodeListWithSafetyDelay:0];
+                                                                });
+                                                            }];
+                                        if (!KEEP_OLD_QUORUMS && uint256_eq(self.store.lastQueriedBlockHash, blockHash)) {
+                                            [self.store removeOldMasternodeLists];
+                                        }
+                                        self.store.processingMasternodeListDiffHashes = nil;
+                                        [self.service.retrievalQueue removeObject:masternodeListBlockHashData];
+                                        [self dequeueMasternodeListRequest];
+                                        if (![self.service retrievalQueueCount]) {
+                                            [self.chain.chainManager.transactionManager checkWaitingForQuorums];
+                                        }
+                                        [[NSUserDefaults standardUserDefaults] removeObjectForKey:CHAIN_FAULTY_DML_MASTERNODE_PEERS];
+                                    }
+                                } else {
+                                    self.store.processingMasternodeListDiffHashes = nil;
+                                    [self issueWithMasternodeListFromPeer:peer];
+                                }
+                            }];
 }
 
 - (void)peer:(DSPeer *)peer relayedQuorumRotationInfoMessage:(NSData *)message {
@@ -578,7 +578,7 @@
     NSArray *faultyPeers = [[NSUserDefaults standardUserDefaults] arrayForKey:CHAIN_FAULTY_DML_MASTERNODE_PEERS];
     if (faultyPeers.count >= MAX_FAULTY_DML_PEERS) {
         DSLog(@"Exceeded max failures for masternode list, starting from scratch");
-        //no need to remove local masternodes
+        // no need to remove local masternodes
         [self.service.retrievalQueue removeAllObjects];
         [self.store deleteAllOnChain];
         [self.store removeOldMasternodeLists];

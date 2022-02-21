@@ -18,7 +18,7 @@ typedef NS_ENUM(uint32_t, DSGovernanceObjectType)
     DSGovernanceObjectType_Uknown = 0,
     DSGovernanceObjectType_Proposal = 1,
     DSGovernanceObjectType_Trigger = 2,
-    DSGovernanceObjectType_Watchdog = 3, //deprecated
+    DSGovernanceObjectType_Watchdog = 3, // deprecated
 };
 
 @protocol DSGovernanceObjectDelegate;
@@ -74,7 +74,7 @@ typedef NS_ENUM(uint32_t, DSGovernanceObjectType)
 
 @protocol DSGovernanceObjectDelegate <NSObject>
 
-//we are syncing and a random vote comes in
+// we are syncing and a random vote comes in
 - (void)governanceObject:(DSGovernanceObject *)governanceObject didReceiveUnknownHashes:(NSSet *)hash fromPeer:(DSPeer *_Nullable)peer;
 
 @end

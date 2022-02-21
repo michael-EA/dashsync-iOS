@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DSDirectionalRange : NSObject
 
-@property (nonatomic, readonly) DSDirectionalKey *key; //also includes if values should be returned ascending or descending
+@property (nonatomic, readonly) DSDirectionalKey *key; // also includes if values should be returned ascending or descending
 @property (nonatomic, readonly, nullable) NSData *lowerBoundsValue;
 @property (nonatomic, readonly, nullable) NSData *upperBoundsValue;
 @property (nonatomic, readonly) bool lowerBoundsIncluded;

@@ -78,7 +78,7 @@
         isExternalTransaction = FALSE;
     }
 
-    //if (![transaction isKindOfClass:[DSCoinbaseTransaction class]]) {
+    // if (![transaction isKindOfClass:[DSCoinbaseTransaction class]]) {
     for (NSString *inputAddress in transaction.inputAddresses) {
         if (![mutableInputAddresses containsObject:inputAddress]) {
             [mutableInputAddresses addObject:inputAddress];
@@ -402,7 +402,7 @@
                     [self setBackgroundForCell:cell indexPath:indexPath];
                     cell.titleLabel.text = NSLocalizedString(@"size:", nil);
                     uint64_t roundedFeeCostPerByte = self.transaction.roundedFeeCostPerByte;
-                    if (roundedFeeCostPerByte != UINT64_MAX) { //otherwise it's being received and can't know.
+                    if (roundedFeeCostPerByte != UINT64_MAX) { // otherwise it's being received and can't know.
                         cell.statusLabel.text = roundedFeeCostPerByte == 1 ? NSLocalizedString(@"1 duff/byte", nil) : [NSString stringWithFormat:NSLocalizedString(@"%d duffs/byte", nil), (int)roundedFeeCostPerByte];
                     } else {
                         cell.statusLabel.text = nil;

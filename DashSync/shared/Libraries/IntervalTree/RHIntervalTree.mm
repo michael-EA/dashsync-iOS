@@ -45,14 +45,14 @@
 
     self = [super init];
     if (self) {
-        //setup our min and max values
+        // setup our min and max values
         _min = NSIntegerMax;
         _max = NSIntegerMin;
 
-        //hold onto the array until we are dealloc'd
+        // hold onto the array until we are dealloc'd
         _intervals = [intervals copy];
 
-        //setup the interval tree
+        // setup the interval tree
         vector<Interval<RHInterval *>> intervalsVector;
         intervalsVector.reserve(intervals.count);
 
@@ -183,7 +183,7 @@
 }
 
 - (NSRange)range {
-    //5, 10 should be (5, 6)
+    // 5, 10 should be (5, 6)
     NSRange range = NSMakeRange(_start, (_stop - _start) + 1);
     return range;
 }

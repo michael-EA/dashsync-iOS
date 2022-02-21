@@ -142,7 +142,7 @@
 }
 
 - (uint32_t)quorumThreshold {
-    switch (self.llmqType) { //!OCLINT
+    switch (self.llmqType) { //! OCLINT
         case DSLLMQType_50_60:
             return 30;
         case DSLLMQType_400_60:
@@ -188,9 +188,9 @@
         return NO;
     }
 
-    //The quorumHash must match the current DKG session
-    //todo
-    //The byte size of the signers and validMembers bitvectors must match “(quorumSize + 7) / 8”
+    // The quorumHash must match the current DKG session
+    // todo
+    // The byte size of the signers and validMembers bitvectors must match “(quorumSize + 7) / 8”
     if (self.signersBitset.length != (self.signersCount + 7) / 8) {
         DSLog(@"Error: The byte size of the signers bitvectors (%lu) must match “(quorumSize + 7) / 8 (%d)", (unsigned long)self.signersBitset.length, (self.signersCount + 7) / 8);
         return NO;
@@ -200,7 +200,7 @@
         return NO;
     }
 
-    //No out-of-range bits should be set in byte representation of the signers and validMembers bitvectors
+    // No out-of-range bits should be set in byte representation of the signers and validMembers bitvectors
     uint32_t signersOffset = self.signersCount / 8;
     uint8_t signersLastByte = [self.signersBitset UInt8AtOffset:signersOffset];
     uint8_t signersMask = UINT8_MAX >> (8 - signersOffset) << (8 - signersOffset);
@@ -217,7 +217,7 @@
         return NO;
     }
 
-    //The number of set bits in the signers and validMembers bitvectors must be at least >= quorumThreshold
+    // The number of set bits in the signers and validMembers bitvectors must be at least >= quorumThreshold
     if ([self.signersBitset trueBitsCount] < [self quorumThreshold]) {
         DSLog(@"Error: The number of set bits in the signers bitvector %llu must be at least >= quorumThreshold %d", [self.signersBitset trueBitsCount], [self quorumThreshold]);
         return NO;
@@ -227,7 +227,7 @@
         return NO;
     }
 
-    //The quorumSig must validate against the quorumPublicKey and the commitmentHash. As this is a recovered threshold signature, normal signature verification can be performed, without the need of the full quorum verification vector. The commitmentHash is calculated in the same way as in the commitment phase.
+    // The quorumSig must validate against the quorumPublicKey and the commitmentHash. As this is a recovered threshold signature, normal signature verification can be performed, without the need of the full quorum verification vector. The commitmentHash is calculated in the same way as in the commitment phase.
 
 #define LOG_COMMITMENT_DATA (0 && DEBUG)
 #define SAVE_QUORUM_ERROR_PUBLIC_KEY_ARRAY_TO_FILE (0 && DEBUG)
@@ -320,7 +320,7 @@
     }
 #endif
 
-    //The sig must validate against the commitmentHash and all public keys determined by the signers bitvector. This is an aggregated BLS signature verification.
+    // The sig must validate against the commitmentHash and all public keys determined by the signers bitvector. This is an aggregated BLS signature verification.
 
     BOOL quorumSignatureValidated = [DSBLSKey verify:self.commitmentHash signature:self.quorumThresholdSignature withPublicKey:self.quorumPublicKey];
     //    NSLog(@"validateQuorumCallback verify = %i, with: commitmentHash: %@, quorumThresholdSignature: %@, quorumPublicKey: %@", quorumSignatureValidated, uint256_hex(self.commitmentHash), uint768_hex(self.quorumThresholdSignature), uint384_hex(self.quorumPublicKey));
@@ -349,7 +349,7 @@
 }
 
 + (uint32_t)quorumSizeForType:(DSLLMQType)type {
-    switch (type) { //!OCLINT
+    switch (type) { //! OCLINT
         case DSLLMQType_5_60:
             return 5;
         case DSLLMQType_10_60:

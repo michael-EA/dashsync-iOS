@@ -179,7 +179,7 @@ NSErrorDomain const DSDAPIClientErrorDomain = @"DSDAPIClientErrorDomain";
     //
 }
 
-//check ping times of all DAPI nodes
+// check ping times of all DAPI nodes
 - (void)checkPingTimesForMasternodes:(NSArray<DSSimplifiedMasternodeEntry *> *)masternodes completion:(void (^)(NSMutableDictionary<NSData *, NSNumber *> *pingTimes, NSMutableDictionary<NSData *, NSError *> *))completion {
     dispatch_async(self.platformMetadataDispatchQueue, ^{
         HTTPLoaderFactory *loaderFactory = [DSNetworkingCoordinator sharedInstance].loaderFactory;
@@ -257,8 +257,8 @@ NSErrorDomain const DSDAPIClientErrorDomain = @"DSDAPIClientErrorDomain";
 - (DSDAPIPlatformNetworkService *)DAPIPlatformNetworkService {
     @synchronized(self) {
         if ([self.activePlatformServices count]) {
-            if ([self.activePlatformServices count] == 1) return [self.activePlatformServices objectAtIndex:0];                   //if only 1 service, just use first one
-            return [self.activePlatformServices objectAtIndex:arc4random_uniform((uint32_t)[self.activePlatformServices count])]; //use a random service
+            if ([self.activePlatformServices count] == 1) return [self.activePlatformServices objectAtIndex:0];                   // if only 1 service, just use first one
+            return [self.activePlatformServices objectAtIndex:arc4random_uniform((uint32_t)[self.activePlatformServices count])]; // use a random service
         } else if ([self.availablePeers count] || DAPI_CONNECT_SINGLE_NODE) {
 #if DAPI_CONNECT_SINGLE_NODE
             NSString *peerHost = DAPI_SINGLE_NODE;
@@ -277,8 +277,8 @@ NSErrorDomain const DSDAPIClientErrorDomain = @"DSDAPIClientErrorDomain";
 - (DSDAPICoreNetworkService *)DAPICoreNetworkService {
     @synchronized(self) {
         if ([self.activeCoreServices count]) {
-            if ([self.activeCoreServices count] == 1) return [self.activeCoreServices objectAtIndex:0];                   //if only 1 service, just use first one
-            return [self.activeCoreServices objectAtIndex:arc4random_uniform((uint32_t)[self.activeCoreServices count])]; //use a random service
+            if ([self.activeCoreServices count] == 1) return [self.activeCoreServices objectAtIndex:0];                   // if only 1 service, just use first one
+            return [self.activeCoreServices objectAtIndex:arc4random_uniform((uint32_t)[self.activeCoreServices count])]; // use a random service
         } else if ([self.availablePeers count]) {
 #if DAPI_CONNECT_SINGLE_NODE
             NSString *peerHost = DAPI_SINGLE_NODE;
@@ -297,7 +297,7 @@ NSErrorDomain const DSDAPIClientErrorDomain = @"DSDAPIClientErrorDomain";
 - (void)publishTransition:(DSTransition *)stateTransition
                   success:(void (^)(NSDictionary *successDictionary, BOOL added))success
                   failure:(void (^)(NSError *error))failure {
-    //default to 5 attempts
+    // default to 5 attempts
     [self publishTransition:stateTransition
             completionQueue:self.chain.chainManager.identitiesManager.identityQueue
                     success:success
@@ -308,7 +308,7 @@ NSErrorDomain const DSDAPIClientErrorDomain = @"DSDAPIClientErrorDomain";
           completionQueue:(dispatch_queue_t)completionQueue
                   success:(void (^)(NSDictionary *successDictionary, BOOL added))success
                   failure:(void (^)(NSError *error))failure {
-    //default to 5 attempts
+    // default to 5 attempts
     [self publishTransition:stateTransition
                  retryCount:5
                       delay:2
@@ -352,7 +352,7 @@ NSErrorDomain const DSDAPIClientErrorDomain = @"DSDAPIClientErrorDomain";
                completionQueue:completionQueue
                        success:success
                        failure:^(NSError *_Nonnull error) {
-                           if (error.code == 12) { //UNIMPLEMENTED, this would mean that we are connecting to an old node
+                           if (error.code == 12) { // UNIMPLEMENTED, this would mean that we are connecting to an old node
                                [self removeDAPINodeByAddress:service.ipAddress];
                            }
                            NSMutableDictionary *mErrorsPerAttempt = [errorPerAttempt mutableCopy];

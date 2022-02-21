@@ -28,7 +28,7 @@ typedef NS_ENUM(uint8_t, DSCheckpointParameter)
     DSCheckpointParameter_MerkleRoot = 1,
     DSCheckpointParameter_MasternodeList = 1 << 2,
 
-    DSCheckpointParameter_ChainWorkSize = 1 << 4, //chainWorkSize is a multiple of 32 bytes
+    DSCheckpointParameter_ChainWorkSize = 1 << 4, // chainWorkSize is a multiple of 32 bytes
 };
 
 typedef NS_ENUM(uint8_t, DSCheckpointOptions)

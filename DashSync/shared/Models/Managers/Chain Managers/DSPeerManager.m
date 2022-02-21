@@ -219,7 +219,7 @@
         case DSChainType_TestNet:
             return TESTNET_DNS_SEEDS;
         case DSChainType_DevNet:
-            return nil; //no dns seeds for devnets
+            return nil; // no dns seeds for devnets
         default:
             break;
     }
@@ -416,7 +416,7 @@
     BOOL syncsGovernanceObjects = !!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_Governance);
     @synchronized(self) {
         [_peers sortUsingComparator:^NSComparisonResult(DSPeer *p1, DSPeer *p2) {
-            //the following is to make sure we get
+            // the following is to make sure we get
             if (syncsMasternodeList) {
                 if ((!p1.lastRequestedMasternodeList || p1.lastRequestedMasternodeList < threeHoursAgo) && p2.lastRequestedMasternodeList > threeHoursAgo) return NSOrderedDescending;
                 if (p1.lastRequestedMasternodeList > threeHoursAgo && (!p2.lastRequestedMasternodeList || p2.lastRequestedMasternodeList < threeHoursAgo)) return NSOrderedAscending;
@@ -551,7 +551,7 @@
 
     [self.downloadPeer sendPingMessageWithPongHandler:^(BOOL success) { // wait for pong so we include already sent tx
         if (!success) return;
-        //we are on chainPeerManagerQueue
+        // we are on chainPeerManagerQueue
         DSLog(@"updating filter with newly created wallet addresses");
         [self.transactionManager clearTransactionsBloomFilter];
 
@@ -816,7 +816,7 @@
 - (void)peerConnected:(DSPeer *)peer {
     NSTimeInterval now = [NSDate timeIntervalSince1970];
 
-    if (peer.timestamp > now + 2 * 60 * 60 || peer.timestamp < now - 2 * 60 * 60) peer.timestamp = now; //timestamp sanity check
+    if (peer.timestamp > now + 2 * 60 * 60 || peer.timestamp < now - 2 * 60 * 60) peer.timestamp = now; // timestamp sanity check
     self.connectFailures = 0;
     DSLog(@"%@:%d connected with lastblock %d (our last header %d - last block %d)", peer.host, peer.port, peer.lastBlockHeight, self.chain.lastTerminalBlockHeight, self.chain.lastSyncBlockHeight);
 
@@ -902,7 +902,7 @@
     }
 
     if (!self.chain.isDevnetAny && reallyConnectedPeers.count < self.maxConnectCount) {
-        //we didn't connect to all connected peers yet
+        // we didn't connect to all connected peers yet
         return;
     }
 

@@ -88,7 +88,7 @@
     NSDictionary *proofDictionary = keyValueDictionary[@"proof"];
     NSNumber *proofType = proofDictionary[@"type"];
     if ([proofType integerValue] == 0) {
-        //this is an instant send proof
+        // this is an instant send proof
         NSData *instantSendLockData = proofDictionary[@"instantLock"];
         self.creditFundingTransaction.instantSendLockAwaitingProcessing = [DSInstantSendTransactionLock instantSendTransactionLockWithMessage:instantSendLockData onChain:self.chain];
     }

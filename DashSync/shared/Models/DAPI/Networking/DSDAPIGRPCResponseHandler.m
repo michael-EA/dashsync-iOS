@@ -186,7 +186,7 @@
     }
     NSMutableArray *mArray = [NSMutableArray array];
     for (NSData *cborData in documentsArray) {
-        //uint32_t version = [cborData UInt32AtOffset:0];
+        // uint32_t version = [cborData UInt32AtOffset:0];
         NSData *documentData = [cborData subdataWithRange:NSMakeRange(4, cborData.length - 4)];
         id document = [documentData ds_decodeCborError:&error];
         if (document && !error) {
@@ -258,7 +258,7 @@
                                                      code:broadcastError.code
                                                  userInfo:@{NSLocalizedDescriptionKey: broadcastError.message}];
         } else {
-            self.responseObject = @[]; //Todo
+            self.responseObject = @[]; // Todo
         }
     } else {
         Proof *proof = waitResponse.proof;
@@ -532,7 +532,7 @@
             if (treeQueryForPublicKeyHashesToIdentityIds) {
                 NSMutableArray *identitiesWithoutVersions = [NSMutableArray array];
                 for (NSDictionary *identityDictionaryWithVersion in [identitiesDictionary allValues]) {
-                    if([identityDictionaryWithVersion respondsToSelector:@selector(objectForKey:)]) {
+                    if ([identityDictionaryWithVersion respondsToSelector:@selector(objectForKey:)]) {
                         [identitiesWithoutVersions addObject:[identityDictionaryWithVersion objectForKey:@(DSPlatformStoredMessage_Item)]];
                     }
                 }

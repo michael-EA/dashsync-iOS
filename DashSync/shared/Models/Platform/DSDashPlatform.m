@@ -35,7 +35,7 @@
 - (instancetype)initWithChain:(DSChain *)chain {
     self = [super init];
     if (self) {
-        _chain = chain; //must come first
+        _chain = chain; // must come first
     }
     return self;
 }

@@ -68,9 +68,9 @@
     DSTransition *transition = [self.transitions objectAtIndex:indexPath.row];
 
     cell.numberLabel.text = [NSString stringWithFormat:@"%ld", (long)indexPath.row];
-    //cell.confirmedInBlockLabel.text = [NSString stringWithFormat:@"%u",transition.blockHeight];
+    // cell.confirmedInBlockLabel.text = [NSString stringWithFormat:@"%u",transition.blockHeight];
     cell.transactionLabel.text = uint256_hex(transition.transitionHash);
-    //cell.previousTransitionHashLabel.text = uint256_hex(transition.previousTransitionHash);
+    // cell.previousTransitionHashLabel.text = uint256_hex(transition.previousTransitionHash);
     return cell;
 }
 
@@ -91,7 +91,7 @@
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    }
 }
 */
 

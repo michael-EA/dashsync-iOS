@@ -62,7 +62,7 @@ FOUNDATION_EXPORT NSString *const DSBlockchainInvitationUpdateEventLink;
 - (void)generateBlockchainInvitationsExtendedPublicKeysWithPrompt:(NSString *)prompt completion:(void (^_Nullable)(BOOL registered))completion;
 
 /*! @brief Register the blockchain identity to its wallet. This should only be done once on the creation of the blockchain identity.
-*/
+ */
 - (void)registerInWallet;
 
 /*! @brief Unregister the blockchain identity from the wallet. This should only be used if the blockchain identity is not yet registered or if a progressive wallet wipe is happening.

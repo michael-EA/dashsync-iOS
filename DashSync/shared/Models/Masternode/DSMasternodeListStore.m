@@ -46,7 +46,7 @@
 @property (nonatomic, strong) NSMutableDictionary<NSData *, NSNumber *> *cachedBlockHashHeights;
 @property (nonatomic, strong) NSData *processingMasternodeListDiffHashes;
 @property (nonatomic, strong) dispatch_queue_t masternodeSavingQueue;
-@property (nonatomic, assign) UInt256 lastQueriedBlockHash; //last by height, not by time queried
+@property (nonatomic, assign) UInt256 lastQueriedBlockHash; // last by height, not by time queried
 @property (atomic, assign) uint32_t masternodeListCurrentlyBeingSavedCount;
 
 @end
@@ -70,7 +70,7 @@
 }
 
 - (void)setUp {
-    [self deleteEmptyMasternodeLists]; //this is just for sanity purposes
+    [self deleteEmptyMasternodeLists]; // this is just for sanity purposes
     [self loadMasternodeListsWithBlockHeightLookup:nil];
     [self removeOldSimplifiedMasternodeEntries];
     [self loadLocalMasternodes];
@@ -96,20 +96,19 @@
     __block NSArray<DSSimplifiedMasternodeEntry *> *entries = self.currentMasternodeList.simplifiedMasternodeEntries;
     [self.chain.chainManager.DAPIClient checkPingTimesForMasternodes:entries
                                                           completion:^(NSMutableDictionary<NSData *, NSNumber *> *_Nonnull pingTimes, NSMutableDictionary<NSData *, NSError *> *_Nonnull errors) {
-        [context performBlockAndWait:^{
-            for (DSSimplifiedMasternodeEntry *entry in entries) {
-                [entry savePlatformPingInfoInContext:context];
-            }
-            NSError *savingError = nil;
-            [context save:&savingError];
-        }];
-        if (completion != nil) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completion(pingTimes, errors);
-            });
-        }
-    }];
-
+                                                              [context performBlockAndWait:^{
+                                                                  for (DSSimplifiedMasternodeEntry *entry in entries) {
+                                                                      [entry savePlatformPingInfoInContext:context];
+                                                                  }
+                                                                  NSError *savingError = nil;
+                                                                  [context save:&savingError];
+                                                              }];
+                                                              if (completion != nil) {
+                                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                                      completion(pingTimes, errors);
+                                                                  });
+                                                              }
+                                                          }];
 }
 
 - (NSArray *)recentMasternodeLists {
@@ -299,11 +298,11 @@
         NSArray *masternodeListEntities = [DSMasternodeListEntity fetchObjects:fetchRequest inContext:self.managedObjectContext];
         NSMutableDictionary *simplifiedMasternodeEntryPool = [NSMutableDictionary dictionary];
         NSMutableDictionary *quorumEntryPool = [NSMutableDictionary dictionary];
-        uint32_t neededMasternodeListHeight = self.chain.lastTerminalBlockHeight - 23; //2*8+7
+        uint32_t neededMasternodeListHeight = self.chain.lastTerminalBlockHeight - 23; // 2*8+7
         for (uint32_t i = (uint32_t)masternodeListEntities.count - 1; i != UINT32_MAX; i--) {
             DSMasternodeListEntity *masternodeListEntity = [masternodeListEntities objectAtIndex:i];
-            if ((i == masternodeListEntities.count - 1) || ((self.masternodeListsByBlockHash.count < 3) && (neededMasternodeListHeight >= masternodeListEntity.block.height))) { //either last one or there are less than 3 (we aim for 3)
-                //we only need a few in memory as new quorums will mostly be verified against recent masternode lists
+            if ((i == masternodeListEntities.count - 1) || ((self.masternodeListsByBlockHash.count < 3) && (neededMasternodeListHeight >= masternodeListEntity.block.height))) { // either last one or there are less than 3 (we aim for 3)
+                // we only need a few in memory as new quorums will mostly be verified against recent masternode lists
                 DSMasternodeList *masternodeList = [masternodeListEntity masternodeListWithSimplifiedMasternodeEntryPool:[simplifiedMasternodeEntryPool copy] quorumEntryPool:quorumEntryPool withBlockHeightLookup:blockHeightLookup];
                 [self.masternodeListsByBlockHash setObject:masternodeList forKey:uint256_data(masternodeList.blockHash)];
                 [self.cachedBlockHashHeights setObject:@(masternodeListEntity.block.height) forKey:uint256_data(masternodeList.blockHash)];
@@ -315,7 +314,7 @@
                 }
                 neededMasternodeListHeight = masternodeListEntity.block.height - 8;
             } else {
-                //just keep a stub around
+                // just keep a stub around
                 [self.cachedBlockHashHeights setObject:@(masternodeListEntity.block.height) forKey:masternodeListEntity.block.blockHash];
                 [self.masternodeListsBlockHashStubs addObject:masternodeListEntity.block.blockHash];
             }
@@ -345,7 +344,7 @@
     if (self.chain.isMainnet &&
         closestMasternodeList.height < CHAINLOCK_ACTIVATION_HEIGHT &&
         blockHeight >= CHAINLOCK_ACTIVATION_HEIGHT)
-        return nil; //special mainnet case
+        return nil; // special mainnet case
     return closestMasternodeList;
 }
 
@@ -383,17 +382,17 @@
         for (DSMasternodeListEntity *masternodeListEntity in [masternodeListEntities copy]) {
             DSLog(@"Removing masternodeList at height %u", masternodeListEntity.block.height);
             DSLog(@"quorums are %@", masternodeListEntity.block.usedByQuorums);
-            //A quorum is on a block that can only have one masternode list.
-            //A block can have one quorum of each type.
-            //A quorum references the masternode list by it's block
-            //we need to check if this masternode list is being referenced by a quorum using the inverse of quorum.block.masternodeList
+            // A quorum is on a block that can only have one masternode list.
+            // A block can have one quorum of each type.
+            // A quorum references the masternode list by it's block
+            // we need to check if this masternode list is being referenced by a quorum using the inverse of quorum.block.masternodeList
             [self.managedObjectContext deleteObject:masternodeListEntity];
             [self.masternodeListsByBlockHash removeObjectForKey:masternodeListEntity.block.blockHash];
         }
         if (removedItems) {
-            //Now we should delete old quorums
-            //To do this, first get the last 24 active masternode lists
-            //Then check for quorums not referenced by them, and delete those
+            // Now we should delete old quorums
+            // To do this, first get the last 24 active masternode lists
+            // Then check for quorums not referenced by them, and delete those
             NSArray<DSMasternodeListEntity *> *recentMasternodeLists = [DSMasternodeListEntity objectsSortedBy:@"block.height" ascending:NO offset:0 limit:10 inContext:self.managedObjectContext];
             uint32_t oldTime = lastBlockHeight - 24;
             uint32_t oldestBlockHeight = recentMasternodeLists.count ? MIN([recentMasternodeLists lastObject].block.height, oldTime) : oldTime;
@@ -407,7 +406,7 @@
 }
 
 - (void)removeOldSimplifiedMasternodeEntries {
-    //this serves both for cleanup, but also for initial migration
+    // this serves both for cleanup, but also for initial migration
     [self.managedObjectContext performBlockAndWait:^{
         NSArray<DSSimplifiedMasternodeEntryEntity *> *simplifiedMasternodeEntryEntities = [DSSimplifiedMasternodeEntryEntity objectsInContext:self.managedObjectContext matching:@"masternodeLists.@count == 0"];
         BOOL deletedSomething = FALSE;
@@ -429,7 +428,7 @@
 - (void)saveMasternodeList:(DSMasternodeList *)masternodeList addedMasternodes:(NSDictionary *)addedMasternodes modifiedMasternodes:(NSDictionary *)modifiedMasternodes addedQuorums:(NSDictionary *)addedQuorums completion:(void (^)(NSError *error))completion {
     NSData *blockHashData = uint256_data(masternodeList.blockHash);
     if ([self hasMasternodeListAt:blockHashData]) {
-        //in rare race conditions this might already exist
+        // in rare race conditions this might already exist
         return;
     }
     NSArray *updatedSimplifiedMasternodeEntries = [addedMasternodes.allValues arrayByAddingObjectsFromArray:modifiedMasternodes.allValues];
@@ -439,28 +438,28 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:DSMasternodeListDidChangeNotification object:nil userInfo:@{DSChainManagerNotificationChainKey: self.chain}];
         [[NSNotificationCenter defaultCenter] postNotificationName:DSQuorumListDidChangeNotification object:nil userInfo:@{DSChainManagerNotificationChainKey: self.chain}];
     });
-    //We will want to create unknown blocks if they came from insight
+    // We will want to create unknown blocks if they came from insight
     BOOL createUnknownBlocks = masternodeList.chain.allowInsightBlocksForVerification;
     self.masternodeListCurrentlyBeingSavedCount++;
-    //This will create a queue for masternodes to be saved without blocking the networking queue
+    // This will create a queue for masternodes to be saved without blocking the networking queue
     dispatch_async(self.masternodeSavingQueue, ^{
         [DSMasternodeListStore saveMasternodeList:masternodeList
-                                        toChain:self.chain
-                      havingModifiedMasternodes:modifiedMasternodes
-                                   addedQuorums:addedQuorums
-                            createUnknownBlocks:createUnknownBlocks
-                                      inContext:self.managedObjectContext
-                                   completion:^(NSError *error) {
-            self.masternodeListCurrentlyBeingSavedCount--;
-            completion(error);
-        }];
+                                          toChain:self.chain
+                        havingModifiedMasternodes:modifiedMasternodes
+                                     addedQuorums:addedQuorums
+                              createUnknownBlocks:createUnknownBlocks
+                                        inContext:self.managedObjectContext
+                                       completion:^(NSError *error) {
+                                           self.masternodeListCurrentlyBeingSavedCount--;
+                                           completion(error);
+                                       }];
     });
 }
 
 + (void)saveMasternodeList:(DSMasternodeList *)masternodeList toChain:(DSChain *)chain havingModifiedMasternodes:(NSDictionary *)modifiedMasternodes addedQuorums:(NSDictionary *)addedQuorums createUnknownBlocks:(BOOL)createUnknownBlocks inContext:(NSManagedObjectContext *)context completion:(void (^)(NSError *error))completion {
     DSLog(@"Queued saving MNL at height %u", masternodeList.height);
     [context performBlockAndWait:^{
-        //masternodes
+        // masternodes
         DSChainEntity *chainEntity = [chain chainEntityInContext:context];
         DSMerkleBlockEntity *merkleBlockEntity = [DSMerkleBlockEntity anyObjectInContext:context matching:@"blockHash == %@", uint256_data(masternodeList.blockHash)];
         if (!merkleBlockEntity && ([chain checkpointForBlockHash:masternodeList.blockHash])) {
@@ -501,7 +500,7 @@
                 [operatorAddressStrings addObject:simplifiedMasternodeEntry.operatorAddress];
                 [providerRegistrationTransactionHashes addObject:uint256_data(simplifiedMasternodeEntry.providerRegistrationTransactionHash)];
             }
-            //this is the initial list sync so lets speed things up a little bit with some optimizations
+            // this is the initial list sync so lets speed things up a little bit with some optimizations
             NSDictionary<NSString *, DSAddressEntity *> *votingAddresses = [DSAddressEntity findAddressesAndIndexIn:votingAddressStrings onChain:(DSChain *)chain inContext:context];
             NSDictionary<NSString *, DSAddressEntity *> *operatorAddresses = [DSAddressEntity findAddressesAndIndexIn:votingAddressStrings onChain:(DSChain *)chain inContext:context];
             NSDictionary<NSData *, DSLocalMasternodeEntity *> *localMasternodes = [DSLocalMasternodeEntity findLocalMasternodesAndIndexForProviderRegistrationHashes:providerRegistrationTransactionHashes inContext:context];
@@ -512,7 +511,7 @@
                     simplifiedMasternodeEntryEntity = [DSSimplifiedMasternodeEntryEntity managedObjectInBlockedContext:context];
                     [simplifiedMasternodeEntryEntity setAttributesFromSimplifiedMasternodeEntry:simplifiedMasternodeEntry atBlockHeight:masternodeList.height knownOperatorAddresses:operatorAddresses knownVotingAddresses:votingAddresses localMasternodes:localMasternodes onChainEntity:chainEntity];
                 } else if (simplifiedMasternodeEntry.updateHeight >= masternodeList.height) {
-                    //it was updated in this masternode list
+                    // it was updated in this masternode list
                     [simplifiedMasternodeEntryEntity updateAttributesFromSimplifiedMasternodeEntry:simplifiedMasternodeEntry atBlockHeight:masternodeList.height knownOperatorAddresses:operatorAddresses knownVotingAddresses:votingAddresses localMasternodes:localMasternodes];
                 }
                 [masternodeListEntity addMasternodesObject:simplifiedMasternodeEntryEntity];

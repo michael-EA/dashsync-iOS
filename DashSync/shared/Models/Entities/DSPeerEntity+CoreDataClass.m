@@ -33,7 +33,7 @@
 @implementation DSPeerEntity
 
 - (instancetype)setAttributesFromPeer:(DSPeer *)peer {
-    //TODO: store IPv6 addresses
+    // TODO: store IPv6 addresses
     if (peer.address.u64[0] != 0 || peer.address.u32[2] != CFSwapInt32HostToBig(0xffff)) return nil;
 
     [self.managedObjectContext performBlockAndWait:^{

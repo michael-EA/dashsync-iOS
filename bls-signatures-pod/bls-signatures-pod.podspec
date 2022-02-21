@@ -10,7 +10,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'bls-signatures-pod'
-  s.version          = '0.2.11'
+  s.version          = '0.2.12'
   s.summary          = 'BLS signatures in C++, using the relic toolkit'
 
   s.description      = <<-DESC
@@ -36,10 +36,10 @@ Implements BLS signatures with aggregation as in Boneh, Drijvers, Neven 2018, us
 
     git submodule update --init
 
-    MIN_IOS="10.0"
-    MIN_WATCHOS="2.0"
+    MIN_IOS="13.0"
+    MIN_WATCHOS="5.0"
     MIN_TVOS=$MIN_IOS
-    MIN_MACOS="10.10"
+    MIN_MACOS="10.15"
 
     IPHONEOS=iphoneos
     IPHONESIMULATOR=iphonesimulator
@@ -82,7 +82,7 @@ Implements BLS signatures with aggregation as in Boneh, Drijvers, Neven 2018, us
     {
         download_gmp()
         {
-            GMP_VERSION="6.1.2"
+            GMP_VERSION="6.2.1"
             CURRENT_DIR=`pwd`
 
             if [ ! -s ${CURRENT_DIR}/gmp-${GMP_VERSION}.tar.bz2 ]; then
@@ -125,6 +125,7 @@ Implements BLS signatures with aggregation as in Boneh, Drijvers, Neven 2018, us
         {
             PLATFORM=$1
             ARCH=$2
+            ARCHS=(${ARCH//+/ })
 
             SDK=`xcrun --sdk $PLATFORM --show-sdk-path`
             PLATFORM_PATH=`xcrun --sdk $PLATFORM --show-sdk-platform-path`
@@ -138,7 +139,11 @@ Implements BLS signatures with aggregation as in Boneh, Drijvers, Neven 2018, us
 
             mkdir gmplib-${PLATFORM}-${ARCH}
 
-            CFLAGS="-fembed-bitcode -arch ${ARCH} --sysroot=${SDK}"
+            CFLAGS="-fembed-bitcode --sysroot=${SDK}"
+            for SINGLEARCH in "${ARCHS[@]}"
+            do
+                CFLAGS+=" -arch ${SINGLEARCH} "
+            done
             EXTRA_FLAGS="$(version_min_flag $PLATFORM)"
 
             CCARGS="${CLANG} ${CFLAGS}"
@@ -177,9 +182,13 @@ EOF
             IFS=';' read -ra PARSED_PAIR <<< "$BUILD_PAIR"
             PLATFORM=${PARSED_PAIR[0]}
             ARCH=${PARSED_PAIR[1]}
-
-            build_gmp_arch $PLATFORM $ARCH
-            LIPOARGS+="gmplib-${PLATFORM}-${ARCH}/lib/libgmp.a "
+            
+            IFS='+' read -ra ARCHS <<< "$ARCH"
+            for SINGLEARCH in "${ARCHS[@]}"
+            do
+                build_gmp_arch $PLATFORM $SINGLEARCH
+                LIPOARGS+="gmplib-${PLATFORM}-${SINGLEARCH}/lib/libgmp.a "
+            done
         done
 
         cp -r gmplib-${PLATFORM}-${ARCH}/include .
@@ -215,22 +224,18 @@ EOF
             OPTIMIZATIONFLAGS=""
 
             if [[ $PLATFORM = $IPHONEOS ]]; then
+                IOS_PLATFORM=OS64
+                WSIZE=64
+                OPTIMIZATIONFLAGS=-fomit-frame-pointer
+            elif [[ $PLATFORM = $IPHONESIMULATOR ]]; then
                 if [[ $ARCH = "arm64" ]] || [[ $ARCH = "arm64e" ]]; then
-                    IOS_PLATFORM=OS64
+                    IOS_PLATFORM=SIMULATORARM64
                     WSIZE=64
                     OPTIMIZATIONFLAGS=-fomit-frame-pointer
                 else
-                    IOS_PLATFORM=OS
-                    WSIZE=32
-                fi
-            elif [[ $PLATFORM = $IPHONESIMULATOR ]]; then
-                if [[ $ARCH = "x86_64" ]]; then
                     IOS_PLATFORM=SIMULATOR64
                     WSIZE=64
                     OPTIMIZATIONFLAGS=-fomit-frame-pointer
-                else
-                    IOS_PLATFORM=SIMULATOR
-                    WSIZE=32
                 fi
             elif [[ $PLATFORM = $WATCHOS ]]; then
                 IOS_PLATFORM=WATCHOS
@@ -251,10 +256,7 @@ EOF
                 OPTIMIZATIONFLAGS=-fomit-frame-pointer
             fi
             
-            COMPILER_ARGS=""
-            if [[ $ARCH != "i386" ]]; then
-                COMPILER_ARGS=$(version_min_flag $PLATFORM)
-            fi
+            COMPILER_ARGS=$(version_min_flag $PLATFORM)
             
             EXTRA_ARGS=""
             if [[ $PLATFORM = $MACOS ]]; then
@@ -263,9 +265,7 @@ EOF
                 EXTRA_ARGS="-DOPSYS=NONE -DIOS_PLATFORM=$IOS_PLATFORM -DCMAKE_TOOLCHAIN_FILE=../ios.toolchain.cmake"
             fi
             
-            if [[ $ARCH = "i386" ]]; then
-                EXTRA_ARGS+=" -DARCH=X86"
-            elif [[ $ARCH = "x86_64" ]]; then
+            if [[ $ARCH = "x86_64" ]]; then
                 EXTRA_ARGS+=" -DARCH=X64"
             else
                 EXTRA_ARGS+=" -DARCH=ARM"
@@ -301,9 +301,13 @@ EOF
             IFS=';' read -ra PARSED_PAIR <<< "$BUILD_PAIR"
             PLATFORM=${PARSED_PAIR[0]}
             ARCH=${PARSED_PAIR[1]}
-
-            build_relic_arch $PLATFORM $ARCH
-            LIPOARGS+="relic-${PLATFORM}-${ARCH}/lib/librelic_s.a "
+            
+            IFS='+' read -ra ARCHS <<< "$ARCH"
+            for SINGLEARCH in "${ARCHS[@]}"
+            do
+                build_relic_arch $PLATFORM $SINGLEARCH
+                LIPOARGS+="relic-${PLATFORM}-${SINGLEARCH}/lib/librelic_s.a "
+            done
         done
 
         xcrun lipo $LIPOARGS -create -output librelic.a
@@ -321,6 +325,7 @@ EOF
         {
             PLATFORM=$1
             ARCH=$2
+            ARCHS=(${ARCH//+/ })
 
             SDK=`xcrun --sdk $PLATFORM --show-sdk-path`
 
@@ -335,8 +340,11 @@ EOF
 
             for F in "${BLS_FILES[@]}"
             do
-                clang -I"../contrib/relic/include" -I"../contrib/relic/relic-${PLATFORM}-${ARCH}/include" -I"../src/" -I"${GMP_DIR}/include" \
-                -x c++ -std=c++14 -stdlib=libc++ -fembed-bitcode -arch "${ARCH}" -isysroot "${SDK}" ${EXTRA_ARGS} -c "../src/${F}.cpp" -o "${CURRENT_DIR}/${F}.o"
+                for SINGLEARCH in "${ARCHS[@]}"
+                do
+                    clang -I"../contrib/relic/include" -I"../contrib/relic/relic-${PLATFORM}-${SINGLEARCH}/include" -I"../src/" -I"${GMP_DIR}/include" \
+                    -x c++ -std=c++14 -stdlib=libc++ -fembed-bitcode -arch "${SINGLEARCH}" -isysroot "${SDK}" ${EXTRA_ARGS} -c "../src/${F}.cpp" -o "${CURRENT_DIR}/${F}.o"
+                done
             done
 
             ar -cvq libbls.a $ALL_BLS_OBJ_FILES
@@ -391,19 +399,19 @@ EOF
 
     prepare
 
-    build_all "macos" "${MACOS};x86_64" || build_all "macos" "${MACOS};arm64"
-    build_all "watchos" "${WATCHOS};armv7k|${WATCHOS};arm64_32|${WATCHSIMULATOR};i386"
-    build_all "tvos" "${TVOS};arm64|${TVSIMULATOR};x86_64"
-    build_all "ios" "${IPHONEOS};arm64|${IPHONESIMULATOR};i386|${IPHONESIMULATOR};x86_64"
+    build_all "macos" "${MACOS};x86_64+arm64"
+    build_all "watchos" "${WATCHOS};armv7k|${WATCHOS};arm64_32"
+    build_all "tvos" "${TVOS};arm64|${TVSIMULATOR};x86_64+arm64"
+    build_all "ios" "${IPHONEOS};arm64|${IPHONESIMULATOR};x86_64+arm64"
 
     make_relic_universal
 
   CMD
 
-  s.ios.deployment_target = '10.0'
-  s.watchos.deployment_target = '2.0'
-  s.tvos.deployment_target = '10.0'
-  s.osx.deployment_target = '10.10'
+  s.ios.deployment_target = '13.0'
+  s.watchos.deployment_target = '5.0'
+  s.tvos.deployment_target = '13.0'
+  s.osx.deployment_target = '10.15'
 
   s.library = 'c++'
   s.pod_target_xcconfig = {

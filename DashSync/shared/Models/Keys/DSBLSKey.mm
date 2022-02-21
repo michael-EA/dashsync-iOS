@@ -26,7 +26,7 @@
 
 @implementation DSBLSKey
 
-//A little recursive magic since extended private keys can't be re-assigned in the library
+// A little recursive magic since extended private keys can't be re-assigned in the library
 + (bls::ExtendedPrivateKey)derive:(bls::ExtendedPrivateKey)extendedPrivateKey indexes:(NSIndexPath *)indexPath {
     if (!indexPath.length) return extendedPrivateKey;
     uint32_t topIndexPath = (uint32_t)[indexPath indexAtPosition:0];

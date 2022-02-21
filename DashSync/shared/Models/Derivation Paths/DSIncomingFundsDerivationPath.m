@@ -38,7 +38,7 @@
     NSUInteger coinType = (chain.chainType == DSChainType_MainNet) ? 5 : 1;
     UInt256 indexes[] = {uint256_from_long(FEATURE_PURPOSE), uint256_from_long(coinType), uint256_from_long(FEATURE_PURPOSE_DASHPAY), uint256_from_long(accountNumber), sourceBlockchainIdentityUniqueId, destinationBlockchainIdentityUniqueId};
     BOOL hardenedIndexes[] = {YES, YES, YES, YES, NO, NO};
-    //todo full uint256 derivation
+    // todo full uint256 derivation
     DSIncomingFundsDerivationPath *derivationPath = [self derivationPathWithIndexes:indexes hardened:hardenedIndexes length:6 type:DSDerivationPathType_ClearFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_ContactBasedFunds onChain:chain];
 
     derivationPath.contactSourceBlockchainIdentityUniqueId = sourceBlockchainIdentityUniqueId;
@@ -50,7 +50,7 @@
 + (instancetype)externalDerivationPathWithExtendedPublicKey:(DSKey *)extendedPublicKey withDestinationBlockchainIdentityUniqueId:(UInt256)destinationBlockchainIdentityUniqueId sourceBlockchainIdentityUniqueId:(UInt256)sourceBlockchainIdentityUniqueId onChain:(DSChain *)chain {
     UInt256 indexes[] = {};
     BOOL hardenedIndexes[] = {};
-    DSIncomingFundsDerivationPath *derivationPath = [[self alloc] initWithIndexes:indexes hardened:hardenedIndexes length:0 type:DSDerivationPathType_ViewOnlyFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_ContactBasedFundsExternal onChain:chain]; //we are going to assume this is only ecdsa for now
+    DSIncomingFundsDerivationPath *derivationPath = [[self alloc] initWithIndexes:indexes hardened:hardenedIndexes length:0 type:DSDerivationPathType_ViewOnlyFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_ContactBasedFundsExternal onChain:chain]; // we are going to assume this is only ecdsa for now
     derivationPath.extendedPublicKey = extendedPublicKey;
 
     derivationPath.contactSourceBlockchainIdentityUniqueId = sourceBlockchainIdentityUniqueId;
@@ -62,7 +62,7 @@
 + (instancetype)externalDerivationPathWithExtendedPublicKeyUniqueID:(NSString *)extendedPublicKeyUniqueId withDestinationBlockchainIdentityUniqueId:(UInt256)destinationBlockchainIdentityUniqueId sourceBlockchainIdentityUniqueId:(UInt256)sourceBlockchainIdentityUniqueId onChain:(DSChain *)chain {
     UInt256 indexes[] = {};
     BOOL hardenedIndexes[] = {};
-    DSIncomingFundsDerivationPath *derivationPath = [[self alloc] initWithIndexes:indexes hardened:hardenedIndexes length:0 type:DSDerivationPathType_ViewOnlyFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_ContactBasedFundsExternal onChain:chain]; //we are going to assume this is only ecdsa for now
+    DSIncomingFundsDerivationPath *derivationPath = [[self alloc] initWithIndexes:indexes hardened:hardenedIndexes length:0 type:DSDerivationPathType_ViewOnlyFunds signingAlgorithm:DSKeyType_ECDSA reference:DSDerivationPathReference_ContactBasedFundsExternal onChain:chain]; // we are going to assume this is only ecdsa for now
     derivationPath.standaloneExtendedPublicKeyUniqueID = extendedPublicKeyUniqueId;
 
     derivationPath.contactSourceBlockchainIdentityUniqueId = sourceBlockchainIdentityUniqueId;
@@ -168,7 +168,7 @@
     NSAssert(self.account, @"Account must be set");
     if (!self.account.wallet.isTransient) {
         if (!self.addressesLoaded) {
-            sleep(1); //quite hacky, we need to fix this
+            sleep(1); // quite hacky, we need to fix this
         }
         NSAssert(self.addressesLoaded, @"addresses must be loaded before calling this function");
     }
@@ -189,7 +189,7 @@
     }
 
     @synchronized(self) {
-        //It seems weird to repeat this, but it's correct because of the original call receive address and change address
+        // It seems weird to repeat this, but it's correct because of the original call receive address and change address
         [a setArray:self.externalAddresses];
         i = a.count;
 
@@ -272,7 +272,7 @@
 }
 
 - (NSString *)receiveAddressAtOffset:(NSUInteger)offset inContext:(NSManagedObjectContext *)context {
-    //TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
+    // TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
     NSString *addr = [self registerAddressesWithGapLimit:offset + 1 inContext:context error:nil].lastObject;
     return (addr) ? addr : self.externalAddresses.lastObject;
 }

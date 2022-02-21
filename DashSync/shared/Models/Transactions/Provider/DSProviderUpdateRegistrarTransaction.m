@@ -85,7 +85,7 @@
     off += messageSignatureSize;
     self.payloadOffset = off;
 
-    //todo verify inputs hash
+    // todo verify inputs hash
 
     if ([self payloadData].length != payloadLength) return nil;
     self.txHash = self.data.SHA256_2;
@@ -147,7 +147,7 @@
 }
 
 - (void)signPayloadWithKey:(DSECDSAKey *)privateKey {
-    //ATTENTION If this ever changes from ECDSA, change the max signature size defined above
+    // ATTENTION If this ever changes from ECDSA, change the max signature size defined above
     DSLogPrivate(@"Private Key is %@", [privateKey serializedPrivateKeyForChain:self.chain]);
     self.payloadSignature = [privateKey compactSign:[self payloadHash]];
 }

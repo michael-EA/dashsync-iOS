@@ -107,7 +107,7 @@ DSBIP39RecoveryWordConfidence const DSBIP39RecoveryWordConfidence_Max = 0;
         case DSBIP39Language_Italian:
             return @"it";
         default:
-            return @"en"; //return english as default
+            return @"en"; // return english as default
     }
 }
 
@@ -353,7 +353,7 @@ DSBIP39RecoveryWordConfidence const DSBIP39RecoveryWordConfidence_Max = 0;
                           options:0
                             range:NSMakeRange(0, s.length)];
     while ([s replaceOccurrencesOfString:@"  " withString:@" " options:0 range:NSMakeRange(0, s.length)] > 0)
-        ;                                                                                               //!OCLINT
+        ;                                                                                               //! OCLINT
     while ([s rangeOfCharacterFromSet:ws].location == 0) [s deleteCharactersInRange:NSMakeRange(0, 1)]; // trim lead ws
     phrase = [self normalizePhrase:s];
 
@@ -378,10 +378,10 @@ DSBIP39RecoveryWordConfidence const DSBIP39RecoveryWordConfidence_Max = 0;
                                           withString:IDEO_SP
                                              options:0
                                                range:NSMakeRange(0, s.length)] > 0)
-                    ; //!OCLINT
+                    ; //! OCLINT
                 CFStringTrimWhitespace((CFMutableStringRef)s);
                 i += j - 1;
-                break; //!OCLINT
+                break; //! OCLINT
             }
         }
     }
@@ -555,7 +555,7 @@ DSBIP39RecoveryWordConfidence const DSBIP39RecoveryWordConfidence_Max = 0;
         }
         if (possibleWordAddresses.count == 0) {
             dispatch_async(dispatchQueue, ^{
-                completion(@{}); //return empty dictionary
+                completion(@{}); // return empty dictionary
             });
         } else {
             [[DSInsightManager sharedInstance] findExistingAddresses:[possibleWordAddresses allKeys]
@@ -584,7 +584,7 @@ DSBIP39RecoveryWordConfidence const DSBIP39RecoveryWordConfidence_Max = 0;
                                                                   });
                                                               } else {
                                                                   dispatch_async(dispatchQueue, ^{
-                                                                      completion(@{}); //return empty dictionary
+                                                                      completion(@{}); // return empty dictionary
                                                                   });
                                                               }
                                                           }];

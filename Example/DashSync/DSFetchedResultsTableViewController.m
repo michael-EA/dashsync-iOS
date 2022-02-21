@@ -32,10 +32,10 @@ static NSUInteger FETCH_BATCH_SIZE = 20;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     if ([self dynamicUpdate]) {
-        //todo fix this with new core data stack
-        //        [[NSNotificationCenter defaultCenter] addObserver:self
-        //                                                 selector:@selector(backgroundManagedObjectContextDidSaveNotification:)
-        //                                                     name:NSManagedObjectContextDidSaveNotification object:self.context];
+        // todo fix this with new core data stack
+        //         [[NSNotificationCenter defaultCenter] addObserver:self
+        //                                                  selector:@selector(backgroundManagedObjectContextDidSaveNotification:)
+        //                                                      name:NSManagedObjectContextDidSaveNotification object:self.context];
     }
     [self fetchedResultsController];
     [self.tableView reloadData];
