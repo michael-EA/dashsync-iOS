@@ -220,6 +220,11 @@ build_relic_arch()
         OPTIMIZATIONFLAGS=-fomit-frame-pointer
     elif [[ $PLATFORM = $MACOS ]]; then
         WSIZE=64
+        IOS_PLATFORM=MAC
+        if [[ $ARCH = "arm64" ]]
+        then
+            IOS_PLATFORM=MAC_ARM64
+        fi
         DEPLOYMENT_TARGET=$MIN_MACOS
         OPTIMIZATIONFLAGS=-fomit-frame-pointer
     fi
@@ -230,11 +235,7 @@ build_relic_arch()
     fi
     
     EXTRA_ARGS=""
-    if [[ $PLATFORM = $MACOS ]]; then
-        EXTRA_ARGS="-DOPSYS=MACOSX"    
-    else
-        EXTRA_ARGS="-DOPSYS=NONE -DIOS_PLATFORM=$IOS_PLATFORM -DPLATFORM=$IOS_PLATFORM -DDEPLOYMENT_TARGET=$DEPLOYMENT_TARGET -DCMAKE_TOOLCHAIN_FILE=../ios.toolchain.cmake"
-    fi
+    EXTRA_ARGS="-DOPSYS=NONE -DIOS_PLATFORM=$IOS_PLATFORM -DPLATFORM=$IOS_PLATFORM -DDEPLOYMENT_TARGET=$DEPLOYMENT_TARGET -DCMAKE_TOOLCHAIN_FILE=../ios.toolchain.cmake"
     
     if [[ $ARCH = "i386" ]]; then
         EXTRA_ARGS+=" -DARCH=X86"
