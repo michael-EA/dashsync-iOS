@@ -102,7 +102,7 @@
 
     XCTAssert(verified, @"DSBLSKey verifyAggregatedSignature is working");
 
-    NSArray<DSBLSKey *> *quorums = [derivationPath privateKeysForRange:NSMakeRange(1000, 8) fromSeed:seed]; //simulate 10 quorums
+    NSArray<DSBLSKey *> *quorums = [derivationPath privateKeysForRange:NSMakeRange(1000, 8) fromSeed:seed]; // simulate 10 quorums
 
     UInt256 signingSession = uint256_random;
 
@@ -115,7 +115,7 @@
 
     NSData *encryptedSignatureData1 = [signatureData0 encapsulatedDHEncryptionWithKeys:keysForDH0 usingInitializationVector:[NSData data]];
 
-    //at node n, quorum checks that signature matches
+    // at node n, quorum checks that signature matches
 }
 
 @end
