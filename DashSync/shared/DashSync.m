@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  Notice on iOS 13+ Background Task debugging:
- 
+
  e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"org.dashcore.dashsync.backgroundblocksync"]
 
  e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"org.dashcore.dashsync.backgroundblocksync"]
@@ -341,7 +341,7 @@ static NSString *const BG_TASK_REFRESH_IDENTIFIER = @"org.dashcore.dashsync.back
 
     self.backgroundFetchCompletion = completionHandler;
 
-    if (@available(iOS 13.0, *)) { //!OCLINT
+    if (@available(iOS 13.0, *)) { //! OCLINT
 
     } else {
         // timeout after 25 seconds

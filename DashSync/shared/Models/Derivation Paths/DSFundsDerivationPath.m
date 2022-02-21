@@ -92,7 +92,7 @@
 #if DEBUG
                         DSLogPrivate(@"address %@ loaded but was not valid on chain %@", e.address, self.account.wallet.chain.name);
 #else
-                            DSLog(@"address %@ loaded but was not valid on chain %@", @"<REDACTED>", self.account.wallet.chain.name);
+                        DSLog(@"address %@ loaded but was not valid on chain %@", @"<REDACTED>", self.account.wallet.chain.name);
 #endif /* DEBUG */
                         continue;
                     }
@@ -153,7 +153,7 @@
     }
 
     @synchronized(self) {
-        //It seems weird to repeat this, but it's correct because of the original call receive address and change address
+        // It seems weird to repeat this, but it's correct because of the original call receive address and change address
         [a setArray:(internal) ? self.internalAddresses : self.externalAddresses];
         i = a.count;
 
@@ -237,20 +237,20 @@
 
 // returns the first unused external address
 - (NSString *)receiveAddress {
-    //TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
+    // TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
     NSString *addr = [self registerAddressesWithGapLimit:1 internal:NO error:nil].lastObject;
     return (addr) ? addr : self.externalAddresses.lastObject;
 }
 
 - (NSString *)receiveAddressAtOffset:(NSUInteger)offset {
-    //TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
+    // TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
     NSString *addr = [self registerAddressesWithGapLimit:offset + 1 internal:NO error:nil].lastObject;
     return (addr) ? addr : self.externalAddresses.lastObject;
 }
 
 // returns the first unused internal address
 - (NSString *)changeAddress {
-    //TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
+    // TODO: limit to 10,000 total addresses and utxos for practical usability with bloom filters
     return [self registerAddressesWithGapLimit:1 internal:YES error:nil].lastObject;
 }
 

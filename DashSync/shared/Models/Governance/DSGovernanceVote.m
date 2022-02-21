@@ -35,7 +35,7 @@
 @implementation DSGovernanceVote
 
 // From the reference
-//uint256 GetHash() const
+// uint256 GetHash() const
 //{
 //    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
 //    ss << vinMasternode;
@@ -47,7 +47,7 @@
 //}
 
 + (UInt256)hashWithParentHash:(UInt256)parentHash voteCreationTimestamp:(uint64_t)voteCreationTimestamp voteSignal:(uint32_t)voteSignal voteOutcome:(uint32_t)voteOutcome masternodeUTXO:(DSUTXO)masternodeUTXO {
-    //hash calculation
+    // hash calculation
     NSMutableData *hashImportantData = [NSMutableData data];
 
     uint32_t index = (uint32_t)masternodeUTXO.n;
@@ -69,7 +69,7 @@
     NSMutableData *data = [NSMutableData data];
     [data appendUInt256:self.masternodeUTXO.hash];
     [data appendUInt32:(uint32_t)self.masternodeUTXO.n];
-    if (self.chain.protocolVersion < 70209) { //switch to outpoint in 70209
+    if (self.chain.protocolVersion < 70209) { // switch to outpoint in 70209
         [data appendUInt8:0];
         [data appendUInt32:UINT32_MAX];
     }
@@ -94,14 +94,14 @@
     masternodeUTXO.hash = [message readUInt256AtOffset:&offset];
     if (length - offset < 4) return nil;
     masternodeUTXO.n = [message readUInt32AtOffset:&offset];
-    if (chain.protocolVersion < 70209) { //switch to outpoint in 70209
+    if (chain.protocolVersion < 70209) { // switch to outpoint in 70209
         if (length - offset < 1) return nil;
         uint8_t sigscriptSize = [message readUInt8AtOffset:&offset];
         if (length - offset < sigscriptSize) return nil;
-        //NSData * sigscript = [message subdataWithRange:NSMakeRange(offset, sigscriptSize)];
+        // NSData * sigscript = [message subdataWithRange:NSMakeRange(offset, sigscriptSize)];
         offset += sigscriptSize;
         if (length - offset < 4) return nil;
-        //uint32_t sequenceNumber = [message UInt32AtOffset:offset];
+        // uint32_t sequenceNumber = [message UInt32AtOffset:offset];
         offset += 4;
     }
 
@@ -161,7 +161,7 @@
     //    DSKey * key = [DSKey keyWithPublicKey:masternode.keyIDVoting];
     //    BOOL isValid = [key verify:self.governanceVoteHash signature:self.signature];
     //    return isValid;
-    //TO DO fix voting
+    // TO DO fix voting
     return NO;
 }
 

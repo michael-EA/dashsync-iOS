@@ -41,8 +41,8 @@ extern NSString *const DSApplicationTerminationRequestNotification;
 @interface DSAuthenticationManager : NSObject
 
 @property (nonatomic, readonly) uint64_t biometricSpendingLimit;
-@property (nonatomic, readonly) BOOL shouldUseAuthentication; //true if the app should use authentication once it is set up
-@property (nonatomic, readonly) BOOL usesAuthentication;      //true if the app uses authentication and it is set up
+@property (nonatomic, readonly) BOOL shouldUseAuthentication; // true if the app should use authentication once it is set up
+@property (nonatomic, readonly) BOOL usesAuthentication;      // true if the app uses authentication and it is set up
 @property (nonatomic, readonly) BOOL didAuthenticate;         // true if the user authenticated after this was last set to false
 
 @property (nonatomic, readonly) NSTimeInterval secureTime; // last known time from an ssl server connection
@@ -66,7 +66,7 @@ extern NSString *const DSApplicationTerminationRequestNotification;
 - (void)authenticateUsingBiometricsOnlyWithPrompt:(NSString *_Nullable)prompt
                                        completion:(PinCompletionBlock)completion;
 
-- (void)seedWithPrompt:(NSString *_Nullable)authprompt forWallet:(DSWallet *)wallet forAmount:(uint64_t)amount forceAuthentication:(BOOL)forceAuthentication completion:(_Nullable SeedCompletionBlock)completion; //auth user,return seed
+- (void)seedWithPrompt:(NSString *_Nullable)authprompt forWallet:(DSWallet *)wallet forAmount:(uint64_t)amount forceAuthentication:(BOOL)forceAuthentication completion:(_Nullable SeedCompletionBlock)completion; // auth user,return seed
 - (void)authenticateWithPrompt:(NSString *_Nullable)authprompt usingBiometricAuthentication:(BOOL)touchId alertIfLockout:(BOOL)alertIfLockout completion:(_Nullable PinCompletionBlock)completion;                 // prompt user to authenticate
 - (void)setPinIfNeededWithCompletion:(void (^_Nullable)(BOOL needed, BOOL success))completion;                                                                                                                     // prompts the user to set his pin if he has never set one before
 - (void)setPinWithCompletion:(void (^_Nullable)(BOOL success))completion;                                                                                                                                          // prompts the user to set or change wallet pin and returns true if the pin was successfully set

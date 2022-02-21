@@ -59,7 +59,7 @@ static NSData *_Nullable AES256EncryptDecrypt(CCOperation operation,
 @implementation NSData (Encryption)
 
 + (NSData *)randomInitializationVectorOfSize:(NSUInteger)size {
-    unsigned char iv[size]; //16
+    unsigned char iv[size]; // 16
     for (int i = 0; i < sizeof(iv); i++) {
         iv[i] = arc4random_uniform(UCHAR_MAX - 1);
     }
@@ -272,7 +272,7 @@ static NSData *_Nullable AES256EncryptDecrypt(CCOperation operation,
     DSKey *firstKey = [keys firstObject];
     DSKey *secondKey = [keys objectAtIndex:1];
     NSData *encryptedData = [self decryptWithSecretKey:secondKey fromPublicKey:firstKey usingIVSize:ivSize];
-    if (keys.count == 2) { //not really necessary but easier to read
+    if (keys.count == 2) { // not really necessary but easier to read
         return encryptedData;
     } else {
         return [encryptedData encapsulatedDHDecryptionWithKeys:[keys subarrayWithRange:NSMakeRange(1, keys.count - 1)] usingIVSize:ivSize];
@@ -291,7 +291,7 @@ static NSData *_Nullable AES256EncryptDecrypt(CCOperation operation,
     } else {
         NSAssert(FALSE, @"Keys should be of a known type");
     }
-    if (keys.count == 1) { //not really necessary but easier to read
+    if (keys.count == 1) { // not really necessary but easier to read
         return encryptedData;
     } else {
         return [encryptedData encapsulatedDHDecryptionWithKeys:[keys subarrayWithRange:NSMakeRange(1, keys.count - 1)]];
@@ -310,7 +310,7 @@ static NSData *_Nullable AES256EncryptDecrypt(CCOperation operation,
     } else {
         NSAssert(FALSE, @"Keys should be of a known type");
     }
-    if (keys.count == 1) { //not really necessary but easier to read
+    if (keys.count == 1) { // not really necessary but easier to read
         return encryptedData;
     } else {
         return [encryptedData encapsulatedDHEncryptionWithKeys:[keys subarrayWithRange:NSMakeRange(1, keys.count - 1)]];
@@ -324,7 +324,7 @@ static NSData *_Nullable AES256EncryptDecrypt(CCOperation operation,
     DSKey *firstKey = [keys firstObject];
     DSKey *secondKey = [keys objectAtIndex:1];
     NSData *encryptedData = [self encryptWithSecretKey:firstKey forPublicKey:secondKey usingInitializationVector:initializationVector];
-    if (keys.count == 2) { //not really necessary but easier to read
+    if (keys.count == 2) { // not really necessary but easier to read
         return encryptedData;
     } else {
         return [encryptedData encapsulatedDHEncryptionWithKeys:[keys subarrayWithRange:NSMakeRange(1, keys.count - 1)] usingInitializationVector:initializationVector];

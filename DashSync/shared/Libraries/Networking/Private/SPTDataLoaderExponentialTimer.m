@@ -139,7 +139,7 @@ NS_INLINE double SPTExptRandom() {
      * A.J. and Monahan, J.F., "Computer generation of random
      * variables using the ratio of uniform deviates", ACM Trans
      * Math Software, 3, (1977), pp257-260.
-    */
+     */
 
     const int attempts = 20;
     for (int i = 0; i < attempts; ++i) {

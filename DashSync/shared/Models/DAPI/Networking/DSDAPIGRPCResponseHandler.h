@@ -29,8 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (atomic, strong) dispatch_queue_t dispatchQueue;
 @property (atomic, strong) dispatch_queue_t completionQueue;
-@property (nonatomic, strong) NSString *host;                      //for debuging purposes
-@property (nonatomic, strong) DSPlatformDocumentsRequest *request; //for debuging purposes
+@property (nonatomic, strong) NSString *host;                      // for debuging purposes
+@property (nonatomic, strong) DSPlatformDocumentsRequest *request; // for debuging purposes
 @property (nonatomic, readonly) DSPlatformQuery *query;
 
 @property (nonatomic, copy) void (^successHandler)(id successObject);

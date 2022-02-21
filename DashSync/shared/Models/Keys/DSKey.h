@@ -10,8 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSKeyType)
-{
+typedef NS_ENUM(NSUInteger, DSKeyType) {
     DSKeyType_ECDSA = 0,
     DSKeyType_BLS = 1,
 };

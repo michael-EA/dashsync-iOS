@@ -13,8 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 @class DSWallet, DSBlockchainIdentityRegistrationTransition, DSBlockchainIdentityTopupTransition, DSBlockchainIdentityUpdateTransition, DSBlockchainIdentityCloseTransition, DSAccount, DSChain, DSTransition, DSDashpayUserEntity, DSPotentialOneWayFriendship, DSTransaction, DSFriendRequestEntity, DSPotentialContact, DSCreditFundingTransaction, DSDocumentTransition, DSKey, DPDocumentFactory, DSTransientDashpayUser, DSBlockchainInvitation, DSAuthenticationKeysDerivationPath, UIImage;
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRegistrationStep)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRegistrationStep) {
     DSBlockchainIdentityRegistrationStep_None = 0,
     DSBlockchainIdentityRegistrationStep_FundingTransactionCreation = 1,
     DSBlockchainIdentityRegistrationStep_FundingTransactionAccepted = 2,
@@ -31,18 +30,16 @@ typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRegistrationStep)
     DSBlockchainIdentityRegistrationStep_Cancelled = 1 << 30
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityMonitorOptions)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityMonitorOptions) {
     DSBlockchainIdentityMonitorOptions_None = 0,
     DSBlockchainIdentityMonitorOptions_AcceptNotFoundAsNotAnError = 1,
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityQueryStep)
-{
-    DSBlockchainIdentityQueryStep_None = DSBlockchainIdentityRegistrationStep_None,         //0
-    DSBlockchainIdentityQueryStep_Identity = DSBlockchainIdentityRegistrationStep_Identity, //16
-    DSBlockchainIdentityQueryStep_Username = DSBlockchainIdentityRegistrationStep_Username, //32
-    DSBlockchainIdentityQueryStep_Profile = DSBlockchainIdentityRegistrationStep_Profile,   //64
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityQueryStep) {
+    DSBlockchainIdentityQueryStep_None = DSBlockchainIdentityRegistrationStep_None,         // 0
+    DSBlockchainIdentityQueryStep_Identity = DSBlockchainIdentityRegistrationStep_Identity, // 16
+    DSBlockchainIdentityQueryStep_Username = DSBlockchainIdentityRegistrationStep_Username, // 32
+    DSBlockchainIdentityQueryStep_Profile = DSBlockchainIdentityRegistrationStep_Profile,   // 64
     DSBlockchainIdentityQueryStep_IncomingContactRequests = 128,
     DSBlockchainIdentityQueryStep_OutgoingContactRequests = 256,
     DSBlockchainIdentityQueryStep_ContactRequests = DSBlockchainIdentityQueryStep_IncomingContactRequests | DSBlockchainIdentityQueryStep_OutgoingContactRequests,
@@ -53,27 +50,24 @@ typedef NS_ENUM(NSUInteger, DSBlockchainIdentityQueryStep)
     DSBlockchainIdentityQueryStep_Cancelled = 1 << 30
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRegistrationStatus)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRegistrationStatus) {
     DSBlockchainIdentityRegistrationStatus_Unknown = 0,
     DSBlockchainIdentityRegistrationStatus_Registered = 1,
     DSBlockchainIdentityRegistrationStatus_Registering = 2,
-    DSBlockchainIdentityRegistrationStatus_NotRegistered = 3, //sent to DAPI, not yet confirmed
+    DSBlockchainIdentityRegistrationStatus_NotRegistered = 3, // sent to DAPI, not yet confirmed
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityUsernameStatus)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityUsernameStatus) {
     DSBlockchainIdentityUsernameStatus_NotPresent = 0,
     DSBlockchainIdentityUsernameStatus_Initial = 1,
     DSBlockchainIdentityUsernameStatus_PreorderRegistrationPending = 2,
     DSBlockchainIdentityUsernameStatus_Preordered = 3,
-    DSBlockchainIdentityUsernameStatus_RegistrationPending = 4, //sent to DAPI, not yet confirmed
+    DSBlockchainIdentityUsernameStatus_RegistrationPending = 4, // sent to DAPI, not yet confirmed
     DSBlockchainIdentityUsernameStatus_Confirmed = 5,
     DSBlockchainIdentityUsernameStatus_TakenOnNetwork = 6,
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityFriendshipStatus)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityFriendshipStatus) {
     DSBlockchainIdentityFriendshipStatus_Unknown = NSUIntegerMax,
     DSBlockchainIdentityFriendshipStatus_None = 0,
     DSBlockchainIdentityFriendshipStatus_Outgoing = 1,
@@ -81,15 +75,13 @@ typedef NS_ENUM(NSUInteger, DSBlockchainIdentityFriendshipStatus)
     DSBlockchainIdentityFriendshipStatus_Friends = DSBlockchainIdentityFriendshipStatus_Outgoing | DSBlockchainIdentityFriendshipStatus_Incoming,
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRetryDelayType)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityRetryDelayType) {
     DSBlockchainIdentityRetryDelayType_Linear = 0,
     DSBlockchainIdentityRetryDelayType_SlowingDown20Percent = 1,
     DSBlockchainIdentityRetryDelayType_SlowingDown50Percent = 2,
 };
 
-typedef NS_ENUM(NSUInteger, DSBlockchainIdentityKeyStatus)
-{
+typedef NS_ENUM(NSUInteger, DSBlockchainIdentityKeyStatus) {
     DSBlockchainIdentityKeyStatus_Unknown = 0,
     DSBlockchainIdentityKeyStatus_Registered = 1,
     DSBlockchainIdentityKeyStatus_Registering = 2,
@@ -260,7 +252,7 @@ FOUNDATION_EXPORT NSString *const DSBlockchainIdentityUpdateEventDashpaySyncroni
 - (void)encryptData:(NSData *)data withKeyAtIndex:(uint32_t)index forRecipientKey:(DSKey *)recipientKey completion:(void (^_Nullable)(NSData *encryptedData))completion;
 
 /*! @brief Register the blockchain identity to its wallet. This should only be done once on the creation of the blockchain identity.
-*/
+ */
 - (void)registerInWallet;
 
 /*! @brief Unregister the blockchain identity from the wallet. This should only be used if the blockchain identity is not yet registered or if a progressive wallet wipe is happening.
@@ -276,7 +268,7 @@ FOUNDATION_EXPORT NSString *const DSBlockchainIdentityUpdateEventDashpaySyncroni
 // MARK: - Keys
 
 /*! @brief Register the blockchain identity to its wallet from a credit funding registration transaction. This should only be done once on the creation of the blockchain identity.
-*/
+ */
 
 - (void)generateBlockchainIdentityExtendedPublicKeysWithPrompt:(NSString *)prompt completion:(void (^_Nullable)(BOOL registered))completion;
 

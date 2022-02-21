@@ -29,8 +29,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(uint32_t, DSSyncCountInfo)
-{
+typedef NS_ENUM(uint32_t, DSSyncCountInfo) {
     DSSyncCountInfo_List = 2,
     DSSyncCountInfo_MNW = 3,
     DSSyncCountInfo_GovernanceObject = 10,

@@ -41,7 +41,7 @@
         case DSTransactionType_Classic: {
             DSTransaction *transaction = [DSTransaction transactionWithMessage:message onChain:chain];
             if ([transaction isCreditFundingTransaction]) {
-                //replace with credit funding transaction
+                // replace with credit funding transaction
                 transaction = [DSCreditFundingTransaction transactionWithMessage:message onChain:chain];
             }
             return transaction;
@@ -59,7 +59,7 @@
         case DSTransactionType_QuorumCommitment:
             return [DSQuorumCommitmentTransaction transactionWithMessage:message onChain:chain];
         default:
-            return [DSTransaction transactionWithMessage:message onChain:chain]; //we won't be able to check the payload, but try best to support it.
+            return [DSTransaction transactionWithMessage:message onChain:chain]; // we won't be able to check the payload, but try best to support it.
     }
 }
 

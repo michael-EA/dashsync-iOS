@@ -161,7 +161,7 @@
 
     uint32_t lastHeight = block.height;
     DSCheckpoint *lastCheckpoint = nil;
-    //then add the last checkpoint we know about previous to this block
+    // then add the last checkpoint we know about previous to this block
     for (DSCheckpoint *checkpoint in self.checkpointsArray) {
         if (checkpoint.height < lastHeight && checkpoint.timestamp < block.timestamp) {
             lastCheckpoint = checkpoint;

@@ -95,7 +95,7 @@
     for (DSLocalMasternodeEntity *localMasternodeEntity in localMasternodeEntities) {
         [indexedEntities addObject:localMasternodeEntity.providerRegistrationTransaction.transactionHash.txHash];
     }
-    return [NSDictionary dictionaryWithObjects:localMasternodeEntities forKeys:indexedEntities]; //!OCLINT
+    return [NSDictionary dictionaryWithObjects:localMasternodeEntities forKeys:indexedEntities]; //! OCLINT
 }
 
 + (void)deleteAllOnChainEntity:(DSChainEntity *)chainEntity {

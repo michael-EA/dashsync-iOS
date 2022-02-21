@@ -77,7 +77,7 @@
             NSArray<DSCheckpoint *> *checkpointArray = registeredDevnetIdentifiers[string];
             DSChain *chain = [DSChain recoverKnownDevnetWithIdentifier:string withCheckpoints:checkpointArray performSetup:NO];
             chain.chainManager = [self devnetManagerForChain:chain];
-            [self.knownDevnetChains addObject:chain]; //adding this before setup prevents a loop
+            [self.knownDevnetChains addObject:chain]; // adding this before setup prevents a loop
             [chain setUp];
         }
 
@@ -231,7 +231,7 @@
             ipAddress.u32[3] = CFSwapInt32HostToBig(ip);
             DSLog(@"%08x", ip);
         } else if (inet_pton(AF_INET6, [address UTF8String], &addrV6)) {
-            //todo support IPV6
+            // todo support IPV6
             DSLog(@"we do not yet support IPV6");
         } else {
             DSLog(@"invalid address");
@@ -277,7 +277,7 @@
             ipAddress.u32[3] = CFSwapInt32HostToBig(ip);
             DSLog(@"%08x", ip);
         } else if (inet_pton(AF_INET6, [address UTF8String], &addrV6)) {
-            //todo support IPV6
+            // todo support IPV6
             DSLog(@"we do not yet support IPV6");
         } else {
             DSLog(@"invalid address");
@@ -328,7 +328,7 @@
                                                                   [[DashSync sharedSyncController] wipeSporkDataForChain:chain inContext:context];
                                                                   [[DashSync sharedSyncController] wipeMasternodeDataForChain:chain inContext:context];
                                                                   [[DashSync sharedSyncController] wipeGovernanceDataForChain:chain inContext:context];
-                                                                  [[DashSync sharedSyncController] wipeWalletDataForChain:chain forceReauthentication:NO inContext:context]; //this takes care of blockchain info as well;
+                                                                  [[DashSync sharedSyncController] wipeWalletDataForChain:chain forceReauthentication:NO inContext:context]; // this takes care of blockchain info as well;
                                                                   [self.knownDevnetChains removeObject:chain];
                                                                   [self.knownChains removeObject:chain];
                                                                   NSValue *genesisValue = uint256_obj(chain.genesisHash);

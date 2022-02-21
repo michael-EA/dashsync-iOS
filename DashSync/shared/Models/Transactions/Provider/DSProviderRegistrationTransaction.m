@@ -93,7 +93,7 @@
     off += messageSignatureSize;
     self.payloadOffset = off;
 
-    //todo verify inputs hash
+    // todo verify inputs hash
 
     if ([self payloadData].length != payloadLength) return nil;
     self.txHash = self.data.SHA256_2;
@@ -177,16 +177,16 @@
 - (NSData *)basePayloadData {
     //    DSUTXO reversedCollateral = (DSUTXO) { .hash = uint256_reverse(self.collateralOutpoint.hash), .n = self.collateralOutpoint.n};
     NSMutableData *data = [NSMutableData data];
-    [data appendUInt16:self.providerRegistrationTransactionVersion]; //16
-    [data appendUInt16:self.providerType];                           //32
-    [data appendUInt16:self.providerMode];                           //48
-    [data appendUTXO:self.collateralOutpoint];                       //84
-    [data appendUInt128:self.ipAddress];                             //212
-    [data appendUInt16:CFSwapInt16BigToHost(self.port)];             //228
-    [data appendUInt160:self.ownerKeyHash];                          //388
-    [data appendUInt384:self.operatorKey];                           //772
-    [data appendUInt160:self.votingKeyHash];                         //788
-    [data appendUInt16:self.operatorReward];                         //804
+    [data appendUInt16:self.providerRegistrationTransactionVersion]; // 16
+    [data appendUInt16:self.providerType];                           // 32
+    [data appendUInt16:self.providerMode];                           // 48
+    [data appendUTXO:self.collateralOutpoint];                       // 84
+    [data appendUInt128:self.ipAddress];                             // 212
+    [data appendUInt16:CFSwapInt16BigToHost(self.port)];             // 228
+    [data appendUInt160:self.ownerKeyHash];                          // 388
+    [data appendUInt384:self.operatorKey];                           // 772
+    [data appendUInt160:self.votingKeyHash];                         // 788
+    [data appendUInt16:self.operatorReward];                         // 804
     [data appendVarInt:self.scriptPayout.length];
     [data appendData:self.scriptPayout];
     [data appendUInt256:self.inputsHash];

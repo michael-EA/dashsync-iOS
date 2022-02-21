@@ -243,10 +243,10 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSAccountNewAccountShouldBeAddedFromT
 // This loads transactions once the account is set to a wallet
 - (void)loadTransactions;
 
-//This removes all transactions from the account
+// This removes all transactions from the account
 - (void)wipeBlockchainInfo;
 
-//This creates a proposal transaction
+// This creates a proposal transaction
 - (DSTransaction *)proposalCollateralTransactionWithData:(NSData *)data;
 
 // given a private key, queries api.dashwallet.com for unspent outputs and calls the completion block with a signed

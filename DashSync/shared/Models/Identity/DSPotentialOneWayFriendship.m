@@ -140,9 +140,9 @@
 
     uint32_t accountSecretKey28 = accountSecretKey.u32[0] >> 4;
     uint32_t shortenedAccountBits = self.account.accountNumber & 0x0FFFFFFF;
-    uint32_t version = 0; //currently set to 0
+    uint32_t version = 0; // currently set to 0
     uint32_t versionBits = version << 28;
-    return versionBits | (accountSecretKey28 ^ shortenedAccountBits); //this is the account ref
+    return versionBits | (accountSecretKey28 ^ shortenedAccountBits); // this is the account ref
 }
 
 - (DPDocument *)contactRequestDocumentWithEntropy:(NSData *)entropyData {

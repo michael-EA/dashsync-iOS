@@ -180,7 +180,7 @@
         UInt256 potentialBlockHash = d.x11;
 
         if (!uint256_sup(potentialBlockHash, fullTarget)) {
-            //We found a block
+            // We found a block
             DSLog(@"A Block was found %@ %@", uint256_bin(fullTarget), uint256_bin(potentialBlockHash));
             self.blockHash = potentialBlockHash;
             found = TRUE;

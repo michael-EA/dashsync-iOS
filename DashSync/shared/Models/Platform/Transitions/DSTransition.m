@@ -63,7 +63,7 @@
 
 - (BOOL)checkTransitionSignatureForECDSAKey:(DSECDSAKey *)transitionRecoveredPublicKey {
     return [transitionRecoveredPublicKey verify:[self serializedBaseDataHash].UInt256 signatureData:self.signatureData];
-    //return uint160_eq([transitionRecoveredPublicKey hash160], self.blockchainIdentityRegistrationTransaction.pubkeyHash);
+    // return uint160_eq([transitionRecoveredPublicKey hash160], self.blockchainIdentityRegistrationTransaction.pubkeyHash);
 }
 
 - (BOOL)checkTransitionSignatureForBLSKey:(DSBLSKey *)blockchainIdentityPublicKey {
@@ -91,7 +91,7 @@
     } else {
         NSAssert(index != UINT32_MAX, @"index must exist");
     }
-    //ATTENTION If this ever changes from ECDSA, change the max signature size defined above
+    // ATTENTION If this ever changes from ECDSA, change the max signature size defined above
     DSLogPrivate(@"Private Key is %@", [privateKey serializedPrivateKeyForChain:self.chain]);
     DSLogPrivate(@"Signing %@ with key %@", [self serializedBaseDataHash].hexString, privateKey.publicKeyData.hexString);
     if ([privateKey isMemberOfClass:[DSBLSKey class]]) {
@@ -108,7 +108,7 @@
 // size in bytes if signed, or estimated size assuming compact pubkey sigs
 - (size_t)size {
     if (uint256_is_not_zero(_transitionHash)) return self.data.length;
-    return [self serialized].length; //todo figure this out (probably wrong)
+    return [self serialized].length; // todo figure this out (probably wrong)
 }
 
 - (NSData *)toData {
@@ -119,7 +119,7 @@
 
 - (DSMutableStringValueDictionary *)baseKeyValueDictionary {
     DSMutableStringValueDictionary *json = [[DSMutableStringValueDictionary alloc] init];
-    //json[@"protocolVersion"] = @(self.chain.platformProtocolVersion);
+    // json[@"protocolVersion"] = @(self.chain.platformProtocolVersion);
     json[@"type"] = @(self.type);
     return json;
 }

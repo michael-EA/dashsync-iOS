@@ -32,7 +32,7 @@ typedef void (^DSBlockOperationBlock)(DSBlockOperation *operation, DSBlockOperat
 
 /**
  The designated initializer.
- 
+
  - parameter block: The closure to run when the operation executes. This
  closure will be run on an arbitrary queue. The parameter passed to the
  block **MUST** be invoked by your code, or else the `BlockOperation`
@@ -45,7 +45,7 @@ typedef void (^DSBlockOperationBlock)(DSBlockOperation *operation, DSBlockOperat
 
 /**
  A convenience initializer to execute a block on the main queue.
- 
+
  - parameter mainQueueBlock: The block to execute on the main queue. Note
  that this block does not have a "continuation" block to execute (unlike
  the designated initializer). The operation will be automatically ended

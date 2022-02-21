@@ -254,7 +254,7 @@
                                                                                                     [alert addAction:okButton];
                                                                                                     [self presentViewController:alert animated:YES completion:nil];
                                                                                                 }
-                                                                                            } else if (!sent) { //TODO: show full screen sent dialog with tx info, "you sent b10,000 to bob"
+                                                                                            } else if (!sent) { // TODO: show full screen sent dialog with tx info, "you sent b10,000 to bob"
                                                                                                 sent = YES;
                                                                                                 tx.timestamp = [NSDate timeIntervalSince1970];
                                                                                                 [self.fundingAccount registerTransaction:tx saveImmediately:YES];

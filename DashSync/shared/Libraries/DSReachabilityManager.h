@@ -36,8 +36,7 @@
 #endif
 #endif
 
-typedef NS_ENUM(NSInteger, DSReachabilityStatus)
-{
+typedef NS_ENUM(NSInteger, DSReachabilityStatus) {
     DSReachabilityStatusUnknown = -1,
     DSReachabilityStatusNotReachable = 0,
     DSReachabilityStatusReachableViaWWAN = 1,

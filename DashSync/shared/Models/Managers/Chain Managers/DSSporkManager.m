@@ -87,37 +87,37 @@
 
 - (BOOL)instantSendActive {
     DSSpork *instantSendSpork = self.sporkDictionary[@(DSSporkIdentifier_Spork2InstantSendEnabled)];
-    if (!instantSendSpork) return TRUE; //assume true
+    if (!instantSendSpork) return TRUE; // assume true
     return instantSendSpork.value <= self.chain.lastTerminalBlockHeight;
 }
 
 - (BOOL)sporksUpdatedSignatures {
     DSSpork *updateSignatureSpork = self.sporkDictionary[@(DSSporkIdentifier_Spork6NewSigs)];
-    if (!updateSignatureSpork) return FALSE; //assume false
+    if (!updateSignatureSpork) return FALSE; // assume false
     return updateSignatureSpork.value <= self.chain.lastTerminalBlockHeight;
 }
 
 - (BOOL)deterministicMasternodeListEnabled {
     DSSpork *dmlSpork = self.sporkDictionary[@(DSSporkIdentifier_Spork15DeterministicMasternodesEnabled)];
-    if (!dmlSpork) return TRUE; //assume true
+    if (!dmlSpork) return TRUE; // assume true
     return dmlSpork.value <= self.chain.lastTerminalBlockHeight;
 }
 
 - (BOOL)llmqInstantSendEnabled {
     DSSpork *llmqSpork = self.sporkDictionary[@(DSSporkIdentifier_Spork20InstantSendLLMQBased)];
-    if (!llmqSpork) return TRUE; //assume true
+    if (!llmqSpork) return TRUE; // assume true
     return llmqSpork.value <= self.chain.lastTerminalBlockHeight;
 }
 
 - (BOOL)quorumDKGEnabled {
     DSSpork *dkgSpork = self.sporkDictionary[@(DSSporkIdentifier_Spork17QuorumDKGEnabled)];
-    if (!dkgSpork) return TRUE; //assume true
+    if (!dkgSpork) return TRUE; // assume true
     return dkgSpork.value <= self.chain.lastTerminalBlockHeight;
 }
 
 - (BOOL)chainLocksEnabled {
     DSSpork *chainLockSpork = self.sporkDictionary[@(DSSporkIdentifier_Spork19ChainLocksEnabled)];
-    if (!chainLockSpork) return TRUE; //assume true
+    if (!chainLockSpork) return TRUE; // assume true
     return chainLockSpork.value <= self.chain.lastTerminalBlockHeight;
 }
 
@@ -148,7 +148,7 @@
         self.sporkTimer = [NSTimer scheduledTimerWithTimeInterval:600
                                                           repeats:TRUE
                                                             block:^(NSTimer *_Nonnull timer) {
-                                                                if (self.lastSyncedSporks < [NSDate timeIntervalSince1970] - 60 * 10) { //wait 10 minutes between requests
+                                                                if (self.lastSyncedSporks < [NSDate timeIntervalSince1970] - 60 * 10) { // wait 10 minutes between requests
                                                                     [self performSporkRequest];
                                                                 }
                                                             }];
@@ -181,13 +181,13 @@
     BOOL updatedSpork = FALSE;
     __block NSMutableDictionary *dictionary = [[NSMutableDictionary alloc] init];
     if (currentSpork) {
-        //there was already a spork
+        // there was already a spork
         if (![currentSpork isEqualToSpork:spork]) {
-            [self setSporkValue:spork forKeyIdentifier:spork.identifier]; //set it to new one
+            [self setSporkValue:spork forKeyIdentifier:spork.identifier]; // set it to new one
             updatedSpork = TRUE;
             [dictionary setObject:currentSpork forKey:@"old"];
         } else {
-            //lets check triggers anyways in case of an update of trigger code
+            // lets check triggers anyways in case of an update of trigger code
             [self checkTriggersForSpork:spork forKeyIdentifier:spork.identifier];
             return;
         }
@@ -228,13 +228,13 @@
 }
 
 - (void)checkTriggersForSpork:(DSSpork *)spork forKeyIdentifier:(DSSporkIdentifier)sporkIdentifier {
-    BOOL changed = FALSE; //some triggers will require a change, others have different requirements
+    BOOL changed = FALSE; // some triggers will require a change, others have different requirements
     if (![_mSporkDictionary objectForKey:@(sporkIdentifier)] || ([_mSporkDictionary objectForKey:@(sporkIdentifier)] && (_mSporkDictionary[@(sporkIdentifier)].value != spork.value))) {
         changed = TRUE;
     }
     switch (sporkIdentifier) {
         case DSSporkIdentifier_Spork15DeterministicMasternodesEnabled: {
-            if (!self.chain.isDevnetAny && self.chain.estimatedBlockHeight >= spork.value && self.chain.minProtocolVersion < SPORK_15_MIN_PROTOCOL_VERSION) { //use estimated block height here instead
+            if (!self.chain.isDevnetAny && self.chain.estimatedBlockHeight >= spork.value && self.chain.minProtocolVersion < SPORK_15_MIN_PROTOCOL_VERSION) { // use estimated block height here instead
                 [self.chain setMinProtocolVersion:SPORK_15_MIN_PROTOCOL_VERSION];
             }
         } break;

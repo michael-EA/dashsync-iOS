@@ -141,7 +141,7 @@ static NSString *DashCurrencySymbolAssetName = nil;
         [d appendBytes:&v length:1];
         //        DSKey * key = [DSKey keyRecoveredFromCompactSig:elem[l - 1] andMessageDigest:transactionHash];
         //        [d appendBytes:[key.publicKey hash160].u8 length:sizeof(UInt160)];
-        //TODO: implement Peter Wullie's pubKey recovery from signature
+        // TODO: implement Peter Wullie's pubKey recovery from signature
         return nil;
     } else {
         DSLog(@"Unknown script type");

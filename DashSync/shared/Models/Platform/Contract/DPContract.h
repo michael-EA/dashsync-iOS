@@ -25,8 +25,7 @@ FOUNDATION_EXPORT NSString *const DSContractUpdateNotificationKey;
 
 @class DSChain, DSContractTransition, DSBlockchainIdentity;
 
-typedef NS_ENUM(NSUInteger, DPContractState)
-{
+typedef NS_ENUM(NSUInteger, DPContractState) {
     DPContractState_Unknown,
     DPContractState_NotRegistered,
     DPContractState_Registered,

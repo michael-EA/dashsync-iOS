@@ -9,8 +9,7 @@
 #import "BigIntTypes.h"
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(uint32_t, DSSporkIdentifier)
-{
+typedef NS_ENUM(uint32_t, DSSporkIdentifier) {
     DSSporkIdentifier_Spork2InstantSendEnabled = 10001,
     DSSporkIdentifier_Spork3InstantSendBlockFiltering = 10002,
     DSSporkIdentifier_Spork5InstantSendMaxValue = 10004,

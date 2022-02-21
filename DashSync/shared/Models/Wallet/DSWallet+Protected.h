@@ -31,13 +31,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSData *transientDerivedKeyData;
 
-//this is used from the account to help determine best start sync position for future resync
+// this is used from the account to help determine best start sync position for future resync
 - (void)setGuessedWalletCreationTime:(NSTimeInterval)guessedWalletCreationTime;
 
-//get the MNEMONIC KEY prefixed unique ID
+// get the MNEMONIC KEY prefixed unique ID
 + (NSString *_Nonnull)mnemonicUniqueIDForUniqueID:(NSString *)uniqueID;
 
-//get the CREATION TIME KEY prefixed unique ID
+// get the CREATION TIME KEY prefixed unique ID
 + (NSString *_Nonnull)creationTimeUniqueIDForUniqueID:(NSString *)uniqueID;
 
 + (NSOrderedSet *_Nullable)blockZonesFromChainSynchronizationFingerprint:(NSData *)chainSynchronizationFingerprint rVersion:(uint8_t *_Nullable)rVersion rChainHeight:(uint32_t *_Nullable)rChainHeight;

@@ -47,7 +47,7 @@
 @implementation DSBlockchainInvitation
 
 - (instancetype)initAtIndex:(uint32_t)index inWallet:(DSWallet *)wallet {
-    //this is the creation of a new blockchain identity
+    // this is the creation of a new blockchain identity
     NSParameterAssert(wallet);
 
     if (!(self = [super init])) return nil;
@@ -140,7 +140,7 @@
     [self.identity setInvitationRegistrationCreditFundingTransaction:fundingTransaction];
     [self registerInWalletForBlockchainIdentityUniqueId:fundingTransaction.creditBurnIdentityIdentifier];
 
-    //we need to also set the address of the funding transaction to being used so future identities past the initial gap limit are found
+    // we need to also set the address of the funding transaction to being used so future identities past the initial gap limit are found
     [fundingTransaction markInvitationAddressAsUsedInWallet:self.wallet];
 }
 
@@ -167,7 +167,7 @@
 - (BOOL)unregisterLocally {
     NSAssert(self.identity.isOutgoingInvitation, @"The underlying identity is not from an invitation");
     if (!self.identity.isOutgoingInvitation) return FALSE;
-    if (self.identity.isRegistered) return FALSE; //if the invitation has already been used we can not unregister it
+    if (self.identity.isRegistered) return FALSE; // if the invitation has already been used we can not unregister it
     [self.wallet unregisterBlockchainInvitation:self];
     [self deletePersistentObjectAndSave:YES inContext:[NSManagedObjectContext platformContext]];
     return TRUE;
@@ -194,19 +194,15 @@
     }
     if (uint256_is_zero(assetLockTransactionHash)) {
         if (completion) {
-            completion(nil, NO, [NSError errorWithDomain:@"DashSync"
-                                                    code:400
-                                                userInfo:@{NSLocalizedDescriptionKey:
-                                                             DSLocalizedString(@"Invitation format is not valid", nil)}]);
+            completion(nil, NO, [NSError errorWithDomain:@"DashSync" code:400 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                           DSLocalizedString(@"Invitation format is not valid", nil)}]);
         }
         return;
     }
     if (!fundingPrivateKey || uint256_is_zero(*fundingPrivateKey.secretKey)) {
         if (completion) {
-            completion(nil, NO, [NSError errorWithDomain:@"DashSync"
-                                                    code:400
-                                                userInfo:@{NSLocalizedDescriptionKey:
-                                                             DSLocalizedString(@"Funding private key is not valid", nil)}]);
+            completion(nil, NO, [NSError errorWithDomain:@"DashSync" code:400 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                           DSLocalizedString(@"Funding private key is not valid", nil)}]);
         }
         return;
     }
@@ -217,10 +213,8 @@
             NSAssert(transaction, @"transaction must not be null");
             if (!transaction || ![transaction isKindOfClass:[DSCreditFundingTransaction class]]) {
                 if (completion) {
-                    completion(nil, NO, [NSError errorWithDomain:@"DashSync"
-                                                            code:400
-                                                        userInfo:@{NSLocalizedDescriptionKey:
-                                                                     DSLocalizedString(@"Invitation transaction is not valid", nil)}]);
+                    completion(nil, NO, [NSError errorWithDomain:@"DashSync" code:400 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                                   DSLocalizedString(@"Invitation transaction is not valid", nil)}]);
                 }
                 return;
             }
@@ -230,10 +224,8 @@
         }
         failure:^(NSError *_Nonnull error) {
             if (completion) {
-                completion(nil, NO, [NSError errorWithDomain:@"DashSync"
-                                                        code:400
-                                                    userInfo:@{NSLocalizedDescriptionKey:
-                                                                 DSLocalizedString(@"Invitation format is not valid", nil)}]);
+                completion(nil, NO, [NSError errorWithDomain:@"DashSync" code:400 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                               DSLocalizedString(@"Invitation format is not valid", nil)}]);
             }
         }];
 }
@@ -288,7 +280,7 @@
             self.identity = [[DSBlockchainIdentity alloc] initAtIndex:index withFundingTransaction:(DSCreditFundingTransaction *)transaction withUsernameDictionary:nil inWallet:self.wallet];
             [self.identity setAssociatedInvitation:self];
             [self.identity addDashpayUsername:dashpayUsername save:NO];
-            [self.identity registerInWalletForRegistrationFundingTransaction: (DSCreditFundingTransaction *)transaction];
+            [self.identity registerInWalletForRegistrationFundingTransaction:(DSCreditFundingTransaction *)transaction];
             BOOL success = [self.identity setExternalFundingPrivateKey:fundingPrivateKey];
             NSAssert(success, @"We must be able to set the external funding private key");
             if (success) {
@@ -369,7 +361,7 @@
             });
             return;
         }
-        NSString *registrationFundingPrivateKeyString = [registrationFundingPrivateKey serializedPrivateKeyForChain:self.chain]; //in WIF format
+        NSString *registrationFundingPrivateKeyString = [registrationFundingPrivateKey serializedPrivateKeyForChain:self.chain]; // in WIF format
 
         NSString *serializedISLock = [self.identity.registrationCreditFundingTransaction.instantSendLockAwaitingProcessing.toData hexString];
 

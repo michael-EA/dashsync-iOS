@@ -159,7 +159,7 @@
         }
     }
 
-    if ([self type] != DSTransactionType_Classic) return self; //only classic transactions are shapeshifted
+    if ([self type] != DSTransactionType_Classic) return self; // only classic transactions are shapeshifted
 
     NSString *outboundShapeshiftAddress = [self shapeshiftOutboundAddress];
     if (!outboundShapeshiftAddress) return self;
@@ -188,7 +188,7 @@
         if ([outputAddress isEqual:[NSNull null]]) continue;
         mainOutputAddress = outputAddress;
     }
-    //NSAssert(mainOutputAddress, @"there should always be an output address");
+    // NSAssert(mainOutputAddress, @"there should always be an output address");
     if (mainOutputAddress) {
         self.associatedShapeshift = [DSShapeshiftEntity registerShapeshiftWithInputAddress:mainOutputAddress andWithdrawalAddress:outboundShapeshiftAddress withStatus:eShapeshiftAddressStatus_NoDeposits inContext:[NSManagedObjectContext chainContext]];
     }
@@ -418,7 +418,7 @@
             [d appendVarInt:[input.signature length]];
             [d appendData:input.signature];
         } else if (subscriptIndex == i && input.inScript != nil) {
-            //TODO: to fully match the reference implementation, OP_CODESEPARATOR related checksig logic should go here
+            // TODO: to fully match the reference implementation, OP_CODESEPARATOR related checksig logic should go here
             [d appendVarInt:[input.inScript length]];
             [d appendData:input.inScript];
         } else
@@ -628,7 +628,7 @@
 
 // returns the fee for the given transaction if all its inputs are from wallet transactions, UINT64_MAX otherwise
 - (uint64_t)feeUsed {
-    //TODO: This most likely does not work when sending from multiple accounts
+    // TODO: This most likely does not work when sending from multiple accounts
     return [self.firstAccount feeForTransaction:self];
 }
 
@@ -673,11 +673,11 @@
 }
 
 - (BOOL)confirmed {
-    if (_confirmed) return YES; //because it can't be unconfirmed
+    if (_confirmed) return YES; // because it can't be unconfirmed
     if (self.blockHeight == TX_UNCONFIRMED) return NO;
     const uint32_t lastHeight = self.chain.lastSyncBlockHeight;
     if (self.blockHeight > self.chain.lastSyncBlockHeight) {
-        //this should only be possible if and only if we have migrated and kept old transactions.
+        // this should only be possible if and only if we have migrated and kept old transactions.
         return YES;
     }
     if (lastHeight - self.blockHeight > 6) return YES;
@@ -698,10 +698,10 @@
                 DSBlockchainIdentity *destinationBlockchainIdentity = [incomingFundsDerivationPath contactDestinationBlockchainIdentity];
                 DSBlockchainIdentity *sourceBlockchainIdentity = [incomingFundsDerivationPath contactSourceBlockchainIdentity];
                 if (sourceBlockchainIdentity) {
-                    [destinationBlockchainIdentities addObject:sourceBlockchainIdentity]; //these need to be inverted since the derivation path is incoming
+                    [destinationBlockchainIdentities addObject:sourceBlockchainIdentity]; // these need to be inverted since the derivation path is incoming
                 }
                 if (destinationBlockchainIdentity) {
-                    [sourceBlockchainIdentities addObject:destinationBlockchainIdentity]; //these need to be inverted since the derivation path is incoming
+                    [sourceBlockchainIdentities addObject:destinationBlockchainIdentity]; // these need to be inverted since the derivation path is incoming
                 }
             }
         }
@@ -721,7 +721,7 @@
 }
 
 - (void)hasSetInputsAndOutputs {
-    //nothing to do here
+    // nothing to do here
 }
 
 // MARK: - Extra shapeshift methods
@@ -843,7 +843,7 @@
                 self.persistenceStatus = DSTransactionPersistenceStatus_NotSaved;
             }
         } else {
-            //it already existed
+            // it already existed
             self.persistenceStatus = DSTransactionPersistenceStatus_Saved;
         }
     }];

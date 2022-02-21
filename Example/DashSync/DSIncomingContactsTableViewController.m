@@ -41,10 +41,10 @@ static NSString *const CellId = @"CellId";
 }
 
 - (NSPredicate *)predicate {
-    //incoming request from marge to homer
-    //own contact is homer
-    //self is marge
-    //validates to being a request from marge to homer
+    // incoming request from marge to homer
+    // own contact is homer
+    // self is marge
+    // validates to being a request from marge to homer
     return [NSPredicate predicateWithFormat:@"destinationContact == %@ && (SUBQUERY(destinationContact.outgoingRequests, $friendRequest, $friendRequest.destinationContact == SELF.sourceContact).@count == 0)", [self.blockchainIdentity matchingDashpayUserInContext:self.context]];
 }
 

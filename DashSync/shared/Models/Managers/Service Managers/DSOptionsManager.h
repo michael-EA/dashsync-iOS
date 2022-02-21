@@ -10,8 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSSyncType)
-{
+typedef NS_ENUM(NSUInteger, DSSyncType) {
     DSSyncType_None = 0,
     DSSyncType_BaseSPV = 1,
     DSSyncType_FullBlocks = 1 << 1,

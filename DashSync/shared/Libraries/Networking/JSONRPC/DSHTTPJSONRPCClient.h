@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  DSHTTPJSONRPCClient objects communicate with web services using the JSON-RPC 2.0 protocol.
- 
+
  @see http://www.jsonrpc.org/specification
  */
 @interface DSHTTPJSONRPCClient : NSObject
@@ -55,10 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Creates and initializes a JSON-RPC client with the specified endpoint.
- 
+
  @param URL The endpoint URL.
  @param httpLoaderFactory The factory to create HTTP manager
- 
+
  @return An initialized JSON-RPC client.
  */
 + (instancetype)clientWithEndpointURL:(NSURL *)URL
@@ -66,10 +66,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Initializes a JSON-RPC client with the specified endpoint.
- 
+
  @param URL The endpoint URL.
  @param httpLoaderFactory The factory to create HTTP manager
- 
+
  @return An initialized JSON-RPC client.
  */
 - (instancetype)initWithEndpointURL:(NSURL *)URL
@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Creates a request with the specified method, and enqueues a request operation for it.
- 
+
  @param method The HTTP method. Must not be `nil`.
  @param success A block object to be executed when the request operation finishes successfully. This block has no return value and takes one argument: the response object created by the client response serializer.
  @param failure A block object to be executed when the request operation finishes unsuccessfully, or that finishes successfully, but encountered an error while parsing the response data. This block has no return value and takes one argument: the error describing the network or parsing error that occurred.
@@ -130,7 +130,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Default initializer is unavailable.
- 
+
  @see -initWithEndpointURL:httpLoaderFactory:
  */
 - (instancetype)init NS_UNAVAILABLE;

@@ -27,8 +27,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSPeerManagerDesiredState)
-{
+typedef NS_ENUM(NSUInteger, DSPeerManagerDesiredState) {
     DSPeerManagerDesiredState_Unknown = -1,
     DSPeerManagerDesiredState_Connected = 1,
     DSPeerManagerDesiredState_Disconnected

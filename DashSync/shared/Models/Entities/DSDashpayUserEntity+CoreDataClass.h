@@ -21,8 +21,7 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, DSDashpayUserEntityFriendActivityType)
-{
+typedef NS_ENUM(NSUInteger, DSDashpayUserEntityFriendActivityType) {
     DSDashpayUserEntityFriendActivityType_IncomingTransactions,
     DSDashpayUserEntityFriendActivityType_OutgoingTransactions
 };

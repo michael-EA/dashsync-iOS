@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) UInt256 payloadHash;
 @property (nonatomic, assign) uint16_t providerUpdateServiceTransactionVersion;
 @property (nonatomic, assign) UInt256 providerRegistrationTransactionHash;
-@property (nonatomic, assign) UInt128 ipAddress; //v6, but only v4 supported
+@property (nonatomic, assign) UInt128 ipAddress; // v6, but only v4 supported
 @property (nonatomic, assign) uint16_t port;
 @property (nonatomic, strong) NSData *scriptPayout;
 @property (nonatomic, nullable, readonly) NSString *payoutAddress;

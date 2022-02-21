@@ -223,19 +223,19 @@
             } else {
                 [self performSegueWithIdentifier:@"CreateOrEditProfileSegue" sender:self];
             }
-        } else if (indexPath.row == 5) { //Keys
+        } else if (indexPath.row == 5) { // Keys
         }
-    } else if (indexPath.section == 1) { //Dashpay
-        if (indexPath.row == 0) {        //Contacts
+    } else if (indexPath.section == 1) { // Dashpay
+        if (indexPath.row == 0) {        // Contacts
             DSContactsNavigationController *controller = [DSContactsNavigationController controllerWithChainManager:self.chainManager blockchainIdentity:self.blockchainIdentity];
             [self presentViewController:controller animated:YES completion:nil];
         }
-    } else if (indexPath.section == 2) { //Contracts
-        if (indexPath.row == 0) {        //Register
+    } else if (indexPath.section == 2) { // Contracts
+        if (indexPath.row == 0) {        // Register
             [self performSegueWithIdentifier:@"RegisterContractsSegue" sender:self];
-        } else if (indexPath.row == 1) { //View
+        } else if (indexPath.row == 1) { // View
         }
-    } else if (indexPath.section == 3) { //Actions
+    } else if (indexPath.section == 3) { // Actions
         if (indexPath.row == 0) {
         } else if (indexPath.row == 2) {
         } else if (indexPath.row == 3) {

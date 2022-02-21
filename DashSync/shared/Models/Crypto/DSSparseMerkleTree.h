@@ -29,8 +29,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(uint16_t, DSSparseMerkleTreeProofType)
-{
+typedef NS_ENUM(uint16_t, DSSparseMerkleTreeProofType) {
     DSSparseMerkleTreeProofType_Inclusion,
     DSSparseMerkleTreeProofType_NonInclusion,
 };

@@ -49,8 +49,7 @@ typedef void (^TransactionValidityCompletionBlock)(BOOL signedTransaction, BOOL 
 
 @class DSTransaction, DSKey, DSAccount, DSDerivationPath;
 
-typedef NS_ENUM(NSUInteger, DSDerivationPathType)
-{
+typedef NS_ENUM(NSUInteger, DSDerivationPathType) {
     DSDerivationPathType_Unknown = 0,
     DSDerivationPathType_ClearFunds = 1,
     DSDerivationPathType_AnonymousFunds = 1 << 1,
@@ -65,8 +64,7 @@ typedef NS_ENUM(NSUInteger, DSDerivationPathType)
     DSDerivationPathType_IsForFunds = DSDerivationPathType_ClearFunds | DSDerivationPathType_AnonymousFunds | DSDerivationPathType_ViewOnlyFunds | DSDerivationPathType_ProtectedFunds
 };
 
-typedef NS_ENUM(NSUInteger, DSDerivationPathReference)
-{
+typedef NS_ENUM(NSUInteger, DSDerivationPathReference) {
     DSDerivationPathReference_Unknown = 0,
     DSDerivationPathReference_BIP32 = 1,
     DSDerivationPathReference_BIP44 = 2,
@@ -89,7 +87,7 @@ typedef NS_ENUM(NSUInteger, DSDerivationPathReference)
     BOOL *_hardenedIndexes;
 }
 
-//is this an open account
+// is this an open account
 @property (nonatomic, assign, readonly) DSDerivationPathType type;
 
 @property (nonatomic, assign, readonly) DSKeyType signingAlgorithm;
@@ -185,16 +183,16 @@ typedef NS_ENUM(NSUInteger, DSDerivationPathReference)
 
 - (DSKey *_Nullable)deprecatedIncorrectExtendedPublicKeyFromSeed:(NSData *_Nullable)seed;
 
-//you can set wallet unique Id to nil if you don't wish to store the extended Public Key
+// you can set wallet unique Id to nil if you don't wish to store the extended Public Key
 - (DSKey *_Nullable)generateExtendedPublicKeyFromSeed:(NSData *)seed storeUnderWalletUniqueId:(NSString *_Nullable)walletUniqueId;
 
-//addition option to store the private key, this should generally not be used unless the key is meant to be used without authentication
+// addition option to store the private key, this should generally not be used unless the key is meant to be used without authentication
 - (DSKey *_Nullable)generateExtendedPublicKeyFromSeed:(NSData *)seed storeUnderWalletUniqueId:(NSString *_Nullable)walletUniqueId storePrivateKey:(BOOL)storePrivateKey;
 
-//you can set wallet unique Id to nil if you don't wish to store the extended Public Key
+// you can set wallet unique Id to nil if you don't wish to store the extended Public Key
 - (DSKey *_Nullable)generateExtendedPublicKeyFromParentDerivationPath:(DSDerivationPath *)parentDerivationPath storeUnderWalletUniqueId:(NSString *_Nullable)walletUniqueId;
 
-//sometimes we need to store the public key but not at generation time, use this method for that
+// sometimes we need to store the public key but not at generation time, use this method for that
 - (BOOL)storeExtendedPublicKeyUnderWalletUniqueId:(NSString *_Nonnull)walletUniqueId;
 
 - (NSString *_Nullable)serializedExtendedPublicKey;
@@ -213,7 +211,7 @@ typedef NS_ENUM(NSUInteger, DSDerivationPathReference)
 
 - (NSArray *_Nullable)serializedPrivateKeysAtIndexPaths:(NSArray *)indexPaths fromSeed:(NSData *)seed;
 
-//this loads the derivation path once it is set to an account that has a wallet;
+// this loads the derivation path once it is set to an account that has a wallet;
 - (void)loadAddresses;
 
 - (void)reloadAddresses;

@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSFetchRequest<DSSimplifiedMasternodeEntryEntity *> *)fetchRequest;
 
-@property (nonatomic, assign) uint64_t address; //it's really on 32 bits but unsigned
+@property (nonatomic, assign) uint64_t address; // it's really on 32 bits but unsigned
 @property (nonatomic, assign) uint64_t platformPing;
 @property (nonatomic, assign) uint16_t port;
 @property (nonatomic, assign) uint32_t updateHeight;

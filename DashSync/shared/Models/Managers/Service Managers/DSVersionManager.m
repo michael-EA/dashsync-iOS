@@ -47,10 +47,10 @@
 
 - (BOOL)clearKeychainWalletOldData {
     BOOL failed = NO;
-    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V1, NO); //new keys
-    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V1, NO); //new keys
-    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V0, NO); //old keys
-    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V0, NO); //old keys
+    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V1, NO); // new keys
+    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V1, NO); // new keys
+    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V0, NO); // old keys
+    failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V0, NO); // old keys
     return failed;
 }
 
@@ -64,7 +64,7 @@
     return [wallets copy];
 }
 
-//there was an issue with extended public keys on version 0.7.6 and before, this fixes that
+// there was an issue with extended public keys on version 0.7.6 and before, this fixes that
 - (void)upgradeVersion1ExtendedKeysForWallet:(nullable DSWallet *)wallet chain:(DSChain *)chain withMessage:(NSString *)message withCompletion:(UpgradeCompletionBlock)completion {
     NSParameterAssert(chain);
     NSParameterAssert(message);
@@ -90,7 +90,7 @@
 
         BOOL authTimeMigrated = getKeychainInt(AUTHENTICATION_TIME_VALUES_MIGRATED, nil);
         if (!authTimeMigrated) {
-            //update pin unlock time
+            // update pin unlock time
 
             NSTimeInterval pinUnlockTimeSinceReferenceDate = [[NSUserDefaults standardUserDefaults] doubleForKey:PIN_UNLOCK_TIME_KEY];
 
@@ -99,7 +99,7 @@
             [[NSUserDefaults standardUserDefaults] setDouble:pinUnlockTimeSince1970
                                                       forKey:PIN_UNLOCK_TIME_KEY];
 
-            //secure time
+            // secure time
 
             if (![DSAuthenticationManager sharedInstance].secureTimeUpdated) {
                 NSTimeInterval secureTimeSinceReferenceDate = [DSAuthenticationManager sharedInstance].secureTime;
@@ -112,7 +112,7 @@
             setKeychainInt(1, AUTHENTICATION_TIME_VALUES_MIGRATED, NO);
         }
 
-        //upgrade scenario
+        // upgrade scenario
         [[DSAuthenticationManager sharedInstance] authenticateWithPrompt:message
                                             usingBiometricAuthentication:NO
                                                           alertIfLockout:NO
@@ -137,12 +137,12 @@
                                                                       }
 
                                                                       if (hasV0BIP44Data) {
-                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V0, NO); //old keys
-                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V0, NO); //old keys
+                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V0, NO); // old keys
+                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V0, NO); // old keys
                                                                       }
                                                                       if (hasV1BIP44Data) {
-                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V1, NO); //old keys
-                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V1, NO); //old keys
+                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP44_V1, NO); // old keys
+                                                                          failed = failed | !setKeychainData(nil, EXTENDED_0_PUBKEY_KEY_BIP32_V1, NO); // old keys
                                                                       }
 
                                                                       if ([[NSUserDefaults standardUserDefaults] objectForKey:SETTINGS_FIXED_PEER_KEY]) {
@@ -175,7 +175,7 @@
             NSArray *specializedDerivationPaths = [[DSDerivationPathFactory sharedInstance] specializedDerivationPathsNeedingExtendedPublicKeyForWallet:wallet];
             NSArray *derivationPaths = [fundDerivationPaths arrayByAddingObjectsFromArray:specializedDerivationPaths];
             if (derivationPaths.count) {
-                //upgrade scenario
+                // upgrade scenario
                 upgradeNeeded = YES;
 
                 dispatch_semaphore_t sem = dispatch_semaphore_create(0);

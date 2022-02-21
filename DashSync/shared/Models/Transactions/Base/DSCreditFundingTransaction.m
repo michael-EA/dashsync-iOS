@@ -39,7 +39,7 @@
         DSTransactionOutput *output = self.outputs[i];
         NSData *script = output.outScript;
         if ([script UInt8AtOffset:0] == OP_RETURN && script.length == 22) {
-            DSUTXO outpoint = {.hash = uint256_reverse(self.txHash), .n = i}; //!OCLINT
+            DSUTXO outpoint = {.hash = uint256_reverse(self.txHash), .n = i}; //! OCLINT
             return outpoint;
         }
     }
@@ -111,7 +111,7 @@
 - (void)setInstantSendReceivedWithInstantSendLock:(DSInstantSendTransactionLock *)instantSendLock {
     self.instantSendReceived = instantSendLock.signatureVerified;
     self.hasUnverifiedInstantSendLock = (instantSendLock && !instantSendLock.signatureVerified);
-    //we will always need to send this platform
+    // we will always need to send this platform
     self.instantSendLockAwaitingProcessing = instantSendLock;
     if (!instantSendLock.saved) {
         [instantSendLock saveInitial];

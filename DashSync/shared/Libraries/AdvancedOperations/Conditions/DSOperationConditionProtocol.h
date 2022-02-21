@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
  Some conditions may have the ability to satisfy the condition if another
  operation is executed first. Use this method to return an operation that
  (for example) asks for permission to perform the operation
- 
+
  - parameter operation: The `Operation` to which the Condition has been added.
  - returns: An `NSOperation`, if a dependency should be automatically added. Otherwise, `nil`.
  - note: Only a single operation may be returned as a dependency. If you

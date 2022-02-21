@@ -74,10 +74,10 @@
 
 - (BOOL)blockchainIdentityIsRecipient {
     if (uint256_eq(self.blockchainIdentity.uniqueID, self.recipientBlockchainIdentityUniqueId)) {
-        //we are the recipient of the friend request
+        // we are the recipient of the friend request
         return YES;
     } else if (uint256_eq(self.blockchainIdentity.uniqueID, self.senderBlockchainIdentityUniqueId)) {
-        //we are the sender of the friend request
+        // we are the sender of the friend request
         return NO;
     }
     NSAssert(NO, @"We should never get here");

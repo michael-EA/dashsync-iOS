@@ -21,8 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 extern NSErrorDomain const DSDAPIClientErrorDomain;
 
-typedef NS_ENUM(NSUInteger, DSDAPIClientErrorCode)
-{
+typedef NS_ENUM(NSUInteger, DSDAPIClientErrorCode) {
     DSDAPIClientErrorCodeSignTransitionFailed = 1,
     DSDAPIClientErrorCodeNoKnownDAPINodes = 2,
 };

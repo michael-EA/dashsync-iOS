@@ -58,7 +58,7 @@
         DSAccount *account = [self.providerRegistrationTransaction.chain accountContainingAddress:self.collateralAddress];
 
 
-        //todo make a protocol for DSIncomingDerivationPath and DSFundsDerivationPath
+        // todo make a protocol for DSIncomingDerivationPath and DSFundsDerivationPath
         DSFundsDerivationPath *derivationPath = (DSFundsDerivationPath *)[account derivationPathContainingAddress:self.collateralAddress];
 
         NSIndexPath *indexPath = [derivationPath indexPathForKnownAddress:self.collateralAddress];

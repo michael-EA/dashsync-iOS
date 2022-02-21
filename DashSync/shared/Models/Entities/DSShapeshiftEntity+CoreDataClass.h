@@ -26,8 +26,7 @@
 #import <CoreData/CoreData.h>
 #import <Foundation/Foundation.h>
 
-typedef enum eShapeshiftAddressStatus
-{
+typedef enum eShapeshiftAddressStatus {
     eShapeshiftAddressStatus_Unused = 0,
     eShapeshiftAddressStatus_NoDeposits = 1,
     eShapeshiftAddressStatus_Received = 2,

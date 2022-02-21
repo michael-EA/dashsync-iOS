@@ -632,7 +632,7 @@ NSString *const DSDAPINetworkServiceErrorDomain = @"dash.dapi-network-service.er
                           success:success
                           failure:failure];
         } else {
-            //no identity
+            // no identity
             success(nil);
         }
     };
@@ -685,7 +685,7 @@ NSString *const DSDAPINetworkServiceErrorDomain = @"dash.dapi-network-service.er
     waitResponseHandler.successHandler = ^(NSDictionary *successDictionary) {
         NSLog(@"%@", successDictionary);
 
-        //todo : verify proof
+        // todo : verify proof
         if (success) {
             success(successDictionary, TRUE);
         }

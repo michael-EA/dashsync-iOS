@@ -80,12 +80,12 @@
                 continue;
             }
             if ([number intValue] % 2) {
-                //Right side
+                // Right side
                 right = storeTreeRootHash.UInt256;
                 left = self.proofHashes.firstObject.UInt256;
                 [self.proofHashes removeObjectAtIndex:0];
             } else {
-                //Left Side
+                // Left Side
                 left = storeTreeRootHash.UInt256;
                 if (rowElements[@(pos + 1)]) {
                     // Both elements are known, no proof needed
@@ -108,7 +108,7 @@
 }
 
 - (BOOL)merkleTreeHasRoot:(UInt256)desiredMerkleRoot {
-    //DSLog(@"%@ - %@",uint256_hex(merkleRoot),uint256_hex(_merkleRoot));
+    // DSLog(@"%@ - %@",uint256_hex(merkleRoot),uint256_hex(_merkleRoot));
     if (!uint256_eq(self.merkleRoot, desiredMerkleRoot)) return NO; // merkle root check failed
     return YES;
 }

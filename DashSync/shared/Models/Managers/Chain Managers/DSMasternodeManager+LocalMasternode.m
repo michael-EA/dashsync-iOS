@@ -104,17 +104,17 @@ NSString const *localMasternodesDictionaryKey = @"localMasternodesDictionaryKey"
 - (DSLocalMasternode *)localMasternodeFromProviderRegistrationTransaction:(DSProviderRegistrationTransaction *)providerRegistrationTransaction save:(BOOL)save {
     NSParameterAssert(providerRegistrationTransaction);
 
-    //First check to see if we have a local masternode for this provider registration hash
+    // First check to see if we have a local masternode for this provider registration hash
 
     @synchronized(self) {
         DSLocalMasternode *localMasternode = self.localMasternodesDictionaryByRegistrationTransactionHash[uint256_data(providerRegistrationTransaction.txHash)];
 
         if (localMasternode) {
-            //We do
-            //todo Update keys
+            // We do
+            // todo Update keys
             return localMasternode;
         }
-        //We don't
+        // We don't
         localMasternode = [[DSLocalMasternode alloc] initWithProviderTransactionRegistration:providerRegistrationTransaction];
         if (localMasternode.noLocalWallet) return nil;
         [self.localMasternodesDictionaryByRegistrationTransactionHash setObject:localMasternode forKey:uint256_data(providerRegistrationTransaction.txHash)];

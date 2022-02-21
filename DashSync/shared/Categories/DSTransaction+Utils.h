@@ -27,8 +27,7 @@
 
 #import "DSTransaction.h"
 
-typedef NS_ENUM(NSUInteger, DSTransactionStatus)
-{
+typedef NS_ENUM(NSUInteger, DSTransactionStatus) {
     DSTransactionStatus_Sent,
     DSTransactionStatus_Receive,
     DSTransactionStatus_Move,

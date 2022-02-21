@@ -208,7 +208,7 @@ static const UniChar base58chars[] = {
                 length:1];
         [d appendBytes:[elem[l - 1] hash160].u8 length:sizeof(UInt160)];
     } else if (l >= 1 && [elem[l - 1] intValue] <= OP_PUSHDATA4 && [elem[l - 1] intValue] > 0) { // pay-to-pubkey scriptSig
-        //TODO: implement Peter Wullie's pubKey recovery from signature
+        // TODO: implement Peter Wullie's pubKey recovery from signature
         return nil;
     } else
         return nil; // unknown script type
@@ -249,7 +249,7 @@ static const UniChar base58chars[] = {
     for (i = z; i < self.length; i++) {
         uint32_t carry = [self characterAtIndex:i];
 
-        switch (carry) { //!OCLINT
+        switch (carry) { //! OCLINT
             case '1':
             case '2':
             case '3':

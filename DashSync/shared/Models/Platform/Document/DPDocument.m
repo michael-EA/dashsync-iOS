@@ -124,7 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
         NSAssert(uint256_is_not_zero(_ownerId), @"Owner needs to be set");
         NSAssert(uint256_is_not_zero(_contractId), @"Owner needs to be set");
         NSAssert(_tableName, @"Table name needs to be set");
-        //NSAssert(!uint160_is_zero(self.entropy),@"Entropy needs to be set");
+        // NSAssert(!uint160_is_zero(self.entropy),@"Entropy needs to be set");
         NSMutableData *mData = [NSMutableData data];
         [mData appendUInt256:_contractId];
         [mData appendUInt256:_ownerId];

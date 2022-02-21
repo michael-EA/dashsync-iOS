@@ -62,7 +62,7 @@
 // MARK: - Loading
 
 - (void)loadExternalBlockchainIdentities {
-    NSManagedObjectContext *context = [NSManagedObjectContext chainContext]; //shouldn't matter what context is used
+    NSManagedObjectContext *context = [NSManagedObjectContext chainContext]; // shouldn't matter what context is used
 
     [context performBlockAndWait:^{
         NSArray<DSBlockchainIdentityEntity *> *externalIdentityEntities = [DSBlockchainIdentityEntity objectsInContext:context matching:@"chain == %@ && isLocal == FALSE", [self.chain chainEntityInContext:context]];
@@ -102,7 +102,7 @@
 }
 
 - (DSBlockchainIdentity *)foreignBlockchainIdentityWithUniqueId:(UInt256)uniqueId createIfMissing:(BOOL)addIfMissing inContext:(NSManagedObjectContext *)context {
-    //foreign blockchain identities are for local blockchain identies' contacts, not for search.
+    // foreign blockchain identities are for local blockchain identies' contacts, not for search.
     @synchronized(self.foreignBlockchainIdentities) {
         DSBlockchainIdentity *foreignBlockchainIdentity = self.foreignBlockchainIdentities[uint256_data(uniqueId)];
         if (foreignBlockchainIdentity) {
@@ -124,9 +124,9 @@
         if (!blockchainIdentity.registrationCreditFundingTransaction || (blockchainIdentity.registrationCreditFundingTransaction.blockHeight == BLOCK_UNKNOWN_HEIGHT)) {
             [unsyncedBlockchainIdentities addObject:blockchainIdentity];
         } else if (self.chain.lastSyncBlockHeight > blockchainIdentity.dashpaySyncronizationBlockHeight) {
-            //If they are equal then the blockchain identity is synced
-            //This is because the dashpaySyncronizationBlock represents the last block for the bloom filter used in L1 should be considered valid
-            //That's because it is set at the time with the hash of the last
+            // If they are equal then the blockchain identity is synced
+            // This is because the dashpaySyncronizationBlock represents the last block for the bloom filter used in L1 should be considered valid
+            // That's because it is set at the time with the hash of the last
             [unsyncedBlockchainIdentities addObject:blockchainIdentity];
         }
     }
@@ -162,7 +162,7 @@
         if (identity.registrationStatus == DSBlockchainIdentityRegistrationStatus_Unknown) {
             [identity fetchIdentityNetworkStateInformationWithCompletion:^(BOOL success, BOOL found, NSError *error) {
                 if (success && found) {
-                    //now lets get dpns info
+                    // now lets get dpns info
                     if (([[DSOptionsManager sharedInstance] syncType] & DSSyncType_DPNS)) {
                         [identity fetchUsernamesWithCompletion:^(BOOL success, NSError *error){
 
@@ -236,10 +236,8 @@
     if ([dashpayContract contractState] != DPContractState_Registered) {
         if (completion) {
             dispatch_async(completionQueue, ^{
-                completion(NO, nil, [NSError errorWithDomain:@"DashSync"
-                                                        code:500
-                                                    userInfo:@{NSLocalizedDescriptionKey:
-                                                                 DSLocalizedString(@"The Dashpay contract is not properly set up", nil)}]);
+                completion(NO, nil, [NSError errorWithDomain:@"DashSync" code:500 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                               DSLocalizedString(@"The Dashpay contract is not properly set up", nil)}]);
             });
         }
         return nil;
@@ -288,10 +286,8 @@
     if ([dashpayContract contractState] != DPContractState_Registered) {
         if (completion) {
             dispatch_async(completionQueue, ^{
-                completion(NO, nil, [NSError errorWithDomain:@"DashSync"
-                                                        code:500
-                                                    userInfo:@{NSLocalizedDescriptionKey:
-                                                                 DSLocalizedString(@"The Dashpay contract is not properly set up", nil)}]);
+                completion(NO, nil, [NSError errorWithDomain:@"DashSync" code:500 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                               DSLocalizedString(@"The Dashpay contract is not properly set up", nil)}]);
             });
         }
         return nil;
@@ -308,10 +304,8 @@
             if (!strongSelf) {
                 if (completion) {
                     dispatch_async(completionQueue, ^{
-                        completion(NO, nil, [NSError errorWithDomain:@"DashSync"
-                                                                code:500
-                                                            userInfo:@{NSLocalizedDescriptionKey:
-                                                                         DSLocalizedString(@"Internal memory allocation error", nil)}]);
+                        completion(NO, nil, [NSError errorWithDomain:@"DashSync" code:500 userInfo:@{NSLocalizedDescriptionKey:
+                                                                                                       DSLocalizedString(@"Internal memory allocation error", nil)}]);
                     });
                 }
                 return;
@@ -476,14 +470,14 @@
     uint32_t index;
     DSWallet *wallet = [self.chain walletHavingBlockchainIdentityCreditFundingRegistrationHash:creditFundingTransaction.creditBurnPublicKeyHash foundAtIndex:&index];
 
-    if (!wallet) return; //it's a topup or we are funding an external identity
+    if (!wallet) return; // it's a topup or we are funding an external identity
 
     DSBlockchainIdentity *blockchainIdentity = [wallet blockchainIdentityForUniqueId:creditFundingTransaction.creditBurnIdentityIdentifier];
 
     NSAssert(blockchainIdentity, @"We should have already created the blockchain identity at this point in the transaction manager by calling triggerUpdatesForLocalReferences");
 
 
-    //DSLogPrivate(@"Paused Sync at block %d to gather identity information on %@",block.height,blockchainIdentity.uniqueIdString);
+    // DSLogPrivate(@"Paused Sync at block %d to gather identity information on %@",block.height,blockchainIdentity.uniqueIdString);
     [self fetchNeededNetworkStateInformationForBlockchainIdentity:blockchainIdentity
                                                    withCompletion:^(BOOL success, DSBlockchainIdentity *_Nullable blockchainIdentity, NSError *_Nullable error) {
                                                        if (success && blockchainIdentity != nil) {
@@ -496,7 +490,7 @@
 - (void)fetchNeededNetworkStateInformationForBlockchainIdentity:(DSBlockchainIdentity *)blockchainIdentity withCompletion:(IdentityCompletionBlock)completion completionQueue:(dispatch_queue_t)completionQueue {
     [blockchainIdentity fetchNeededNetworkStateInformationWithCompletion:^(DSBlockchainIdentityQueryStep failureStep, NSArray<NSError *> *_Nullable errors) {
         if (!failureStep || failureStep == DSBlockchainIdentityQueryStep_NoIdentity) {
-            //if this was never registered no need to retry
+            // if this was never registered no need to retry
             if (completion) {
                 dispatch_async(completionQueue, ^{
                     completion(YES, blockchainIdentity, nil);

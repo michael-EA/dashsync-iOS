@@ -12,8 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class DSGovernanceObject, DSSimplifiedMasternodeEntry, DSChain, DSECDSAKey;
 
-typedef NS_ENUM(uint32_t, DSGovernanceVoteSignal)
-{
+typedef NS_ENUM(uint32_t, DSGovernanceVoteSignal) {
     DSGovernanceVoteSignal_None = 0,
     DSGovernanceVoteSignal_Funding = 1,
     DSGovernanceVoteSignal_Valid = 2,
@@ -21,8 +20,7 @@ typedef NS_ENUM(uint32_t, DSGovernanceVoteSignal)
     DSGovernanceVoteSignal_Endorsed = 4
 };
 
-typedef NS_ENUM(uint32_t, DSGovernanceVoteOutcome)
-{
+typedef NS_ENUM(uint32_t, DSGovernanceVoteOutcome) {
     DSGovernanceVoteOutcome_None = 0,
     DSGovernanceVoteOutcome_Yes = 1,
     DSGovernanceVoteOutcome_No = 2,

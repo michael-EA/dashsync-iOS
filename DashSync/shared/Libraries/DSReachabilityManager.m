@@ -37,8 +37,7 @@ NSString *const DSReachabilityNotificationStatusItem = @"DSReachabilityNotificat
 
 typedef void (^DSReachabilityStatusBlock)(DSReachabilityStatus status);
 
-typedef NS_ENUM(NSUInteger, DSReachabilityAssociation)
-{
+typedef NS_ENUM(NSUInteger, DSReachabilityAssociation) {
     DSReachabilityForAddress = 1,
     DSReachabilityForAddressPair = 2,
     DSReachabilityForName = 3,

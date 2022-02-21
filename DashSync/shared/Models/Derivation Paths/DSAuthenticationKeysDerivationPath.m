@@ -116,7 +116,7 @@
 #if DEBUG
                             DSLogPrivate(@"address %@ loaded but was not valid on chain %@", e.address, self.wallet.chain.name);
 #else
-                                DSLog(@"address %@ loaded but was not valid on chain %@", @"<REDACTED>", self.wallet.chain.name);
+                            DSLog(@"address %@ loaded but was not valid on chain %@", @"<REDACTED>", self.wallet.chain.name);
 #endif
                             continue;
                         }
@@ -165,7 +165,7 @@
     if (a.count >= gapLimit) return [a subarrayWithRange:NSMakeRange(0, gapLimit)];
 
     @synchronized(self) {
-        //It seems weird to repeat this, but it's correct because of the original call receive address and change address
+        // It seems weird to repeat this, but it's correct because of the original call receive address and change address
         [a setArray:[self.addressesByIdentity objectForKey:@(identityIndex)]];
         i = a.count;
 

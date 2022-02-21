@@ -19,8 +19,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, DSAppearanceMode)
-{
+typedef NS_ENUM(NSInteger, DSAppearanceMode) {
     /// Follows Dark Mode setting on iOS 13, uses the light appearance mode on iOS 12 or lower
     DSAppearanceMode_Automatic,
     /// The light appearance mode

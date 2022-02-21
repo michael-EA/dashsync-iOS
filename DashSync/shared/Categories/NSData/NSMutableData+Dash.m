@@ -254,10 +254,10 @@ CFAllocatorRef SecureAllocator() {
 }
 
 - (NSMutableData *)appendDevnetGenesisCoinbaseMessage:(NSString *)message {
-    //A little weirder
+    // A little weirder
     uint8_t l = (uint8_t)[message lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     uint8_t a = 0x51;
-    //uint8_t fullLength = l + 2;
+    // uint8_t fullLength = l + 2;
     //[self appendBytes:&fullLength length:sizeof(fullLength)];
     [self appendBytes:&a length:sizeof(a)];
     [self appendBytes:&l length:sizeof(l)];
@@ -360,12 +360,12 @@ CFAllocatorRef SecureAllocator() {
 }
 
 - (NSMutableData *)appendCreditBurnScriptPubKeyForAddress:(NSString *)address forChain:(DSChain *)chain {
-    //uint8_t pubkeyAddress, scriptAddress;
+    // uint8_t pubkeyAddress, scriptAddress;
     NSData *d = address.base58checkToData;
 
     if (d.length != 21) return nil;
 
-    //uint8_t version = *(const uint8_t *)d.bytes;
+    // uint8_t version = *(const uint8_t *)d.bytes;
     NSData *hash = [d subdataWithRange:NSMakeRange(1, d.length - 1)];
 
     [self appendUInt8:OP_RETURN];
@@ -407,7 +407,7 @@ CFAllocatorRef SecureAllocator() {
     if (version == scriptAddress) {
         [hashMutableData appendUInt8:OP_SHAPESHIFT_SCRIPT];
     } else {
-        [hashMutableData appendUInt8:OP_SHAPESHIFT]; //shapeshift is actually part of the message
+        [hashMutableData appendUInt8:OP_SHAPESHIFT]; // shapeshift is actually part of the message
     }
     [hashMutableData appendData:hash];
     [self appendUInt8:OP_RETURN];

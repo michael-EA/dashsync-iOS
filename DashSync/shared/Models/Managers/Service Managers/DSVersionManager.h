@@ -12,9 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 @class DSWallet;
 @class DSChain;
 
-typedef void (^NeedsUpgradeCompletionBlock)(BOOL success, BOOL neededUpgrade); //success is true is neededUpgrade is true and we upgraded, or we didn't need upgrade
+typedef void (^NeedsUpgradeCompletionBlock)(BOOL success, BOOL neededUpgrade); // success is true is neededUpgrade is true and we upgraded, or we didn't need upgrade
 
-typedef void (^UpgradeCompletionBlock)(BOOL success, BOOL neededUpgrade, BOOL authenticated, BOOL cancelled); //success is true is neededUpgrade is true and we upgraded, or we didn't need upgrade
+typedef void (^UpgradeCompletionBlock)(BOOL success, BOOL neededUpgrade, BOOL authenticated, BOOL cancelled); // success is true is neededUpgrade is true and we upgraded, or we didn't need upgrade
 
 @interface DSVersionManager : NSObject
 

@@ -154,14 +154,12 @@ OSStatus SecKeyRawVerify(
 
 @end
 
-typedef enum : NSUInteger
-{
+typedef enum : NSUInteger {
     output_amount = 1,
     output_script = 2
 } output_key;
 
-typedef enum : NSUInteger
-{
+typedef enum : NSUInteger {
     details_network = 1,
     details_outputs = 2,
     details_time = 3,
@@ -171,8 +169,7 @@ typedef enum : NSUInteger
     details_merchant_data = 7
 } details_key;
 
-typedef enum : NSUInteger
-{
+typedef enum : NSUInteger {
     request_version = 1,
     request_pki_type = 2,
     request_pki_data = 3,
@@ -180,21 +177,18 @@ typedef enum : NSUInteger
     request_signature = 5
 } request_key;
 
-typedef enum : NSUInteger
-{
+typedef enum : NSUInteger {
     certificates_cert = 1
 } certificates_key;
 
-typedef enum : NSUInteger
-{
+typedef enum : NSUInteger {
     payment_merchant_data = 1,
     payment_transactions = 2,
     payment_refund_to = 3,
     payment_memo = 4
 } payment_key;
 
-typedef enum : NSUInteger
-{
+typedef enum : NSUInteger {
     ack_payment = 1,
     ack_memo = 2
 } ack_key;

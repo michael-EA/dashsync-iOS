@@ -52,7 +52,7 @@
         DSMutableStringValueDictionary *platformKeyDictionary = [[DSMutableStringValueDictionary alloc] init];
         platformKeyDictionary[@"id"] = @([indexIdentifier unsignedIntValue]);
         platformKeyDictionary[@"purpose"] = @(DWIdentityPublicKeyPurposeAuthentication);
-        platformKeyDictionary[@"securityLevel"] = @(DWIdentityPublicKeySecurityLevelMaster); 
+        platformKeyDictionary[@"securityLevel"] = @(DWIdentityPublicKeySecurityLevelMaster);
         platformKeyDictionary[@"readOnly"] = @NO;
         platformKeyDictionary[@"type"] = @(key.keyType);
         platformKeyDictionary[@"data"] = key.publicKeyData;
@@ -91,7 +91,7 @@
     NSDictionary *proofDictionary = keyValueDictionary[@"proof"];
     NSNumber *proofType = proofDictionary[@"type"];
     if ([proofType integerValue] == 0) {
-        //this is an instant send proof
+        // this is an instant send proof
         NSData *instantSendLockData = proofDictionary[@"instantLock"];
         self.creditFundingTransaction.instantSendLockAwaitingProcessing = [DSInstantSendTransactionLock instantSendTransactionLockWithMessage:instantSendLockData onChain:self.chain];
     }

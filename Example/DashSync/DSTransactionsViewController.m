@@ -53,7 +53,7 @@ NSString *dateFormat(NSString *_template) {
     self.transactions = [NSMutableDictionary dictionary];
 
     self.txDates = [NSMutableDictionary dictionary];
-    //self.moreTx = YES;
+    // self.moreTx = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

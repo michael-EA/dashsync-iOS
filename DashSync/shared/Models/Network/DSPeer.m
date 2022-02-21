@@ -363,7 +363,7 @@
 
 - (void)receivedOrphanBlock {
     self.receivedOrphanCount++;
-    if (self.receivedOrphanCount > 9) { //after 10 orphans mark this peer as bad by saying we got a bad block
+    if (self.receivedOrphanCount > 9) { // after 10 orphans mark this peer as bad by saying we got a bad block
         [self.transactionDelegate peer:self relayedTooManyOrphanBlocks:self.receivedOrphanCount];
     }
 }
@@ -383,7 +383,7 @@
 
     CFRunLoopPerformBlock([self.runLoop getCFRunLoop], kCFRunLoopCommonModes, ^{
 #if MESSAGE_LOGGING
-        if (![type isEqualToString:MSG_GETDATA] && ![type isEqualToString:MSG_VERSION] && ![type isEqualToString:MSG_GETBLOCKS]) { //we log this somewhere else for better accuracy of what data is being got
+        if (![type isEqualToString:MSG_GETDATA] && ![type isEqualToString:MSG_VERSION] && ![type isEqualToString:MSG_GETBLOCKS]) { // we log this somewhere else for better accuracy of what data is being got
             DSLog(@"%@:%u %@sending %@", self.host, self.port, self.peerDelegate.downloadPeer == self ? @"(download peer) " : @"", type);
 #if MESSAGE_IN_DEPTH_TX_LOGGING
             if ([type isEqualToString:@"ix"] || [type isEqualToString:@"tx"]) {
@@ -413,7 +413,7 @@
             NSInteger l = [self.outputStream write:self.outputBuffer.bytes maxLength:self.outputBuffer.length];
 
             if (l > 0) [self.outputBuffer replaceBytesInRange:NSMakeRange(0, l) withBytes:NULL length:0];
-            //if (self.outputBuffer.length == 0) DSLog(@"%@:%u output buffer cleared", self.host, self.port);
+            // if (self.outputBuffer.length == 0) DSLog(@"%@:%u output buffer cleared", self.host, self.port);
         }
 
         UNLOCK(self.outputBufferSemaphore);
@@ -514,7 +514,7 @@
 - (void)sendAddrMessage {
     NSMutableData *msg = [NSMutableData data];
 
-    //TODO: send peer addresses we know about
+    // TODO: send peer addresses we know about
     [msg appendVarInt:0];
     [self sendMessage:msg type:MSG_ADDR];
 }
@@ -859,23 +859,23 @@
 
 // MARK: - send Dash Governance
 
-- (void)sendGovSync:(UInt256)parentHash {                               //for votes
-    if (self.governanceRequestState != DSGovernanceRequestState_None) { //Make sure we aren't in a governance sync process
+- (void)sendGovSync:(UInt256)parentHash {                               // for votes
+    if (self.governanceRequestState != DSGovernanceRequestState_None) { // Make sure we aren't in a governance sync process
         DSLog(@"%@:%u Requesting Governance Vote Hashes out of resting state", self.host, self.port);
         return;
     }
     self.sentGovSync = TRUE;
     DSLog(@"%@:%u Requesting Governance Object Vote Hashes", self.host, self.port);
     NSMutableData *msg = [NSMutableData data];
-    //UInt256 reversed = *(UInt256*)[NSData dataWithUInt256:parentHash].reverse.bytes;
+    // UInt256 reversed = *(UInt256*)[NSData dataWithUInt256:parentHash].reverse.bytes;
     [msg appendBytes:&parentHash length:sizeof(parentHash)];
     [msg appendData:[[[DSBloomFilter alloc] initWithFalsePositiveRate:0.01 forElementCount:20000 tweak:arc4random_uniform(10000) flags:1] toData]];
     self.governanceRequestState = DSGovernanceRequestState_GovernanceObjectVoteHashes;
     [self sendMessage:msg type:MSG_GOVOBJSYNC];
 }
 
-- (void)sendGovSync {                                                   //for governance objects
-    if (self.governanceRequestState != DSGovernanceRequestState_None) { //Make sure we aren't in a governance sync process
+- (void)sendGovSync {                                                   // for governance objects
+    if (self.governanceRequestState != DSGovernanceRequestState_None) { // Make sure we aren't in a governance sync process
         DSLog(@"%@:%u Requesting Governance Object Hashes out of resting state", self.host, self.port);
         return;
     }
@@ -888,7 +888,7 @@
     self.governanceRequestState = DSGovernanceRequestState_GovernanceObjectHashes;
     [self sendMessage:msg type:MSG_GOVOBJSYNC];
 
-    //we aren't afraid of coming back here within 5 seconds because a peer can only sendGovSync once every 3 hours
+    // we aren't afraid of coming back here within 5 seconds because a peer can only sendGovSync once every 3 hours
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (self.governanceRequestState == DSGovernanceRequestState_GovernanceObjectHashes) {
             DSLog(@"%@:%u Peer ignored request for governance object hashes", self.host, self.port);
@@ -955,24 +955,24 @@
         [self acceptRejectMessage:message];
     else if ([MSG_FEEFILTER isEqual:type])
         [self acceptFeeFilterMessage:message];
-    //control
+    // control
     else if ([MSG_SPORK isEqual:type])
         [self acceptSporkMessage:message];
-    //masternode
+    // masternode
     else if ([MSG_SSC isEqual:type])
         [self acceptSSCMessage:message];
     else if ([MSG_MNB isEqual:type])
         [self acceptMNBMessage:message];
     else if ([MSG_MNLISTDIFF isEqual:type])
         [self acceptMNLISTDIFFMessage:message];
-    //governance
+    // governance
     else if ([MSG_GOVOBJVOTE isEqual:type])
         [self acceptGovObjectVoteMessage:message];
     else if ([MSG_GOVOBJ isEqual:type])
         [self acceptGovObjectMessage:message];
-    //else if ([MSG_GOVOBJSYNC isEqual:type]) [self acceptGovObjectSyncMessage:message];
+    // else if ([MSG_GOVOBJSYNC isEqual:type]) [self acceptGovObjectSyncMessage:message];
 
-    //private send
+    // private send
     else if ([MSG_DARKSENDANNOUNCE isEqual:type])
         [self acceptDarksendAnnounceMessage:message];
     else if ([MSG_DARKSENDCONTROL isEqual:type])
@@ -1329,13 +1329,13 @@
                 }
             }
             if (!foundLastHash) {
-                //we did not find the last hash, lets ask the remote again for blocks as a race condition might have occured
+                // we did not find the last hash, lets ask the remote again for blocks as a race condition might have occured
                 [self sendGetblocksMessageWithLocators:@[uint256_data_from_obj(blockHashes.lastObject), uint256_data_from_obj(blockHashes.firstObject)]
                                            andHashStop:UINT256_ZERO];
             }
         } else if (blockHashes.count == 1 && self.chain.chainManager.syncPhase == DSChainSyncPhase_ChainSync) {
-            //this could either be a terminal block, or very rarely (1 in 500) the race condition dealt with above but block hashes being 1
-            //First we ust find if the blockHash is a terminal block hash
+            // this could either be a terminal block, or very rarely (1 in 500) the race condition dealt with above but block hashes being 1
+            // First we ust find if the blockHash is a terminal block hash
             //
 
             BOOL foundInTerminalBlocks = (self.chain.terminalBlocks[blockHashes.firstObject] != nil);
@@ -1437,11 +1437,11 @@
     DSLog(@"peer relayed islock message: %@", message.hexString);
 #endif
     if (![self.chain.chainManager.sporkManager deterministicMasternodeListEnabled]) {
-        DSLog(@"returned instant send lock message when DML not enabled: %@", message); //no error here
+        DSLog(@"returned instant send lock message when DML not enabled: %@", message); // no error here
         return;
     }
     if (![self.chain.chainManager.sporkManager llmqInstantSendEnabled]) {
-        DSLog(@"returned instant send lock message when llmq instant send is not enabled: %@", message); //no error here
+        DSLog(@"returned instant send lock message when llmq instant send is not enabled: %@", message); // no error here
         return;
     }
     DSInstantSendTransactionLock *instantSendTransactionLock = [DSInstantSendTransactionLock instantSendTransactionLockWithMessage:message onChain:self.chain];
@@ -1528,7 +1528,7 @@
     NSTimeInterval lastTimestamp = [message UInt32AtOffset:l + 81 * (count - 1) + 68];
     NSTimeInterval firstTimestamp = [message UInt32AtOffset:l + 81 + 68];
     if (!self.chain.needsInitialTerminalHeadersSync && (firstTimestamp + DAY_TIME_INTERVAL * 2 >= self.earliestKeyTime) && [self.chain.chainManager shouldRequestMerkleBlocksForZoneAfterHeight:self.chain.lastSyncBlockHeight + 1]) {
-        //this is a rare scenario where we called getheaders but the first header returned was actually past the cuttoff, but the previous header was before the cuttoff
+        // this is a rare scenario where we called getheaders but the first header returned was actually past the cuttoff, but the previous header was before the cuttoff
         DSLog(@"%@:%u calling getblocks with locators: %@", self.host, self.port, [self.chain chainSyncBlockLocatorArray]);
         [self sendGetblocksMessageWithLocators:self.chain.chainSyncBlockLocatorArray andHashStop:UINT256_ZERO];
         return;
@@ -1603,7 +1603,7 @@
 
             if (uint256_is_zero(hash)) continue;
 
-            switch (type) { //!OCLINT
+            switch (type) { //! OCLINT
                 case DSInvType_Tx:
                 case DSInvType_TxLockRequest:
                     transaction = [self.transactionDelegate peer:self requestedTransaction:hash];
@@ -1750,7 +1750,7 @@
         [self error:@"got merkleblock message before loading a filter"];
         return;
     }
-    //else DSLog(@"%@:%u got merkleblock %@", self.host, self.port, block.blockHash);
+    // else DSLog(@"%@:%u got merkleblock %@", self.host, self.port, block.blockHash);
 
     NSMutableOrderedSet *txHashes = [NSMutableOrderedSet orderedSetWithArray:block.transactionHashes];
 
@@ -1775,9 +1775,9 @@
 - (void)acceptChainLockMessage:(NSData *)message {
     if (![self.chain.chainManager.sporkManager chainLocksEnabled]) {
 #if DEBUG
-        DSLogPrivate(@"returned chain lock message when chain locks are not enabled: %@", message); //no error here
+        DSLogPrivate(@"returned chain lock message when chain locks are not enabled: %@", message); // no error here
 #else
-        DSLog(@"returned chain lock message when chain locks are not enabled: %@", @"<REDACTED>"); //no error here
+        DSLog(@"returned chain lock message when chain locks are not enabled: %@", @"<REDACTED>"); // no error here
 #endif
         return;
     }
@@ -1875,11 +1875,11 @@
             [self.peerChainDelegate peer:self relayedSyncInfo:syncCountInfo count:count];
             break;
     }
-    //ignore when count = 0; (for votes)
+    // ignore when count = 0; (for votes)
 }
 
 - (void)acceptMNBMessage:(NSData *)message {
-    //deprecated since version 70211
+    // deprecated since version 70211
 }
 
 - (void)acceptMNLISTDIFFMessage:(NSData *)message {
@@ -2037,7 +2037,7 @@
 }
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
-    switch (eventCode) { //!OCLINT
+    switch (eventCode) { //! OCLINT
         case NSStreamEventOpenCompleted:
             DSLog(@"%@:%u %@ stream connected in %fs", self.host, self.port,
                 (aStream == self.inputStream) ? @"input" : (aStream == self.outputStream ? @"output" : @"unknown"),
@@ -2084,7 +2084,7 @@
 
                         if (l < 0) {
                             DSLog(@"%@:%u error reading message", self.host, self.port);
-                            goto reset; //!OCLINT
+                            goto reset; //! OCLINT
                         }
 
                         self.msgHeader.length = headerLen + l;
@@ -2114,7 +2114,7 @@
 
                     if (length > MAX_MSG_LENGTH) { // check message length
                         [self error:@"error reading %@, message length %u is too long", type, length];
-                        goto reset; //!OCLINT
+                        goto reset; //! OCLINT
                     }
 
                     if (payloadLen < length) { // read message payload
@@ -2124,7 +2124,7 @@
 
                         if (l < 0) {
                             DSLog(@"%@:%u error reading %@", self.host, self.port, type);
-                            goto reset; //!OCLINT
+                            goto reset; //! OCLINT
                         }
 
                         self.msgPayload.length = payloadLen + l;
@@ -2136,14 +2136,14 @@
                                      "length:%u, SHA256_2:%@",
                               type, self.msgPayload.SHA256_2.u32[0], checksum,
                               (int)self.msgPayload.length, length, uint256_obj(self.msgPayload.SHA256_2)];
-                        goto reset; //!OCLINT
+                        goto reset; //! OCLINT
                     }
 
                     message = self.msgPayload;
                     self.msgPayload = [NSMutableData data];
                     [self acceptMessage:message type:type]; // process message
 
-                reset: //!OCLINT // reset for next message
+                reset: //! OCLINT // reset for next message
                     self.msgHeader.length = self.msgPayload.length = 0;
                 }
             }

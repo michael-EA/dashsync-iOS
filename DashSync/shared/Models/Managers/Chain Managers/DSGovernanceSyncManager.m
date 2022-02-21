@@ -48,7 +48,7 @@
 
 @property (nonatomic, strong) DSChain *chain;
 
-@property (nonatomic, strong) NSOrderedSet *knownGovernanceObjectHashes; //this doesn't care if the hash has an associated governance object already known
+@property (nonatomic, strong) NSOrderedSet *knownGovernanceObjectHashes; // this doesn't care if the hash has an associated governance object already known
 @property (nonatomic, strong) NSMutableOrderedSet<NSData *> *knownGovernanceObjectHashesForExistingGovernanceObjects;
 @property (nonatomic, readonly) NSOrderedSet *fulfilledRequestsGovernanceObjectHashEntities;
 @property (nonatomic, strong) NSMutableArray *requestGovernanceObjectHashEntities;
@@ -92,7 +92,7 @@
     if (last3HoursStandaloneBroadcastHashesCount) {
         DSPeer *downloadPeer = nil;
 
-        //find download peer (ie the peer that we will ask for governance objects from
+        // find download peer (ie the peer that we will ask for governance objects from
         for (DSPeer *peer in self.peerManager.connectedPeers) {
             if (peer.status != DSPeerStatus_Connected) continue;
             downloadPeer = peer;
@@ -100,14 +100,14 @@
         }
 
         if (downloadPeer) {
-            downloadPeer.governanceRequestState = DSGovernanceRequestState_GovernanceObjects; //force this by bypassing normal route
+            downloadPeer.governanceRequestState = DSGovernanceRequestState_GovernanceObjects; // force this by bypassing normal route
 
             [self requestGovernanceObjectsFromPeer:downloadPeer];
         }
     } else {
         if (!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_GovernanceVotes)) return; // make sure we care about Governance objects
         DSPeer *downloadPeer = nil;
-        //find download peer (ie the peer that we will ask for governance objects from
+        // find download peer (ie the peer that we will ask for governance objects from
         for (DSPeer *peer in self.peerManager.connectedPeers) {
             if (peer.status != DSPeerStatus_Connected) continue;
             downloadPeer = peer;
@@ -115,11 +115,11 @@
         }
 
         if (downloadPeer) {
-            downloadPeer.governanceRequestState = DSGovernanceRequestState_GovernanceObjects; //force this by bypassing normal route
+            downloadPeer.governanceRequestState = DSGovernanceRequestState_GovernanceObjects; // force this by bypassing normal route
 
-            //we will request governance objects
-            //however since governance objects are all accounted for
-            //and we want votes, then votes will be requested instead for each governance object
+            // we will request governance objects
+            // however since governance objects are all accounted for
+            // and we want votes, then votes will be requested instead for each governance object
             [self requestGovernanceObjectsFromPeer:downloadPeer];
         }
     }
@@ -127,11 +127,11 @@
 
 
 - (void)startGovernanceSync {
-    //Do we want to sync?
+    // Do we want to sync?
     if (!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_Governance)) return; // make sure we care about Governance objects
 
-    //Do we need to sync?
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@_%@", self.chain.uniqueID, LAST_SYNCED_GOVERANCE_OBJECTS]]) { //no need to do a governance sync if we already completed one recently
+    // Do we need to sync?
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"%@_%@", self.chain.uniqueID, LAST_SYNCED_GOVERANCE_OBJECTS]]) { // no need to do a governance sync if we already completed one recently
         NSTimeInterval lastSyncedGovernance = [[NSUserDefaults standardUserDefaults] integerForKey:[NSString stringWithFormat:@"%@_%@", self.chain.uniqueID, LAST_SYNCED_GOVERANCE_OBJECTS]];
         NSTimeInterval interval = [[DSOptionsManager sharedInstance] syncGovernanceObjectsInterval];
         NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
@@ -141,7 +141,7 @@
         };
     }
 
-    //We need to sync
+    // We need to sync
     DSLog(@"--> Trying to start governance sync");
     NSArray *sortedPeers = [self.peerManager.connectedPeers sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"lastRequestedGovernanceSync" ascending:YES]]];
     BOOL startedGovernanceSync = FALSE;
@@ -149,15 +149,15 @@
         if (peer.status != DSPeerStatus_Connected) continue;
         if ([[NSDate date] timeIntervalSince1970] - peer.lastRequestedGovernanceSync < 10800) {
             DSLog(@"--> Peer recently used");
-            continue; //don't request less than every 3 hours from a peer
+            continue; // don't request less than every 3 hours from a peer
         }
-        peer.lastRequestedGovernanceSync = [[NSDate date] timeIntervalSince1970]; //we are requesting the list from this peer
+        peer.lastRequestedGovernanceSync = [[NSDate date] timeIntervalSince1970]; // we are requesting the list from this peer
         [peer sendGovSync];
         [peer save];
         startedGovernanceSync = TRUE;
         break;
     }
-    if (!startedGovernanceSync) { //we have requested masternode list from connected peers too recently, let's connect to different peers
+    if (!startedGovernanceSync) { // we have requested masternode list from connected peers too recently, let's connect to different peers
         [self continueGovernanceSync];
     }
 }
@@ -193,7 +193,7 @@
     peer.governanceRequestState = DSGovernanceRequestState_None;
     [[NSUserDefaults standardUserDefaults] setInteger:[[NSDate date] timeIntervalSince1970] forKey:[NSString stringWithFormat:@"%@_%@", self.chain.uniqueID, LAST_SYNCED_GOVERANCE_OBJECTS]];
 
-    //Do we want to request votes now?
+    // Do we want to request votes now?
     if (!([[DSOptionsManager sharedInstance] syncType] & DSSyncType_GovernanceVotes)) return;
     self.needVoteSyncGovernanceObjects = [self.governanceObjects mutableCopy];
     [self startNextGoveranceVoteSyncWithPeer:peer];
@@ -329,7 +329,7 @@
     [self.managedObjectContext performBlockAndWait:^{
         if (![self needsRequestsGovernanceObjectHashEntitiesCount]) {
             [self finishedGovernanceObjectSyncWithPeer:(DSPeer *)peer];
-            //we are done syncing
+            // we are done syncing
             finishedSync = TRUE;
         } else {
             self.requestGovernanceObjectHashEntities = [[self.needsRequestsGovernanceObjectHashEntities subarrayWithRange:NSMakeRange(0, MIN(self.needsGovernanceObjectRequestsHashes.count, REQUEST_GOVERNANCE_OBJECT_COUNT))] mutableCopy];
@@ -411,7 +411,7 @@
             }];
         } else if (countAroundNow == self.chain.totalGovernanceObjectsCount) {
             DSLog(@"All governance object hashes received");
-            //we have all hashes, let's request objects.
+            // we have all hashes, let's request objects.
             if (peer.governanceRequestState == DSGovernanceRequestState_GovernanceObjectHashesCountReceived) {
                 peer.governanceRequestState = DSGovernanceRequestState_GovernanceObjects;
                 [self requestGovernanceObjectsFromPeer:peer];
@@ -434,7 +434,7 @@
                 break;
             }
         }
-        //NSAssert(relatedHashEntity, @"There needs to be a relatedHashEntity");
+        // NSAssert(relatedHashEntity, @"There needs to be a relatedHashEntity");
         if (!relatedHashEntity) return;
         [[DSGovernanceObjectEntity managedObjectInBlockedContext:self.managedObjectContext] setAttributesFromGovernanceObject:governanceObject forHashEntity:relatedHashEntity];
         [self.governanceObjects addObject:governanceObject];
@@ -554,22 +554,22 @@
 - (void)vote:(DSGovernanceVoteOutcome)governanceVoteOutcome onGovernanceProposal:(DSGovernanceObject *)governanceObject {
     NSParameterAssert(governanceObject);
 
-    //TODO fix voting
-    //    NSArray * registeredMasternodes = [self.chain registeredMasternodes];
-    //    DSPeerManager * peerManager = [[DSChainsManager sharedInstance] chainManagerForChain:self.chain];
-    //    NSMutableArray * votesToRelay = [NSMutableArray array];
-    //    for (DSSimplifiedMasternodeEntry * masternodeEntry in registeredMasternodes) {
-    //        NSData * votingKey = [self.chain votingKeyForMasternode:masternodeEntry];
-    //        DSECDSAKey * key = [DSECDSAKey keyWithPrivateKey:votingKey.base58String onChain:self.chain];
-    //        UInt256 proposalHash = governanceObject.governanceObjectHash;
-    //        DSUTXO masternodeUTXO = masternodeEntry.utxo;
-    //        NSTimeInterval now = floor([[NSDate date] timeIntervalSince1970]);
-    //        DSGovernanceVote * governanceVote = [[DSGovernanceVote alloc] initWithParentHash:proposalHash forMasternodeUTXO:masternodeUTXO voteOutcome:governanceVoteOutcome voteSignal:DSGovernanceVoteSignal_None createdAt:now signature:nil onChain:self.chain];
-    //        [governanceVote signWithKey:key];
-    //        [votesToRelay addObject:governanceVote];
-    //        [self.publishVotes setObject:governanceVote forKey:uint256_data(governanceVote.governanceVoteHash)];
-    //    }
-    //    [peerManager publishVotes:votesToRelay];
+    // TODO fix voting
+    //     NSArray * registeredMasternodes = [self.chain registeredMasternodes];
+    //     DSPeerManager * peerManager = [[DSChainsManager sharedInstance] chainManagerForChain:self.chain];
+    //     NSMutableArray * votesToRelay = [NSMutableArray array];
+    //     for (DSSimplifiedMasternodeEntry * masternodeEntry in registeredMasternodes) {
+    //         NSData * votingKey = [self.chain votingKeyForMasternode:masternodeEntry];
+    //         DSECDSAKey * key = [DSECDSAKey keyWithPrivateKey:votingKey.base58String onChain:self.chain];
+    //         UInt256 proposalHash = governanceObject.governanceObjectHash;
+    //         DSUTXO masternodeUTXO = masternodeEntry.utxo;
+    //         NSTimeInterval now = floor([[NSDate date] timeIntervalSince1970]);
+    //         DSGovernanceVote * governanceVote = [[DSGovernanceVote alloc] initWithParentHash:proposalHash forMasternodeUTXO:masternodeUTXO voteOutcome:governanceVoteOutcome voteSignal:DSGovernanceVoteSignal_None createdAt:now signature:nil onChain:self.chain];
+    //         [governanceVote signWithKey:key];
+    //         [votesToRelay addObject:governanceVote];
+    //         [self.publishVotes setObject:governanceVote forKey:uint256_data(governanceVote.governanceVoteHash)];
+    //     }
+    //     [peerManager publishVotes:votesToRelay];
 }
 
 - (void)wipeGovernanceInfo {

@@ -22,8 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class DSPlatformTreeQuery;
 
-typedef NS_ENUM(NSUInteger, NSPredicateCBORDataOptions)
-{
+typedef NS_ENUM(NSUInteger, NSPredicateCBORDataOptions) {
     NSPredicateCBORDataOptions_None = 0,
     NSPredicateCBORDataOptions_DataToBase64 = 1
 };

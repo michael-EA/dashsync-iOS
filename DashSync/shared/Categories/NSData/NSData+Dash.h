@@ -33,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define SEC_ATTR_SERVICE @"org.dashfoundation.dash"
 
-#define useDarkCoinSeed 0 //the darkcoin seed was retired quite a while ago
+#define useDarkCoinSeed 0 // the darkcoin seed was retired quite a while ago
 
 #if useDarkCoinSeed
 
@@ -81,10 +81,10 @@ NS_ASSUME_NONNULL_BEGIN
 #define OP_CHECKSIG 0xac
 #define OP_RETURN 0x6a
 
-#define OP_SHAPESHIFT 0xb1 //not a bitcoin op code, used to identify shapeshift when placed after OP_RETURN
+#define OP_SHAPESHIFT 0xb1 // not a bitcoin op code, used to identify shapeshift when placed after OP_RETURN
 #define OP_SHAPESHIFT_SCRIPT 0xb3
 
-//Keychain
+// Keychain
 
 BOOL setKeychainData(NSData *_Nullable data, NSString *key, BOOL authenticated);
 BOOL hasKeychainData(NSString *key, NSError **error);
@@ -98,7 +98,7 @@ NSDictionary *getKeychainDict(NSString *key, NSArray *classes, NSError **error);
 BOOL setKeychainArray(NSArray *array, NSString *key, BOOL authenticated);
 NSArray *getKeychainArray(NSString *key, NSArray *classes, NSError **error);
 
-//Compact Size
+// Compact Size
 
 UInt256 setCompactLE(int32_t nCompact);
 UInt256 setCompactBE(int32_t nCompact);
@@ -116,14 +116,14 @@ UInt256 uInt256ShiftRightLE(UInt256 a, uint8_t bits);
 UInt256 uInt256DivideLE(UInt256 a, UInt256 b);
 UInt256 uInt256MultiplyUInt32LE(UInt256 a, uint32_t b);
 
-//Serialization
+// Serialization
 
 // helper function for serializing BIP32 master public/private keys to standard export format
 NSString *serialize(uint8_t depth, uint32_t fingerprint, BOOL hardened, UInt256 child, UInt256 chain, NSData *key, BOOL mainnet);
 // helper function for deserializing BIP32 master public/private keys to standard export format
 BOOL deserialize(NSString *string, uint8_t *depth, uint32_t *fingerprint, BOOL *hardened, UInt256 *child, UInt256 *chain, NSData *_Nonnull *_Nonnull key, BOOL mainnet);
 
-//Hashing
+// Hashing
 
 void SHA1(void *md, const void *data, size_t len);
 void SHA256(void *md, const void *data, size_t len);

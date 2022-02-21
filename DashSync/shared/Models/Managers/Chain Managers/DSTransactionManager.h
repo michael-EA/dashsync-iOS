@@ -42,8 +42,7 @@ FOUNDATION_EXPORT NSString *_Nonnull const DSTransactionManagerNotificationTrans
 FOUNDATION_EXPORT NSString *_Nonnull const DSTransactionManagerFilterDidChangeNotification;
 
 
-typedef NS_ENUM(NSUInteger, DSRequestingAdditionalInfo)
-{
+typedef NS_ENUM(NSUInteger, DSRequestingAdditionalInfo) {
     DSRequestingAdditionalInfo_Amount = 1,
     DSRequestingAdditionalInfo_CancelOrChangeAmount = 2
 };
@@ -56,9 +55,9 @@ typedef void (^DSTransactionChallengeBlock)(NSString *challengeTitle, NSString *
 
 typedef void (^DSTransactionErrorNotificationBlock)(NSError *error, NSString *_Nullable errorTitle, NSString *_Nullable errorMessage, BOOL shouldCancel);
 
-typedef BOOL (^DSTransactionCreationCompletionBlock)(DSTransaction *tx, NSString *prompt, uint64_t amount, uint64_t proposedFee, NSArray<NSString *> *addresses, BOOL isSecure); //return is whether we should continue automatically
+typedef BOOL (^DSTransactionCreationCompletionBlock)(DSTransaction *tx, NSString *prompt, uint64_t amount, uint64_t proposedFee, NSArray<NSString *> *addresses, BOOL isSecure); // return is whether we should continue automatically
 
-typedef BOOL (^DSTransactionSigningCompletionBlock)(DSTransaction *tx, NSError *_Nullable error, BOOL cancelled); //return is whether we should continue automatically
+typedef BOOL (^DSTransactionSigningCompletionBlock)(DSTransaction *tx, NSError *_Nullable error, BOOL cancelled); // return is whether we should continue automatically
 
 typedef void (^DSTransactionPublishedCompletionBlock)(DSTransaction *tx, NSError *_Nullable error, BOOL sent);
 

@@ -139,11 +139,10 @@
         uint32_t version = [cborData UInt32AtOffset:0];
         NSData *identityData = [cborData subdataWithRange:NSMakeRange(4, cborData.length - 4)];
         NSDictionary *identityDictionary = [identityData ds_decodeCborError:&error];
-        
+
         NSDictionary *response = @{@(DSPlatformStoredMessage_Version): @(version),
-                                 @(DSPlatformStoredMessage_Item): identityDictionary
-        };
-        
+            @(DSPlatformStoredMessage_Item): identityDictionary};
+
         self.responseObject = response;
     } else {
         Proof *proof = identityResponse.proof;
@@ -193,7 +192,7 @@
     }
     NSMutableArray *mArray = [NSMutableArray array];
     for (NSData *cborData in documentsArray) {
-        //uint32_t version = [cborData UInt32AtOffset:0];
+        // uint32_t version = [cborData UInt32AtOffset:0];
         NSData *documentData = [cborData subdataWithRange:NSMakeRange(4, cborData.length - 4)];
         id document = [documentData ds_decodeCborError:&error];
         if (document && !error) {
@@ -265,7 +264,7 @@
                                                      code:broadcastError.code
                                                  userInfo:@{NSLocalizedDescriptionKey: broadcastError.message}];
         } else {
-            self.responseObject = @[]; //Todo
+            self.responseObject = @[]; // Todo
         }
     } else {
         Proof *proof = waitResponse.proof;
@@ -319,16 +318,16 @@
 
         for (NSData *cborData in getIdentitiesResponse.identitiesArray) {
             if (!cborData.length) continue;
-            
+
             NSArray<NSData *> *arrayOfIdentities = [cborData ds_decodeCborError:&error];
             if (arrayOfIdentities.count == 0) continue;
-            
+
             NSData *identityData = arrayOfIdentities.firstObject;
             uint32_t version = [identityData UInt32AtOffset:0];
-            
+
             identityData = [identityData subdataWithRange:NSMakeRange(4, identityData.length - 4)];
             NSDictionary *identityDictionary = [identityData ds_decodeCborError:&error];
-            
+
             if (error) {
                 self.decodingError = error;
                 return;
@@ -342,11 +341,10 @@
                                                                   DSLocalizedString(@"Platform returned an incorrect value as an identity ID", nil)}];
                 return;
             }
-            
+
             NSDictionary *result = @{@(DSPlatformStoredMessage_Version): @(version),
-                                     @(DSPlatformStoredMessage_Item): identityDictionary
-            };
-            
+                @(DSPlatformStoredMessage_Item): identityDictionary};
+
             [identityDictionaries addObject:result];
         }
         self.responseObject = identityDictionaries;
@@ -552,7 +550,7 @@
             if (treeQueryForPublicKeyHashesToIdentityIds) {
                 NSMutableArray *identitiesWithoutVersions = [NSMutableArray array];
                 for (NSDictionary *identityDictionaryWithVersion in [identitiesDictionary allValues]) {
-                    if([identityDictionaryWithVersion respondsToSelector:@selector(objectForKey:)]) {
+                    if ([identityDictionaryWithVersion respondsToSelector:@selector(objectForKey:)]) {
                         [identitiesWithoutVersions addObject:[identityDictionaryWithVersion objectForKey:@(DSPlatformStoredMessage_Item)]];
                     }
                 }

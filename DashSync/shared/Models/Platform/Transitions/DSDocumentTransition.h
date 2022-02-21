@@ -19,8 +19,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSDocumentTransitionType)
-{
+typedef NS_ENUM(NSUInteger, DSDocumentTransitionType) {
     DSDocumentTransitionType_Create = 1,
     DSDocumentTransitionType_Update = 2,
     DSDocumentTransitionType_Delete = 3,

@@ -20,8 +20,7 @@
 #import "DSDAPINetworkServiceRequest.h"
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger, DSPlatformStoredMessage)
-{
+typedef NS_ENUM(NSInteger, DSPlatformStoredMessage) {
     /// The item does not exist for the specified key
     DSPlatformStoredMessage_NotPresent = 0,
     /// The version is prepended before all items
@@ -38,8 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const DSDAPINetworkServiceErrorDomain;
 
-typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
-{
+typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode) {
     DSDAPINetworkServiceErrorCodeInvalidResponse = 100,
 };
 
@@ -53,7 +51,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Estimates the transaction fee necessary for confirmation to occur within a certain number of blocks
- 
+
  @param numberOfBlocksToWait Number of blocks for fee estimate
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -64,7 +62,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get an address summary given an addresses
- 
+
  @param addresses Dash addresses
  @param noTxList true if a list of all txs should NOT be included in result
  @param from start of range for the tx to be included in the tx list
@@ -85,7 +83,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the total amount of duffs received by an addresses
- 
+
  @param addresses Dash addresses
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -96,7 +94,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the total amount of duffs sent by an addresses
- 
+
  @param addresses Dash addresses
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -107,7 +105,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the total unconfirmed balance for the addresses
- 
+
  @param addresses Dash addresses
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -118,7 +116,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the calculated balance for the addresses
- 
+
  @param addresses Dash addresses
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -138,7 +136,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the best block height
- 
+
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
  */
@@ -147,7 +145,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the block hash for the given height
- 
+
  @param height Block height
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -159,7 +157,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the block header corresponding to the requested block hash
- 
+
  @param blockHash Block hash
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -170,7 +168,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the requested number of block headers starting at the requested height
- 
+
  @param offset Lowest block height to include
  @param limit The number of headers to return (0 < limit <=25)
  @param success A block object to be executed when the request operation finishes successfully
@@ -183,7 +181,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get info for blocks meeting the provided criteria
- 
+
  @param date Starting date for blocks to get
  @param limit Number of blocks to return
  @param success A block object to be executed when the request operation finishes successfully
@@ -196,7 +194,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get historic blockchain data sync status
- 
+
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
  */
@@ -214,7 +212,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get masternode list
- 
+
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
  */
@@ -223,7 +221,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get masternode list diff for the provided block hashes
- 
+
  @param baseBlockHash Block hash
  @param blockHash Block hash
  @param success A block object to be executed when the request operation finishes successfully
@@ -236,7 +234,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get the raw block for the provided block hash
- 
+
  @param blockHash Block hash
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -247,7 +245,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get block headers
- 
+
  @param filter A bloom filter
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -258,7 +256,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get transaction for the given hash
- 
+
  @param txid The TXID of the transaction
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -269,7 +267,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get transactions for a given address or multiple addresses
- 
+
  @param addresses Dash addresses
  @param from start of range for the tx to be included in the tx list
  @param to end of range for the tx to be included in the tx list
@@ -288,7 +286,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get UTXO for a given address or multiple addresses (max result 1000)
- 
+
  @param addresses Dash addresses
  @param from start of range in the ordered list of latest UTXO (optional)
  @param to end of range in the ordered list of latest UTXO (optional)
@@ -307,7 +305,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Sends raw InstantSend transaction and returns the transaction ID
- 
+
  @param rawIxTransaction Hex-serialized InstaSend transaction
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -319,7 +317,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Sends raw transaction and returns the transaction ID
- 
+
  @param rawTransaction Hex-serialized transaction
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -330,7 +328,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Adds an element to an existing bloom filter
- 
+
  @param originalFilter Original filter
  @param element Element to add to filter
  @param success A block object to be executed when the request operation finishes successfully
@@ -343,7 +341,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Clear the bloom filter
- 
+
  @param filter Original filter
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -354,7 +352,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Load a bloom filter
- 
+
  @param filter Filter to load
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -369,7 +367,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Fetch a user's Contract
- 
+
  @param contractId A user's Contract ID
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -381,7 +379,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get a blockchain user by username
- 
+
  @param username Blockchain user's username
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -394,7 +392,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Get a blockchain user by ID
- 
+
  @param userId Blockchain user's ID
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -406,7 +404,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Sends raw state transition to the network
- 
+
  @param stateTransition Hex-string representing state transition header
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully
@@ -418,7 +416,7 @@ typedef NS_ENUM(NSUInteger, DSDAPINetworkServiceErrorCode)
 
 /**
  Fetches user documents for a given condition
- 
+
  @param platformDocumentsRequest The fetch request
  @param success A block object to be executed when the request operation finishes successfully
  @param failure A block object to be executed when the request operation finishes unsuccessfully

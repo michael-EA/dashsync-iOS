@@ -43,34 +43,30 @@ FOUNDATION_EXPORT NSString *const DSChainInitialHeadersDidFinishSyncingNotificat
 FOUNDATION_EXPORT NSString *const DSChainBlocksDidFinishSyncingNotification;
 FOUNDATION_EXPORT NSString *const DSChainNewChainTipBlockNotification;
 
-typedef NS_ENUM(uint16_t, DSChainType)
-{
+typedef NS_ENUM(uint16_t, DSChainType) {
     DSChainType_MainNet = 0,
     DSChainType_TestNet = 1,
     DSChainType_DevNet = 2,
 };
 
-typedef NS_ENUM(NSUInteger, DSTransactionDirection)
-{
+typedef NS_ENUM(NSUInteger, DSTransactionDirection) {
     DSTransactionDirection_Sent,
     DSTransactionDirection_Received,
     DSTransactionDirection_Moved,
     DSTransactionDirection_NotAccountFunds,
 };
 
-typedef NS_ENUM(uint16_t, DSLLMQType)
-{
-    DSLLMQType_50_60 = 1,  //every 24 blocks
-    DSLLMQType_400_60 = 2, //288 blocks
-    DSLLMQType_400_85 = 3, //576 blocks
-    DSLLMQType_100_67 = 4, //every 24 blocks
+typedef NS_ENUM(uint16_t, DSLLMQType) {
+    DSLLMQType_50_60 = 1,  // every 24 blocks
+    DSLLMQType_400_60 = 2, // 288 blocks
+    DSLLMQType_400_85 = 3, // 576 blocks
+    DSLLMQType_100_67 = 4, // every 24 blocks
     DSLLMQType_60_80 = 5,
-    DSLLMQType_5_60 = 100, //24 blocks
-    DSLLMQType_10_60 = 101 //24 blocks
+    DSLLMQType_5_60 = 100, // 24 blocks
+    DSLLMQType_10_60 = 101 // 24 blocks
 };
 
-typedef NS_ENUM(uint16_t, DSChainSyncPhase)
-{
+typedef NS_ENUM(uint16_t, DSChainSyncPhase) {
     DSChainSyncPhase_Offline = 0,
     DSChainSyncPhase_InitialTerminalBlocks,
     DSChainSyncPhase_ChainSync,

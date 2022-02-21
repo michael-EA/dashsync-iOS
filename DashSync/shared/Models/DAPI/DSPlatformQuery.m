@@ -46,7 +46,7 @@
 }
 
 + (DSPlatformQuery *)platformQueryForIndividualDocumentKeys:(NSArray<NSData *> *)documentKeys inPath:(NSArray<NSData *> *)path {
-    //todo improve when we have secondary indexes
+    // todo improve when we have secondary indexes
     DSPlatformQuery *query = [[DSPlatformQuery alloc] init];
     DSPlatformTreeQuery *documentKeysQuery = [DSPlatformTreeQuery platformTreeQueryForKeys:documentKeys];
     query.treeQueries = @{@(DSPlatformDictionary_Documents): documentKeysQuery};

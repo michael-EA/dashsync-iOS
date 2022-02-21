@@ -16,8 +16,8 @@
 #import "DSGovernanceObjectListViewController.h"
 #import "DSInvitationsViewController.h"
 #import "DSLayer2ViewController.h"
-#import "DSMasternodeListsViewController.h"
 #import "DSMasternodeListStore.h"
+#import "DSMasternodeListsViewController.h"
 #import "DSMasternodeViewController.h"
 #import "DSPasteboardAddressExtractor.h"
 #import "DSPeersViewController.h"
@@ -186,7 +186,7 @@
                                                            queue:nil
                                                       usingBlock:^(NSNotification *note) {
                                                           if (!note.userInfo[DSChainManagerNotificationChainKey] || [note.userInfo[DSChainManagerNotificationChainKey] isEqual:[self chain]]) {
-                                                              //NSLog(@"update balance");
+                                                              // NSLog(@"update balance");
                                                               [self updateBalance];
                                                           }
                                                       }];
@@ -502,7 +502,7 @@
                                                                   [[DashSync sharedSyncController] wipeSporkDataForChain:self.chainManager.chain inContext:[NSManagedObjectContext chainContext]];
                                                                   [[DashSync sharedSyncController] wipeMasternodeDataForChain:self.chainManager.chain inContext:[NSManagedObjectContext chainContext]];
                                                                   [[DashSync sharedSyncController] wipeGovernanceDataForChain:self.chainManager.chain inContext:[NSManagedObjectContext chainContext]];
-                                                                  [[DashSync sharedSyncController] wipeWalletDataForChain:self.chainManager.chain forceReauthentication:YES inContext:[NSManagedObjectContext chainContext]]; //this takes care of blockchain info as well;
+                                                                  [[DashSync sharedSyncController] wipeWalletDataForChain:self.chainManager.chain forceReauthentication:YES inContext:[NSManagedObjectContext chainContext]]; // this takes care of blockchain info as well;
                                                               }]];
 
     [wipeDataAlertController addAction:[UIAlertAction actionWithTitle:@"Cancel"
@@ -581,12 +581,12 @@
                                 cancelBlock();
                             }];
 
-                [alert addAction:cancelButton]; //cancel should always be on the left
+                [alert addAction:cancelButton]; // cancel should always be on the left
                 [alert addAction:ignoreButton];
                 [self presentViewController:alert animated:YES completion:nil];
             }
             transactionCreationCompletion:^BOOL(DSTransaction *tx, NSString *prompt, uint64_t amount, uint64_t proposedFee, NSArray<NSString *> *addresses, BOOL isSecure) {
-                return TRUE; //just continue and let Dash Sync do it's thing
+                return TRUE; // just continue and let Dash Sync do it's thing
             }
             signedCompletion:^BOOL(DSTransaction *_Nonnull tx, NSError *_Nullable error, BOOL cancelled) {
                 if (cancelled) {

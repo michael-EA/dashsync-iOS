@@ -20,8 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSPlatformDictionary)
-{
+typedef NS_ENUM(NSUInteger, DSPlatformDictionary) {
     DSPlatformDictionary_Contracts = 3,
     DSPlatformDictionary_Documents = 4,
     DSPlatformDictionary_Identities = 1,

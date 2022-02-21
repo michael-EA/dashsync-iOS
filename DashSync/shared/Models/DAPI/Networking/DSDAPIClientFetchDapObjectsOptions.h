@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  DSDAPIClientFetchDapObjectsOptions represents Fetch DAP Objects options
- 
+
  @param where Mongo-like query  https://docs.mongodb.com/manual/reference/operator/query/
  @param orderBy Mongo-like sort field  https://docs.mongodb.com/manual/reference/method/cursor.sort/
  @param limit How many objects to fetch  https://docs.mongodb.com/manual/reference/method/cursor.limit/

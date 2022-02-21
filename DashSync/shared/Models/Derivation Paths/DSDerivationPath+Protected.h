@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL addressesLoaded;
 @property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, strong) NSMutableSet *mAllAddresses, *mUsedAddresses;
-@property (nonatomic, strong) DSKey *extendedPublicKey; //master public key used to generate wallet addresses
+@property (nonatomic, strong) DSKey *extendedPublicKey; // master public key used to generate wallet addresses
 @property (nonatomic, strong) NSString *standaloneExtendedPublicKeyUniqueID;
 @property (nonatomic, weak) DSWallet *wallet;
 @property (nonatomic, nullable, readonly) NSString *standaloneExtendedPublicKeyLocationString;

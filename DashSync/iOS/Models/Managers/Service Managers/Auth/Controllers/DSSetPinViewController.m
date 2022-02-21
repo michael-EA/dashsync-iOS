@@ -38,16 +38,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*
  How it works:
- 
+
  There are two pages with pin inputs to operate with.
- 
+
  If we have to verify pin first page will be used for verification and once verification is succeeded OR
  we don't have to verify pin:
- 
+
  Second page is used for "Set PIN" and first page is used(reused) for "Confirm PIN".
- 
+
  [1: Enter old PIN] [2: Set PIN] -> [1: Confirm PIN] [2: Set PIN]
- 
+
  */
 
 - (instancetype)initWithCompletion:(void (^)(BOOL success))completion {

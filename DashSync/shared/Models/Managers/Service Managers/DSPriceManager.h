@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 #define DISPLAY_NAME [NSString stringWithFormat:LDQUOTE @"%@" RDQUOTE, \
                                NSBundle.mainBundle.infoDictionary[@"CFBundleDisplayName"]]
 
-#define FEE_PER_KB_URL 0 //not supported @"https://api.breadwallet.com/fee-per-kb"
+#define FEE_PER_KB_URL 0 // not supported @"https://api.breadwallet.com/fee-per-kb"
 
 @class DSCurrencyPriceObject;
 

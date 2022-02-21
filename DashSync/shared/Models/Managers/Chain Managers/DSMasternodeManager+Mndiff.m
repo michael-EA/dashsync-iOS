@@ -59,11 +59,11 @@ void addInsightLookup(uint8_t (*block_hash)[32], const void *context) {
     [[DSInsightManager sharedInstance] blockForBlockHash:uint256_reverse(entryQuorumHash)
                                                  onChain:chain
                                               completion:^(DSBlock *_Nullable block, NSError *_Nullable error) {
-        if (!error && block) {
-            [chain addInsightVerifiedBlock:block forBlockHash:entryQuorumHash];
-        }
-        dispatch_semaphore_signal(sem);
-    }];
+                                                  if (!error && block) {
+                                                      [chain addInsightVerifiedBlock:block forBlockHash:entryQuorumHash];
+                                                  }
+                                                  dispatch_semaphore_signal(sem);
+                                              }];
     dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
     mndiff_block_hash_destroy(block_hash);
 }
@@ -90,7 +90,7 @@ bool validateQuorumCallback(QuorumValidationData *data, const void *context) {
     if (!allCommitmentAggregatedSignatureValidated) {
         return false;
     }
-    //The sig must validate against the commitmentHash and all public keys determined by the signers bitvector. This is an aggregated BLS signature verification.
+    // The sig must validate against the commitmentHash and all public keys determined by the signers bitvector. This is an aggregated BLS signature verification.
     uint8_t(*quorum_threshold_signature)[96] = data->quorum_threshold_signature;
     uint8_t(*quorum_public_key)[48] = data->quorum_public_key;
     UInt768 quorumThresholdSignature = [NSData dataWithBytes:quorum_threshold_signature length:96].UInt768;
@@ -229,7 +229,7 @@ bool validateQuorumCallback(QuorumValidationData *data, const void *context) {
 }
 
 + (MasternodeEntry *)wrapMasternodeEntry:(DSSimplifiedMasternodeEntry *)entry {
-    //NSLog(@"wrapMasternodeEntry: %p", entry);
+    // NSLog(@"wrapMasternodeEntry: %p", entry);
     uint32_t known_confirmed_at_height = [entry knownConfirmedAtHeight];
     NSDictionary<DSBlock *, NSData *> *previousOperatorPublicKeys = [entry previousOperatorPublicKeys];
     NSDictionary<DSBlock *, NSData *> *previousSimplifiedMasternodeEntryHashes = [entry previousSimplifiedMasternodeEntryHashes];

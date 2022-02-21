@@ -51,7 +51,7 @@
 + (NSData *)friendshipIdentifierWithSourceIdentifier:(UInt256)sourceIdentifier destinationIdentifier:(UInt256)destinationIdentifier onAccountIndex:(uint32_t)accountIndex {
     UInt256 friendship = uint256_xor(sourceIdentifier, destinationIdentifier);
     if (uint256_sup(sourceIdentifier, destinationIdentifier)) {
-        //the destination should always be bigger than the source, otherwise add 1 on the 32nd bit to differenciate them
+        // the destination should always be bigger than the source, otherwise add 1 on the 32nd bit to differenciate them
         friendship = uInt256AddLE(friendship, uint256_from_int(1 << 31));
     }
     UInt256 friendshipOnAccount = uint256_xor(friendship, uint256_from_int(accountIndex));
@@ -65,7 +65,7 @@
     UInt256 sourceIdentifier = self.sourceContact.associatedBlockchainIdentity.uniqueID.UInt256;
     UInt256 destinationIdentifier = self.destinationContact.associatedBlockchainIdentity.uniqueID.UInt256;
     self.friendshipIdentifier = [DSFriendRequestEntity friendshipIdentifierWithSourceIdentifier:sourceIdentifier destinationIdentifier:destinationIdentifier onAccountIndex:self.account.index];
-    //DSLog(@"Creating friend request on friendship identifier %@ %@", self.friendshipIdentifier.hexString, [NSThread callStackSymbols]);
+    // DSLog(@"Creating friend request on friendship identifier %@ %@", self.friendshipIdentifier.hexString, [NSThread callStackSymbols]);
     return self.friendshipIdentifier;
 }
 

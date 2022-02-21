@@ -56,15 +56,15 @@
     return self;
 }
 
-//transaction hash (32)
-//transaction outpoint (36)
-//masternode outpoint (36)
-//if spork 15 is active
-//  quorum hash 32
-//  confirmed hash 32
-//masternode signature
-//   size - varint
-//   signature 65 or 96 depending on spork 15
+// transaction hash (32)
+// transaction outpoint (36)
+// masternode outpoint (36)
+// if spork 15 is active
+//   quorum hash 32
+//   confirmed hash 32
+// masternode signature
+//    size - varint
+//    signature 65 or 96 depending on spork 15
 - (instancetype)initWithMessage:(NSData *)message onChain:(DSChain *)chain {
     if (!(self = [self initOnChain:chain])) return nil;
     if (![chain.chainManager.sporkManager deterministicMasternodeListEnabled] || ![chain.chainManager.sporkManager llmqInstantSendEnabled]) return nil;
@@ -89,7 +89,7 @@
         self.inputOutpoints = [mutableInputOutpoints copy];
 
         self.transactionHash = [message UInt256AtOffset:off]; // tx
-        //DSLogPrivate(@"transactionHash is %@",uint256_reverse_hex(self.transactionHash));
+        // DSLogPrivate(@"transactionHash is %@",uint256_reverse_hex(self.transactionHash));
         off += sizeof(UInt256);
 
         self.signature = [message UInt768AtOffset:off];
@@ -117,7 +117,7 @@
     self.signatureVerified = signatureVerified;
     self.signature = signature;
     self.quorumVerified = quorumVerified;
-    self.saved = YES; //this is coming already from the persistant store and not from the network
+    self.saved = YES; // this is coming already from the persistant store and not from the network
     return self;
 }
 
@@ -187,11 +187,11 @@
     if (self.signatureVerified) {
         self.intendedQuorum = quorumEntry;
     } else if (quorumEntry.verified && offset == 8) {
-        //try again a few blocks more in the past
+        // try again a few blocks more in the past
         DSLog(@"trying with offset 0");
         return [self verifySignatureWithQuorumOffset:0];
     } else if (quorumEntry.verified && offset == 0) {
-        //try again a few blocks more in the future
+        // try again a few blocks more in the future
         DSLog(@"trying with offset 16");
         return [self verifySignatureWithQuorumOffset:16];
     }
@@ -207,7 +207,7 @@
     if (_saved) return;
 
     NSManagedObjectContext *context = self.chain.chainManagedObjectContext;
-    //saving here will only create, not update.
+    // saving here will only create, not update.
     [context performBlockAndWait:^{ // add the transaction to core data
         if ([DSInstantSendLockEntity countObjectsInContext:context matching:@"transaction.transactionHash.txHash == %@", uint256_data(self.transactionHash)] == 0) {
             [DSInstantSendLockEntity instantSendLockEntityFromInstantSendLock:self inContext:context];
@@ -222,7 +222,7 @@
         [self saveInitial];
         return;
     };
-    //saving here will only create, not update.
+    // saving here will only create, not update.
     NSManagedObjectContext *context = [NSManagedObjectContext chainContext];
     [context performBlockAndWait:^{ // add the transaction to core data
         NSArray *instantSendLocks = [DSInstantSendLockEntity objectsInContext:context matching:@"transaction.transactionHash.txHash == %@", uint256_data(self.transactionHash)];

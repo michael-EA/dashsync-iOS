@@ -527,7 +527,7 @@ void MD5(void *md, const void *data, size_t len) {
 // ipad = 0x363636...3636
 void HMAC(void *md, void (*hash)(void *, const void *, size_t), size_t hlen, const void *key, size_t klen,
     const void *data, size_t dlen) {
-    //blen is block size length
+    // blen is block size length
     size_t blen = (hlen > 32) ? 128 : 64;
     uint8_t k[hlen], kipad[blen + dlen], kopad[blen + hlen];
 
@@ -785,13 +785,13 @@ NSString *serialize32(uint8_t depth, uint32_t fingerprint, uint32_t child, UInt2
 
     [d appendBytes:key.length < 33 ? mainnet ? BIP32_XPRV_MAINNET : BIP32_XPRV_TESTNET : mainnet ? BIP32_XPUB_MAINNET :
                                                                                                    BIP32_XPUB_TESTNET
-            length:4];                                       //4
-    [d appendBytes:&depth length:1];                         //5
+            length:4];                                       // 4
+    [d appendBytes:&depth length:1];                         // 5
     [d appendBytes:&fingerprint length:sizeof(fingerprint)]; // 9
     [d appendBytes:&child length:sizeof(child)];             // 13
     [d appendBytes:&chain length:sizeof(chain)];             // 45
-    if (key.length < 33) [d appendBytes:"\0" length:1];      //46 (prv) / 45 (pub)
-    [d appendData:key];                                      //78 (prv) / 78 (pub)
+    if (key.length < 33) [d appendBytes:"\0" length:1];      // 46 (prv) / 45 (pub)
+    [d appendData:key];                                      // 78 (prv) / 78 (pub)
 
     return [NSString base58checkWithData:d];
 }
@@ -827,14 +827,14 @@ NSString *serialize256(uint8_t depth, uint32_t fingerprint, bool hardened, UInt2
 
     [d appendBytes:key.length < 33 ? mainnet ? DIP14_DPMS_MAINNET : DIP14_DPTS_TESTNET : mainnet ? DIP14_DPMP_MAINNET :
                                                                                                    DIP14_DPTP_TESTNET
-            length:4];                                       //4
-    [d appendBytes:&depth length:1];                         //5
+            length:4];                                       // 4
+    [d appendBytes:&depth length:1];                         // 5
     [d appendBytes:&fingerprint length:sizeof(fingerprint)]; // 9
     [d appendBytes:&hardened length:1];                      // 10
     [d appendUInt256:child];                                 // 42
     [d appendBytes:&chain length:sizeof(chain)];             // 74
-    if (key.length < 33) [d appendBytes:"\0" length:1];      //75 (prv) / 74 (pub)
-    [d appendData:key];                                      //107 (prv) / 107 (pub)
+    if (key.length < 33) [d appendBytes:"\0" length:1];      // 75 (prv) / 74 (pub)
+    [d appendData:key];                                      // 107 (prv) / 107 (pub)
 
     return [NSString base58checkWithData:d];
 }
@@ -1544,7 +1544,7 @@ UInt256 uInt256MultiplyUInt32LE(UInt256 a, uint32_t b) {
 
 + (uint8_t)positionOfFirstSetBitInSmallInteger:(uint8_t)value {
     uint8_t positionOfFirstSetBit = [self positionOfFirstSetBitInOctal:value >> 4];
-    if (positionOfFirstSetBit == UINT8_MAX) { //not found
+    if (positionOfFirstSetBit == UINT8_MAX) { // not found
         return [self positionOfFirstSetBitInOctal:value & 0xf];
     } else {
         return positionOfFirstSetBit;

@@ -178,7 +178,7 @@
                                             if (failures.count != 0) {
                                                 [strongSelf cancelWithErrors:failures];
                                             } else if (strongSelf.state < DSOperationStateReady) {
-                                                //We must preceed to have the operation exit the queue
+                                                // We must preceed to have the operation exit the queue
                                                 strongSelf.state = DSOperationStateReady;
                                             }
                                         }];
@@ -252,7 +252,7 @@
  `execute` is the entry point of execution for all `DSOperation` subclasses.
  If you subclass `DSOperation` and wish to customize its execution, you would
  do so by overriding the `execute` method.
- 
+
  At some point, your `DSOperation` subclass must call one of the "finish"
  methods defined below; this is how you indicate that your operation has
  finished its execution, and that operations dependent on yours can re-evaluate
@@ -356,7 +356,7 @@
      or `dispatch_group_notify`, or even `NSLock` objects. Many developers
      use waiting when they should instead be chaining discrete operations
      together using dependencies.
-     
+
      To reinforce this idea, invoking `waitUntilFinished` will crash your
      app, as incentive for you to find a more appropriate way to express
      the behavior you're wishing to create.

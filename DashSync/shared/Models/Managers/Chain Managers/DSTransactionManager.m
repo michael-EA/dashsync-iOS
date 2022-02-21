@@ -227,7 +227,7 @@
                     if ([self.txRelays[h] containsObject:p] || [self.txRequests[h] containsObject:p]) continue;
                     if (!self.txRequests[h]) self.txRequests[h] = [NSMutableSet set];
                     [self.txRequests[h] addObject:p];
-                    //todo: to get lock requests instead if sent that way
+                    // todo: to get lock requests instead if sent that way
                     [p sendGetdataMessageWithTxHashes:@[h] instantSendLockHashes:nil blockHashes:nil chainLockHashes:nil];
                 }
             }];
@@ -235,7 +235,7 @@
     });
 }
 
-//This is used when re-entering app, the wallet needs to check all transactions that are in a publishing phase.
+// This is used when re-entering app, the wallet needs to check all transactions that are in a publishing phase.
 - (void)recreatePublishedTransactionList {
     for (DSWallet *wallet in self.chain.wallets) {
         for (DSTransaction *tx in wallet.allTransactions) { // find TXOs spent within the last 100 blocks
@@ -289,10 +289,10 @@
         DSLog(@"transaction relays count %lu, transaction requests count %lu", (unsigned long)[self.txRelays[hash] count], (unsigned long)[self.txRequests[hash] count]);
         DSAccount *account = [self.chain firstAccountThatCanContainTransaction:transaction];
         if (!account && ![specialTransactionsSet containsObject:transaction]) {
-            //the following might be needed, it was in evopayments branch
-            //            if (!self.chain.isDevnetAny || ![transaction isKindOfClass:[DSTransition class]]) {
-            //                NSAssert(FALSE, @"This needs to be implemented for transitions, if you are here now is the time to do it.");
-            //            }
+            // the following might be needed, it was in evopayments branch
+            //             if (!self.chain.isDevnetAny || ![transaction isKindOfClass:[DSTransition class]]) {
+            //                 NSAssert(FALSE, @"This needs to be implemented for transitions, if you are here now is the time to do it.");
+            //             }
             NSAssert(FALSE, @"This probably needs more implementation work, if you are here now is the time to do it.");
             continue;
         }
@@ -494,7 +494,7 @@
         return;
     }
 
-    //TODO: check for duplicates of already paid requests
+    // TODO: check for duplicates of already paid requests
 
     if (requestedAmount == 0) {
         for (NSNumber *outputAmount in protoReq.details.outputAmounts) {
@@ -515,8 +515,7 @@
         challenge(
             challengeTitle, challengeMessage, challengeAction, ^{
                 [self confirmProtocolRequest:protoReq forAmount:requestedAmount fromAccount:account acceptInternalAddress:YES acceptReusingAddress:acceptReusingAddress addressIsFromPasteboard:addressIsFromPasteboard acceptUncertifiedPayee:acceptUncertifiedPayee requiresSpendingAuthenticationPrompt:requiresSpendingAuthenticationPrompt keepAuthenticatedIfErrorAfterAuthentication:keepAuthenticatedIfErrorAfterAuthentication requestingAdditionalInfo:additionalInfoRequest presentChallenge:challenge transactionCreationCompletion:transactionCreationCompletion signedCompletion:signedCompletion publishedCompletion:publishedCompletion requestRelayCompletion:requestRelayCompletion errorNotificationBlock:errorNotificationBlock];
-            },
-            ^{
+            }, ^{
                 additionalInfoRequest(DSRequestingAdditionalInfo_CancelOrChangeAmount);
             });
         return;
@@ -545,8 +544,7 @@
                                             publishedCompletion:publishedCompletion
                                          requestRelayCompletion:requestRelayCompletion
                                          errorNotificationBlock:errorNotificationBlock];
-            },
-            ^{
+            }, ^{
                 additionalInfoRequest(DSRequestingAdditionalInfo_CancelOrChangeAmount);
             });
         return;
@@ -558,8 +556,7 @@
         challenge(
             challengeTitle, challengeMessage, challengeAction, ^{
                 [self confirmProtocolRequest:protoReq forAmount:requestedAmount fromAccount:account acceptInternalAddress:acceptInternalAddress acceptReusingAddress:acceptReusingAddress addressIsFromPasteboard:addressIsFromPasteboard acceptUncertifiedPayee:YES requiresSpendingAuthenticationPrompt:requiresSpendingAuthenticationPrompt keepAuthenticatedIfErrorAfterAuthentication:keepAuthenticatedIfErrorAfterAuthentication requestingAdditionalInfo:additionalInfoRequest presentChallenge:challenge transactionCreationCompletion:transactionCreationCompletion signedCompletion:signedCompletion publishedCompletion:publishedCompletion requestRelayCompletion:requestRelayCompletion errorNotificationBlock:errorNotificationBlock];
-            },
-            ^{
+            }, ^{
                 additionalInfoRequest(DSRequestingAdditionalInfo_CancelOrChangeAmount);
             });
 
@@ -602,13 +599,13 @@
     }
 
     if (tx) {
-        amount = [account amountSentByTransaction:tx] - [account amountReceivedFromTransaction:tx]; //safeguard
+        amount = [account amountSentByTransaction:tx] - [account amountReceivedFromTransaction:tx]; // safeguard
         fee = [account feeForTransaction:tx];
     } else {
         DSTransaction *tempTx = [account transactionFor:account.balance
                                                      to:address
                                                 withFee:NO];
-        uint8_t additionalInputs = (((account.balance - amount) % 1024) >> 8); //get a random amount of additional inputs between 0 and 3, we don't use last bits because they are often 0
+        uint8_t additionalInputs = (((account.balance - amount) % 1024) >> 8); // get a random amount of additional inputs between 0 and 3, we don't use last bits because they are often 0
         fee = [chain feeForTxSize:tempTx.size + TX_INPUT_SIZE * additionalInputs];
         amount += fee; // pretty much a random fee
     }
@@ -648,7 +645,7 @@
 
     if (!tx) { // tx is nil if there were insufficient wallet funds
         if (authenticationManager.didAuthenticate) {
-            //the fee puts us over the limit
+            // the fee puts us over the limit
             [self insufficientFundsForTransactionCreatedFromProtocolRequest:protocolRequest fromAccount:account forAmount:amount toAddress:address requiresSpendingAuthenticationPrompt:requiresSpendingAuthenticationPrompt keepAuthenticatedIfErrorAfterAuthentication:keepAuthenticatedIfErrorAfterAuthentication requestingAdditionalInfo:additionalInfoRequest presentChallenge:challenge transactionCreationCompletion:transactionCreationCompletion signedCompletion:signedCompletion publishedCompletion:publishedCompletion requestRelayCompletion:requestRelayCompletion errorNotificationBlock:errorNotificationBlock];
         } else {
             [authenticationManager seedWithPrompt:promptMessage
@@ -657,7 +654,7 @@
                               forceAuthentication:NO
                                        completion:^(NSData *_Nullable seed, BOOL cancelled) {
                                            if (seed) {
-                                               //the fee puts us over the limit
+                                               // the fee puts us over the limit
                                                [self insufficientFundsForTransactionCreatedFromProtocolRequest:protocolRequest fromAccount:account forAmount:amount toAddress:address requiresSpendingAuthenticationPrompt:requiresSpendingAuthenticationPrompt keepAuthenticatedIfErrorAfterAuthentication:keepAuthenticatedIfErrorAfterAuthentication requestingAdditionalInfo:additionalInfoRequest presentChallenge:challenge transactionCreationCompletion:transactionCreationCompletion signedCompletion:signedCompletion publishedCompletion:publishedCompletion requestRelayCompletion:requestRelayCompletion errorNotificationBlock:errorNotificationBlock];
                                            } else {
                                                additionalInfoRequest(DSRequestingAdditionalInfo_CancelOrChangeAmount);
@@ -668,7 +665,7 @@
     } else {
         NSString *displayedPrompt = promptMessage;
         if (promptMessage && !requiresSpendingAuthenticationPrompt && authenticationManager.didAuthenticate) {
-            displayedPrompt = nil; //don't display a confirmation
+            displayedPrompt = nil; // don't display a confirmation
         } else if (!promptMessage && requiresSpendingAuthenticationPrompt) {
             displayedPrompt = @"";
         }
@@ -689,9 +686,7 @@
                           if (!signedTransaction || !tx.isSigned) {
                               if (!previouslyWasAuthenticated && !keepAuthenticatedIfErrorAfterAuthentication) [authenticationManager deauthenticate];
                               dispatch_async(dispatch_get_main_queue(), ^{
-                                  signedCompletion(tx, [NSError errorWithDomain:@"DashSync"
-                                                                           code:401
-                                                                       userInfo:@{NSLocalizedDescriptionKey: DSLocalizedString(@"Error signing transaction", nil)}],
+                                  signedCompletion(tx, [NSError errorWithDomain:@"DashSync" code:401 userInfo:@{NSLocalizedDescriptionKey: DSLocalizedString(@"Error signing transaction", nil)}],
                                       NO);
                               });
                               return;
@@ -699,7 +694,7 @@
 
                           if (!previouslyWasAuthenticated) [authenticationManager deauthenticate];
 
-                          if (!signedCompletion(tx, nil, NO)) return; //give the option to stop the process to clients
+                          if (!signedCompletion(tx, nil, NO)) return; // give the option to stop the process to clients
 
                           [self publishSignedTransaction:tx createdFromProtocolRequest:protocolRequest fromAccount:account publishedCompletion:publishedCompletion requestRelayCompletion:requestRelayCompletion errorNotificationBlock:errorNotificationBlock];
                       }];
@@ -719,7 +714,7 @@
                       completion:^(NSError *publishingError) {
                           if (publishingError) {
                               if (!sent) {
-                                  [account removeTransaction:tx saveImmediately:YES]; //we save in case the transaction was registered and saved from another process
+                                  [account removeTransaction:tx saveImmediately:YES]; // we save in case the transaction was registered and saved from another process
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       publishedCompletion(tx, publishingError, sent);
                                   });
@@ -792,7 +787,7 @@
                                                  completion:^(NSError *publishingError) {
                                                      if (publishingError) {
                                                          if (!sent) {
-                                                             [account removeTransaction:tx saveImmediately:YES]; //we save in case the transaction was registered and saved from another process
+                                                             [account removeTransaction:tx saveImmediately:YES]; // we save in case the transaction was registered and saved from another process
                                                              dispatch_async(dispatch_get_main_queue(), ^{
                                                                  publishedCompletion(tx, publishingError, sent);
                                                              });
@@ -987,12 +982,12 @@
 
 // MARK: - Bloom Filters
 
-//This returns the bloom filter for the peer, currently the filter is only tweaked per peer, and we only cache the filter of the download peer.
-//It makes sense to keep this in this class because it is not a property of the chain, but intead of a effemeral item used in the synchronization of the chain.
+// This returns the bloom filter for the peer, currently the filter is only tweaked per peer, and we only cache the filter of the download peer.
+// It makes sense to keep this in this class because it is not a property of the chain, but intead of a effemeral item used in the synchronization of the chain.
 - (DSBloomFilter *)transactionsBloomFilterForPeer:(DSPeer *)peer {
     self.filterUpdateHeight = self.chain.lastSyncBlockHeight;
 
-    //Now lets calculate our ideal bloom filter false positive rate with the following assumptions: while the average 500 block max transactions stays around the same we should receive back on average 1 transaction every 2 days.
+    // Now lets calculate our ideal bloom filter false positive rate with the following assumptions: while the average 500 block max transactions stays around the same we should receive back on average 1 transaction every 2 days.
     self.transactionsBloomFilterFalsePositiveRate = BLOOM_REDUCED_FALSEPOSITIVE_RATE;
 
 
@@ -1075,7 +1070,7 @@
 
 // MARK: Outgoing Transactions
 
-//The peer is requesting a transaction that it does not know about that we are publishing
+// The peer is requesting a transaction that it does not know about that we are publishing
 - (DSTransaction *)peer:(DSPeer *)peer requestedTransaction:(UInt256)txHash {
     NSValue *hash = uint256_obj(txHash);
 #if DEBUG
@@ -1156,7 +1151,7 @@
 
 // MARK: Incoming Transactions
 
-//The peer is informing us that it has an inventory of a transaction we might be interested in, this might also be a transaction we sent out which we are checking has properly been relayed on the network
+// The peer is informing us that it has an inventory of a transaction we might be interested in, this might also be a transaction we sent out which we are checking has properly been relayed on the network
 
 #define TEST_NO_RELAY (0 && !DEBUG)
 
@@ -1214,7 +1209,7 @@
     [self.txRequests[hash] removeObject:peer];
 }
 
-//The peer has sent us a transaction we are interested in and that we did not send ourselves
+// The peer has sent us a transaction we are interested in and that we did not send ourselves
 - (void)peer:(DSPeer *)peer relayedTransaction:(DSTransaction *)transaction inBlock:(DSBlock *)block {
     NSValue *hash = uint256_obj(transaction.txHash);
     BOOL syncing = (self.chain.lastSyncBlockHeight < self.chain.estimatedBlockHeight);
@@ -1309,8 +1304,8 @@
     DSBlockchainIdentity *blockchainIdentity = nil;
 
     if (![transaction isMemberOfClass:[DSTransaction class]]) {
-        //it's a special transaction
-        BOOL registered = YES; //default to yes
+        // it's a special transaction
+        BOOL registered = YES; // default to yes
         if (![transaction isKindOfClass:[DSCreditFundingTransaction class]]) {
             registered = [self.chain registerSpecialTransaction:transaction saveImmediately:block ? NO : YES];
         }
@@ -1341,7 +1336,7 @@
 
         if (peer && peer == self.peerManager.downloadPeer) [self.chainManager relayedNewItem];
 
-        //While we would only add to publish list is transaction sent amount was over 0 for a normal transaction, other transactions should be published immediately as they have other consequences
+        // While we would only add to publish list is transaction sent amount was over 0 for a normal transaction, other transactions should be published immediately as they have other consequences
         if (accountsWithValidTransaction.count > 0) {
             [self addUnconfirmedTransactionToPublishList:transaction]; // add valid send tx to mempool
         } else if (accountsAcceptingTransaction.count == 0 && registered) {
@@ -1403,7 +1398,7 @@
             }
         }
 
-        //todo: deal when the transaction received is not in an account
+        // todo: deal when the transaction received is not in an account
 
 
         dispatch_async(self.chainManager.chain.networkingQueue, ^{
@@ -1445,7 +1440,7 @@
             [blockchainIdentity.wallet setGuessedWalletCreationTime:self.chain.lastSyncBlockTimestamp - HOUR_TIME_INTERVAL - (DAY_TIME_INTERVAL / arc4random() % DAY_TIME_INTERVAL)];
         }
         [self.identitiesManager checkCreditFundingTransactionForPossibleNewIdentity:(DSCreditFundingTransaction *)transaction];
-        [self destroyTransactionsBloomFilter]; //We want to destroy it temporarily, while we wait for L2, no matter what the block should not be saved and needs to be refetched
+        [self destroyTransactionsBloomFilter]; // We want to destroy it temporarily, while we wait for L2, no matter what the block should not be saved and needs to be refetched
     } else if (addedNewAccount) {
         [self destroyTransactionsBloomFilter];
     } else {
@@ -1527,13 +1522,13 @@
 }
 
 - (void)peer:(DSPeer *)peer relayedInstantSendTransactionLock:(DSInstantSendTransactionLock *)instantSendTransactionLock {
-    //NSValue *transactionHashValue = uint256_obj(instantSendTransactionLock.transactionHash);
+    // NSValue *transactionHashValue = uint256_obj(instantSendTransactionLock.transactionHash);
     DSTransaction *transaction = nil;
     DSWallet *wallet = nil;
     DSAccount *account = [self.chain firstAccountForTransactionHash:instantSendTransactionLock.transactionHash transaction:&transaction wallet:&wallet];
 
     if (account && transaction && transaction.instantSendReceived) {
-        return; //no point to retrieve the instant send lock if we already have it
+        return; // no point to retrieve the instant send lock if we already have it
     }
 
     BOOL verified = [instantSendTransactionLock verifySignature];
@@ -1560,7 +1555,7 @@
     }
 
     if (!verified && !instantSendTransactionLock.intendedQuorum) {
-        //the quorum hasn't been retrieved yet
+        // the quorum hasn't been retrieved yet
         [self.instantSendLocksWaitingForQuorums setObject:instantSendTransactionLock forKey:uint256_data(instantSendTransactionLock.transactionHash)];
     }
 }
@@ -1618,8 +1613,8 @@
 // MARK: Blocks
 
 - (void)peer:(DSPeer *)peer relayedHeader:(DSMerkleBlock *)block {
-    //DSLogPrivate(@"relayed block %@ total transactions %d %u",uint256_hex(block.blockHash), block.totalTransactions,block.timestamp);
-    // ignore block headers that are newer than 2 days before earliestKeyTime (headers have 0 totalTransactions)
+    // DSLogPrivate(@"relayed block %@ total transactions %d %u",uint256_hex(block.blockHash), block.totalTransactions,block.timestamp);
+    //  ignore block headers that are newer than 2 days before earliestKeyTime (headers have 0 totalTransactions)
     if (!self.chain.needsInitialTerminalHeadersSync &&
         (block.timestamp + DAY_TIME_INTERVAL * 2 > self.chain.earliestWalletCreationTime) && !self.chainManager.chainSynchronizationFingerprint) {
         DSLog(@"ignoring header %@", uint256_hex(block.blockHash));
@@ -1636,8 +1631,8 @@
         DSLog(@"Block was received after reset, ignoring it");
         return;
     }
-    //DSLog(@"relayed block %@ total transactions %d %u",uint256_hex(block.blockHash), block.totalTransactions,block.timestamp);
-    // ignore block headers that are newer than 2 days before earliestKeyTime (headers have 0 totalTransactions)
+    // DSLog(@"relayed block %@ total transactions %d %u",uint256_hex(block.blockHash), block.totalTransactions,block.timestamp);
+    //  ignore block headers that are newer than 2 days before earliestKeyTime (headers have 0 totalTransactions)
     if (block.totalTransactions == 0 &&
         block.timestamp + DAY_TIME_INTERVAL * 2 > self.chain.earliestWalletCreationTime) {
         DSLog(@"ignoring block %@", uint256_hex(block.blockHash));
@@ -1684,7 +1679,7 @@
             [self.totalTransactionsQueue addObject:@(block.totalTransactions)];
             self.totalTransactionsSum += block.totalTransactions;
             if (block.totalTransactions >= self.totalTransactionsMax) {
-                //NSLog(@"max is %d at %d",block.totalTransactions,block.height);
+                // NSLog(@"max is %d at %d",block.totalTransactions,block.height);
                 self.totalTransactionsMax = block.totalTransactions;
                 self.totalTransactionsMaxLastPosition = block.height;
             }
@@ -1692,8 +1687,8 @@
                 self.totalTransactionsSum -= [[self.totalTransactionsQueue objectAtIndex:0] unsignedIntValue];
                 [self.totalTransactionsQueue removeObjectAtIndex:0];
                 if (self.totalTransactionsMaxLastPosition == block.height - MAX_TOTAL_TRANSACTIONS_FOR_BLOOM_FILTER_RETARGETING - 1) {
-                    //NSLog(@"researching max at %d",block.height);
-                    //we must find MAX again
+                    // NSLog(@"researching max at %d",block.height);
+                    // we must find MAX again
                     uint32_t maxPosition = 0;
                     uint32_t max = 0;
                     for (uint32_t i = 0; i < self.totalTransactionsQueue.count; i++) {
@@ -1743,7 +1738,7 @@
     }
 
     if (!verified && !chainLock.intendedQuorum) {
-        //the quorum hasn't been retrieved yet
+        // the quorum hasn't been retrieved yet
         [self.chainLocksWaitingForQuorums setObject:chainLock forKey:uint256_data(chainLock.blockHash)];
     }
 }

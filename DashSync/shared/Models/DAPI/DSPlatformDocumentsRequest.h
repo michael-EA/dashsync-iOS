@@ -20,14 +20,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSPlatformDocumentType)
-{
+typedef NS_ENUM(NSUInteger, DSPlatformDocumentType) {
     DSPlatformDocumentType_Contract = 1,
     DSPlatformDocumentType_Document = 2,
 };
 
-typedef NS_ENUM(NSUInteger, DSPlatformQueryType)
-{
+typedef NS_ENUM(NSUInteger, DSPlatformQueryType) {
     DSPlatformQueryType_OneElement,
     DSPlatformQueryType_IndividualElements,
     DSPlatformQueryType_RangeOverValue,

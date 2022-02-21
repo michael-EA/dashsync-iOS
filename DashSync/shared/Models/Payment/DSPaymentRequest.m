@@ -117,7 +117,7 @@
     if ([url.scheme isEqualToString:@"dash"] || [url.scheme isEqualToString:@"bitcoin"]) {
         self.paymentAddress = url.host;
 
-        //TODO: correctly handle unknown but required url arguments (by reporting the request invalid)
+        // TODO: correctly handle unknown but required url arguments (by reporting the request invalid)
         for (NSString *arg in [url.query componentsSeparatedByString:@"&"]) {
             NSArray *pair = [arg componentsSeparatedByString:@"="]; // if more than one '=', then pair[1] != value
 
@@ -462,7 +462,7 @@
                                                      DSPaymentRequest *paymentRequest = [DSPaymentRequest requestWithString:url onChain:chain];
                                                      paymentRequest.callbackScheme = callbackScheme;
                                                      request = paymentRequest.protocolRequest; // use first url and ignore the rest
-                                                     break;                                    //we only are looking for one
+                                                     break;                                    // we only are looking for one
                                                  }
                                              }
                                          }

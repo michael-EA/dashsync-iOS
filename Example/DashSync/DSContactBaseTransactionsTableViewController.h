@@ -19,8 +19,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSContactTransactionDirection)
-{
+typedef NS_ENUM(NSUInteger, DSContactTransactionDirection) {
     DSContactTransactionDirectionSent,
     DSContactTransactionDirectionReceived,
 };

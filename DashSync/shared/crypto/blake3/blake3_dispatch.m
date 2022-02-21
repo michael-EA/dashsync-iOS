@@ -63,8 +63,7 @@ static void cpuidex(uint32_t out[4], uint32_t id, uint32_t sid) {
 
 #endif
 
-enum cpu_feature
-{
+enum cpu_feature {
     SSE2 = 1 << 0,
     SSSE3 = 1 << 1,
     SSE41 = 1 << 2,

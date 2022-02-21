@@ -9,10 +9,9 @@
 #import "DSTransaction.h"
 #import <Foundation/Foundation.h>
 
-//Special Transaction
-//https://github.com/dashpay/dips/blob/master/dip-0002-special-transactions.md
-typedef NS_ENUM(NSUInteger, DSTransactionType)
-{
+// Special Transaction
+// https://github.com/dashpay/dips/blob/master/dip-0002-special-transactions.md
+typedef NS_ENUM(NSUInteger, DSTransactionType) {
     DSTransactionType_Classic = 0,
     DSTransactionType_ProviderRegistration = 1,
     DSTransactionType_ProviderUpdateService = 2,

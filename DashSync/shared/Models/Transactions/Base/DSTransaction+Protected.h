@@ -9,8 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, DSTransactionPersistenceStatus)
-{
+typedef NS_ENUM(NSUInteger, DSTransactionPersistenceStatus) {
     DSTransactionPersistenceStatus_NotSaved,
     DSTransactionPersistenceStatus_Saving,
     DSTransactionPersistenceStatus_Saved

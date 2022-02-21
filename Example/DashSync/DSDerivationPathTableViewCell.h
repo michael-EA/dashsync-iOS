@@ -15,7 +15,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *derivationPathLabel;
 @property (strong, nonatomic) IBOutlet UILabel *signingMechanismLabel;
 @property (strong, nonatomic) IBOutlet UILabel *referenceNameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *usedAddressesLabel; //external
+@property (strong, nonatomic) IBOutlet UILabel *usedAddressesLabel; // external
 @property (strong, nonatomic) IBOutlet UILabel *knownAddressesLabel;
 @property (strong, nonatomic) IBOutlet UILabel *usedInternalAddressesLabel;
 @property (strong, nonatomic) IBOutlet UILabel *knownInternalAddressesLabel;

@@ -70,11 +70,11 @@
     if (activityType == DSDashpayUserEntityFriendActivityType_IncomingTransactions) {
         [fetchRequest setPropertiesToFetch:@[@"localAddress.derivationPath.friendRequest.destinationContact.associatedBlockchainIdentity.uniqueID", expressionDescription]];
         [fetchRequest setPropertiesToGroupBy:@[@"localAddress.derivationPath.friendRequest.destinationContact.associatedBlockchainIdentity.uniqueID"]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"localAddress.derivationPath.friendRequest != NULL && localAddress.derivationPath.friendRequest.sourceContact == %@", self]]; //first part is an optimization for left outer joins
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"localAddress.derivationPath.friendRequest != NULL && localAddress.derivationPath.friendRequest.sourceContact == %@", self]]; // first part is an optimization for left outer joins
     } else if (activityType == DSDashpayUserEntityFriendActivityType_OutgoingTransactions) {
         [fetchRequest setPropertiesToFetch:@[@"localAddress.derivationPath.friendRequest.sourceContact.associatedBlockchainIdentity.uniqueID", expressionDescription]];
         [fetchRequest setPropertiesToGroupBy:@[@"localAddress.derivationPath.friendRequest.sourceContact.associatedBlockchainIdentity.uniqueID"]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"localAddress.derivationPath.friendRequest != NULL && localAddress.derivationPath.friendRequest.destinationContact == %@", self]]; //first part is an optimization for left outer joins
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"localAddress.derivationPath.friendRequest != NULL && localAddress.derivationPath.friendRequest.destinationContact == %@", self]]; // first part is an optimization for left outer joins
     }
     [fetchRequest setResultType:NSDictionaryResultType];
     NSArray *results = [self.managedObjectContext executeFetchRequest:fetchRequest error:NULL];
@@ -95,7 +95,7 @@
 }
 
 - (NSString *)username {
-    //todo manage when more than 1 username
+    // todo manage when more than 1 username
     DSBlockchainIdentityUsernameEntity *username = self.associatedBlockchainIdentity.dashpayUsername ? self.associatedBlockchainIdentity.dashpayUsername : [self.associatedBlockchainIdentity.usernames anyObject];
     return username.stringValue;
 }

@@ -179,11 +179,11 @@
             if (![derivationPath hasExtendedPublicKey]) continue;
             DSDerivationPathEntity *derivationPathEntity = [DSDerivationPathEntity derivationPathEntityMatchingDerivationPath:derivationPath inContext:self.managedObjectContext];
 
-            //DSLogPrivate(@"addresses for derivation path entity %@",derivationPathEntity.addresses);
+            // DSLogPrivate(@"addresses for derivation path entity %@",derivationPathEntity.addresses);
             [derivationPathEntities addObject:derivationPathEntity];
         }
         //        NSArray<DSSpecialTransactionEntity *>* specialTransactionEntitiesA = [DSSpecialTransactionEntity allObjectsWithPrefetch:@[@"addresses"] inContext:context];
-        //DSLogPrivate(@"%@",[specialTransactionEntitiesA firstObject].addresses.firstObject);
+        // DSLogPrivate(@"%@",[specialTransactionEntitiesA firstObject].addresses.firstObject);
         NSArray<DSSpecialTransactionEntity *> *specialTransactionEntities = [DSSpecialTransactionEntity objectsInContext:context matching:@"(ANY addresses.derivationPath IN %@)", derivationPathEntities];
         for (DSSpecialTransactionEntity *e in specialTransactionEntities) {
             DSTransaction *transaction = [e transactionForChain:self.wallet.chain];
@@ -198,7 +198,7 @@
             } else if ([transaction isMemberOfClass:[DSCreditFundingTransaction class]]) {
                 DSCreditFundingTransaction *creditFundingTransaction = (DSCreditFundingTransaction *)transaction;
                 [self.creditFundingTransactions setObject:transaction forKey:uint256_data(creditFundingTransaction.creditBurnIdentityIdentifier)];
-            } else { //the other ones don't have addresses in payload
+            } else { // the other ones don't have addresses in payload
                 NSAssert(FALSE, @"Unknown special transaction type");
             }
         }
@@ -371,7 +371,7 @@
 #endif
         tx.blockHeight = height;
         if (tx.timestamp == UINT32_MAX || tx.timestamp == 0) {
-            //We should only update the timestamp one time
+            // We should only update the timestamp one time
             tx.timestamp = timestamp;
         }
 

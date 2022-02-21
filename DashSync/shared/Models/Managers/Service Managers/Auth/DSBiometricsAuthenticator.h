@@ -20,8 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, DSBiometricsAuthenticationResult)
-{
+typedef NS_ENUM(NSInteger, DSBiometricsAuthenticationResult) {
     DSBiometricsAuthenticationResultSucceeded,
     DSBiometricsAuthenticationResultFailed,
     DSBiometricsAuthenticationResultCancelled,

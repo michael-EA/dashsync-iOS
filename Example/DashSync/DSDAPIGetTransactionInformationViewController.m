@@ -50,7 +50,7 @@
         }
         failure:^(NSError *_Nonnull error) {
             if (error.code == 404) {
-                //try searching for reverse
+                // try searching for reverse
                 [self.chainManager.DAPIClient.DAPICoreNetworkService getTransactionWithHash:uint256_reverse(transactionHash)
                     completionQueue:dispatch_get_main_queue()
                     success:^(DSTransaction *_Nonnull transaction) {
