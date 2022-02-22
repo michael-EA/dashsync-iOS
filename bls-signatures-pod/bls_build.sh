@@ -289,7 +289,8 @@ build_bls_arch()
         -x c++ -std=c++14 -stdlib=libc++ -fembed-bitcode -arch "${ARCH}" -isysroot "${SDK}" ${EXTRA_ARGS} -c "../src/${F}.cpp" -o "${CURRENT_DIR}/${F}.o"
     done
 
-    ar -cvq libbls.a $ALL_BLS_OBJ_FILES
+    #ar -cvq libbls.a $ALL_BLS_OBJ_FILES
+    xcrun -sdk $PLATFORM ar -cvq libbls.a $ALL_BLS_OBJ_FILES
 
     popd # "$BUILDDIR"
 }
