@@ -36,7 +36,7 @@ IndentWrappedFunctionNames: false
 IndentFunctionDeclarationAfterType: true
 IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: false
-Language: ObjC
+LambdaBodyIndentation: OuterScope
 MaxEmptyLinesToKeep: 2
 NamespaceIndentation: None
 ObjCSpaceAfterProperty: true
