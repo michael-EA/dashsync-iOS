@@ -234,7 +234,6 @@ build_relic_arch()
         COMPILER_ARGS=$(version_min_flag $PLATFORM)
     fi
     
-    EXTRA_ARGS=""
     EXTRA_ARGS="-DOPSYS=NONE -DIOS_PLATFORM=$IOS_PLATFORM -DPLATFORM=$IOS_PLATFORM -DDEPLOYMENT_TARGET=$DEPLOYMENT_TARGET -DCMAKE_TOOLCHAIN_FILE=../ios.toolchain.cmake"
     
     if [[ $ARCH = "i386" ]]; then
@@ -404,9 +403,9 @@ function make_xcframework()
     for dir in */; do
         if [ -d "$dir" ]; then
             if [[ "$dir" != "include/" ]]; then
-                libtool -static -o "$dir/libbls_combined.a" "$dir/libgmp.a" "$dir/librelic.a" "$dir/libbls.a"
-
-                XCFRAMEWORK_ARGS+="-library $dir/libbls_combined.a -headers include "
+                libtool -static -o "${dir}libbls_combined.a" "${dir}libgmp.a" "${dir}librelic.a" "${dir}libbls.a"
+    
+                XCFRAMEWORK_ARGS+="-library ${dir}libbls_combined.a -headers include "
             fi
         fi
     done
