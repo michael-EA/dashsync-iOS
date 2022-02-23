@@ -107,7 +107,7 @@ build_gmp_arch()
     CLANG=`xcrun --sdk $PLATFORM --find clang`
     CURRENT_DIR=`pwd`
     DEVELOPER=`xcode-select --print-path`
-    export PATH="${PLATFORM_PATH}/Developer/usr/bin:${DEVELOPER}/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    export PATH="${PLATFORM_PATH}/Developer/usr/bin:${DEVELOPER}/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin"
 
     make clean || true
     make distclean || true
@@ -289,7 +289,6 @@ build_bls_arch()
         -x c++ -std=c++14 -stdlib=libc++ -fembed-bitcode -arch "${ARCH}" -isysroot "${SDK}" ${EXTRA_ARGS} -c "../src/${F}.cpp" -o "${CURRENT_DIR}/${F}.o"
     done
 
-    #ar -cvq libbls.a $ALL_BLS_OBJ_FILES
     xcrun -sdk $PLATFORM ar -cvq libbls.a $ALL_BLS_OBJ_FILES
 
     popd # "$BUILDDIR"

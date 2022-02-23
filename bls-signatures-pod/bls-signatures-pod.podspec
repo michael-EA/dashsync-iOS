@@ -133,7 +133,7 @@ build_gmp_arch()
     CLANG=`xcrun --sdk $PLATFORM --find clang`
     CURRENT_DIR=`pwd`
     DEVELOPER=`xcode-select --print-path`
-    export PATH="${PLATFORM_PATH}/Developer/usr/bin:${DEVELOPER}/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    export PATH="${PLATFORM_PATH}/Developer/usr/bin:${DEVELOPER}/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin"
 
     make clean || true
     make distclean || true
