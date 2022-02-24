@@ -442,8 +442,6 @@ function make_xcframework()
 prepare
 
 build_all "macos" "${MACOS};x86_64+arm64"
-build_all "watchos" "${WATCHOS};arm64_32|${WATCHSIMULATOR};x86_64" # compile only for arm64_32 because it includes armv7k, we can adjust cmake toolchain and compile it separately
-build_all "tvos" "${TVOS};arm64|${TVSIMULATOR};x86_64"
 build_all "ios" "${IPHONEOS};arm64|${IPHONESIMULATOR};arm64+x86_64"
 make_relic_headers_universal
 copy_headers
@@ -451,8 +449,6 @@ make_xcframework
   CMD
 
   s.ios.deployment_target = '13.0'
-  s.watchos.deployment_target = '5.0'
-  s.tvos.deployment_target = '13.0'
   s.osx.deployment_target = '10.15'
 
   s.library = 'c++'

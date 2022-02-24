@@ -236,17 +236,11 @@ build_relic_arch()
     
     EXTRA_ARGS="-DOPSYS=NONE -DIOS_PLATFORM=$IOS_PLATFORM -DPLATFORM=$IOS_PLATFORM -DDEPLOYMENT_TARGET=$DEPLOYMENT_TARGET -DCMAKE_TOOLCHAIN_FILE=../ios.toolchain.cmake"
     
-    if [[ $ARCH = "i386" ]]; then
-        EXTRA_ARGS+=" -DARCH=X86"
-    elif [[ $ARCH = "x86_64" ]]; then
+    if [[ $ARCH = "x86_64" ]]; then
         EXTRA_ARGS+=" -DARCH=X64"
     else
         EXTRA_ARGS+=" -DARCH=ARM"
-        if [[ $ARCH = "armv7s" ]]; then
-            EXTRA_ARGS+=" -DIOS_ARCH=armv7s"
-        elif [[ $ARCH = "armv7k" ]]; then
-            EXTRA_ARGS+=" -DIOS_ARCH=armv7k"
-        elif [[ $ARCH = "arm64_32" ]]; then
+        if [[ $ARCH = "arm64_32" ]]; then
             EXTRA_ARGS+=" -DIOS_ARCH=arm64_32"
         fi
     fi
@@ -349,13 +343,9 @@ build_all()
             rm -rf "artefacts/${PLATFORM}-fat"
             mkdir "artefacts/${PLATFORM}-fat"
 
-            # lipo gmp
+            # lipo gmp, relic and bls
             xcrun lipo $GMP_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/libgmp.a"
-
-            # lipo relic
             xcrun lipo $RELIC_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/librelic.a"
-            
-            # lipo bls
             xcrun lipo $BLS_LIPOARGS -create -output "artefacts/${PLATFORM}-fat/libbls.a" 
 
             # clean up
@@ -385,7 +375,6 @@ function copy_headers()
 {
     mkdir artefacts/include
 
-    # Copy all headers we will need
     cp -rf src/*.hpp artefacts/include
     cp -rf gmp/include/gmp.h artefacts/include
     cp -rf contrib/relic/include/*.h artefacts/include
