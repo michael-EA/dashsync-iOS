@@ -516,6 +516,8 @@
     __block dispatch_group_t dispatch_group = dispatch_group_create();
     dispatch_group_enter(dispatch_group);
     __block BOOL stop = FALSE;
+    NSMutableArray<NSDate *> *datesStart = [NSMutableArray arrayWithCapacity:[files count]];
+    NSMutableArray<NSDate *> *datesEnd = [NSMutableArray arrayWithCapacity:[files count]];
     for (NSString *file in files) {
         NSBundle *bundle = [NSBundle bundleForClass:[self class]];
         NSString *filePath = [bundle pathForResource:file ofType:@"dat"];
@@ -535,6 +537,7 @@
         offset += 32;
         __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
         dispatch_group_enter(dispatch_group);
+        [datesStart addObject:[NSDate date]];
         [DSMasternodeManager processMasternodeDiffMessage:message
             baseMasternodeList:nextBaseMasternodeList
             masternodeListLookup:^DSMasternodeList *_Nonnull(UInt256 blockHash) {
@@ -549,6 +552,7 @@
             onChain:chain
             blockHeightLookup:blockHeightLookup
             completion:^(BOOL foundCoinbase, BOOL validCoinbase, BOOL rootMNListValid, BOOL rootQuorumListValid, BOOL validQuorums, DSMasternodeList *_Nonnull masternodeList, NSDictionary *_Nonnull addedMasternodes, NSDictionary *_Nonnull modifiedMasternodes, NSDictionary *_Nonnull addedQuorums, NSOrderedSet *_Nonnull neededMissingMasternodeLists) {
+                [datesEnd addObject:[NSDate date]];
                 XCTAssert(foundCoinbase, @"Did not find coinbase at height %u", blockHeightLookup(blockHash));
                 //XCTAssert(validCoinbase,@"Coinbase not valid at height %u",[chain heightForBlockHash:blockHash]); //turned off on purpose as we don't have the coinbase block
                 XCTAssert(rootMNListValid, @"rootMNListValid not valid at height %u", blockHeightLookup(blockHash));
@@ -651,6 +655,11 @@
         dispatch_group_leave(dispatch_group);
     }
     dispatch_group_notify(dispatch_group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        for (NSUInteger i = 0; i < [files count]; i++) {
+            //            datesStart[i]
+            NSTimeInterval d = [datesEnd[i] timeIntervalSinceDate:datesStart[i]];
+            NSLog(@"...RESULTS: %@ => %f", files[i], d);
+        }
         completion(!stop, dictionary);
     });
 }
