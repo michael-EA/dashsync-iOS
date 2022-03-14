@@ -531,6 +531,8 @@
     __block dispatch_group_t dispatch_group = dispatch_group_create();
     dispatch_group_enter(dispatch_group);
     __block BOOL stop = FALSE;
+    NSMutableArray<NSDate *> *datesStart = [NSMutableArray arrayWithCapacity:[files count]];
+    NSMutableArray<NSDate *> *datesEnd = [NSMutableArray arrayWithCapacity:[files count]];
     for (NSString *file in files) {
         NSData *message = [DSDeterministicMasternodeListTests messageFromFileWithPath:file];
         NSLog(@"---> loadMasternodeListsForFiles: %@", file);
@@ -546,6 +548,7 @@
         offset += 32;
         __block dispatch_semaphore_t sem = dispatch_semaphore_create(0);
         dispatch_group_enter(dispatch_group);
+        [datesStart addObject:[NSDate date]];
         DSMasternodeDiffMessageContext *mndiffContext = [[DSMasternodeDiffMessageContext alloc] init];
         [mndiffContext setBaseMasternodeList:nextBaseMasternodeList];
         [mndiffContext setUseInsightAsBackup:NO];
@@ -634,6 +637,7 @@
             dispatch_semaphore_signal(sem);
             dispatch_group_leave(dispatch_group);
         }];
+                                                   [datesEnd addObject:[NSDate date]];
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
         if (stop) {
             dispatch_group_leave(dispatch_group);
@@ -644,6 +648,11 @@
         dispatch_group_leave(dispatch_group);
     }
     dispatch_group_notify(dispatch_group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        for (NSUInteger i = 0; i < [files count]; i++) {
+            NSTimeInterval d = [datesEnd[i] timeIntervalSinceDate:datesStart[i]];
+            NSLog(@"...RESULTS: %@ => %f", files[i], d);
+        }
+
         completion(!stop, dictionary);
     });
 }
