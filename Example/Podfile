@@ -1,6 +1,6 @@
 target 'DashSync_Example' do
   platform :ios, '13.0'
-  pod 'DashSharedCore', :git => 'https://github.com/dashevo/dash-shared-core.git', :branch => 'develop'
+  pod 'DashSharedCore', :git => 'https://github.com/dashevo/dash-shared-core.git', :branch => 'v0.17-optimization'
   pod 'DashSync', :path => '../'
   pod 'KVO-MVVM', '0.5.1'
   pod 'SDWebImage', '5.9.2'
