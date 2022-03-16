@@ -646,7 +646,6 @@ PODS:
 
 DEPENDENCIES:
   - CocoaImageHashing (from `https://github.com/ameingast/cocoaimagehashing.git`, commit `ad01eee`)
-  - DashSharedCore (from `https://github.com/dashevo/dash-shared-core.git`, branch `v0.17-optimization`)
   - DashSync (from `../`)
   - KVO-MVVM (= 0.5.1)
   - SDWebImage (= 5.9.2)
@@ -660,6 +659,7 @@ SPEC REPOS:
     - BoringSSL-GRPC
     - CocoaLumberjack
     - DAPI-GRPC
+    - DashSharedCore
     - DSDynamicOptions
     - DWAlertController
     - gRPC
@@ -678,9 +678,6 @@ EXTERNAL SOURCES:
   CocoaImageHashing:
     :commit: ad01eee
     :git: https://github.com/ameingast/cocoaimagehashing.git
-  DashSharedCore:
-    :branch: v0.17-optimization
-    :git: https://github.com/dashevo/dash-shared-core.git
   DashSync:
     :path: "../"
 
@@ -688,9 +685,6 @@ CHECKOUT OPTIONS:
   CocoaImageHashing:
     :commit: ad01eee
     :git: https://github.com/ameingast/cocoaimagehashing.git
-  DashSharedCore:
-    :commit: 84925260e09bd1abbb4cf9c0e2d8fe6b8b2e4773
-    :git: https://github.com/dashevo/dash-shared-core.git
 
 SPEC CHECKSUMS:
   "!ProtoCompiler": 48ddba704d8520ff9bcf3faa3f29d4726700f9b9
@@ -717,6 +711,6 @@ SPEC CHECKSUMS:
   tinycbor: d4d71dddda1f8392fbb4249f63faf8552f327590
   TinyCborObjc: 5204540fb90ff0c40fb22d408fa51bab79d78a80
 
-PODFILE CHECKSUM: e7537b68b084d09a7e85df8d42b605c77aed23b0
+PODFILE CHECKSUM: 9cc57b19559d7ac679c4fde2968f6213757e6bc8
 
 COCOAPODS: 1.11.2
